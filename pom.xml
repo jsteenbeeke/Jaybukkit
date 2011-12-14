@@ -177,6 +177,9 @@
 						<exclude>**/archetype-resources/**</exclude>
 						<exclude>**/META-INF/**/archetype.xml</exclude>
 					</excludes>
+					<mapping>
+						<yml>SCRIPT_STYLE</yml>
+					</mapping>
 				</configuration>
 			</plugin>
 		</plugins>
