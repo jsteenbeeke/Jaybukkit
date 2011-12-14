@@ -1,0 +1,53 @@
+name: colornames
+main: com.jeroensteenbeeke.bk.colornames.ColorNames
+version: 1.0-SNAPSHOT
+
+permissions:
+    colornames.black:
+        description: Black chat text
+        default: false
+    colornames.dark_blue:
+        description: Dark blue chat text
+        default: false
+    colornames.dark_green:
+        description: Dark green chat text
+        default: false
+    colornames.dark_aqua:
+        description: Dark aqua chat text
+        default: false
+    colornames.dark_red:
+        description: Dark red chat text
+        default: false
+    colornames.dark_purple:
+        description: Dark purple chat text
+        default: false
+    colornames.gold:
+        description: Gold chat text
+        default: false
+    colornames.gray:
+        description: Gray chat text
+        default: false
+    colornames.dark_gray:
+        description: Dark gray chat text
+        default: false
+    colornames.blue:
+        description: Blue chat text
+        default: false
+    colornames.green:
+        description: Black chat text
+        default: false
+    colornames.aqua:
+        description: Aqua chat text
+        default: false
+    colornames.red:
+        description: Red chat text
+        default: false
+    colornames.light_purple:
+        description: Light purple chat text
+        default: false
+    colornames.yellow:
+        description: Yellow chat text
+        default: false
+    colornames.white:
+        description: White chat text
+        default: false

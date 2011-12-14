@@ -1,0 +1,8 @@
+name: premiummembers
+main: com.jeroensteenbeeke.bk.premium.PremiumMembers
+version: 1.0-SNAPSHOT
+
+permissions:
+    premiummembers.premium:
+        description: User is allowed to use a premium member slot
+        default: false

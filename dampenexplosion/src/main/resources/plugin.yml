@@ -1,0 +1,5 @@
+name: dampenexplosion
+main: com.jeroensteenbeeke.bk.dampener.DampenExplosion
+version: 1.0-SNAPSHOT
+
+commands:

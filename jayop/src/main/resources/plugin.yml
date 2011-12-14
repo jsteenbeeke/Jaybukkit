@@ -1,0 +1,75 @@
+name: jayop
+main: com.jeroensteenbeeke.bk.jayop.JayOp
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+    weather:
+        description: Modifies the weather
+        permission: jayop.environment
+        usage: /weather sun|rain|thunderstorm
+    tp:
+        description: Teleports you to the indicated player's position
+        permission: jayop.location
+        usage: /tp <player>
+    tpp:
+        description: Teleports the given player to the target player's position
+        permission: jayop.location
+        usage: /tp <player> <targetPlayer>
+    tptome:
+        description: Teleports the indicated player to your position 
+        permission: jayop.location
+        usage: /tptome <player>
+    time:
+        description: Sets the time to the indicated setting
+        permission: jayop.environment
+        usage: /time day|night
+    kick:
+        description: Kicks the indicated player from the server
+        permission: jayop.enforcement
+        usage: /kick <player> <reason>
+    suspend:
+        description: Suspends the indicated player for the indicated number of days 
+        permission: jayop.enforcement
+        usage: /suspend <player> <days>
+    ban:
+        description: Bans the indicated player from the server
+        permission: jayop.enforcement
+        usage: /ban <player> <reason>
+    unban:
+        description: Lifts the indicated player's banishment
+        permission: jayop.enforcement
+        usage: /unban <player>
+    unsuspend:
+        description: Lifts the indicated player suspension
+        permission: jayop.enforcement
+        usage: /unsuspend <player>
+    give:
+        description: Gives the indicated item to the player
+        permission: jayop.inventory
+        usage: /give <player> <item> [quantity]
+    clearinventory:
+        description: Clears the target player's inventory of all items 
+        permission: jayop.inventory
+        usage: /clearinventory <player>
+permissions:
+    jayop.*:
+        description: Gives access to all jayop commands
+        default: false
+        children:
+            jayop.location: true
+            jayop.environment: true
+            jayop.enforcement: true    
+            jayop.inventory: true    
+    jayop.location:
+        description: Gives access to all jayop inventory commands
+        default: false
+    jayop.location:
+        description: Gives access to all jayop locational commands
+        default: false
+    jayop.environment:
+        description: Gives access to all jayop environmental commands
+        default: false
+    jayop.enforcement:
+        description: Gives access to all jayop enforcement commands
+        default: false

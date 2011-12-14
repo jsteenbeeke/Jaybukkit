@@ -1,0 +1,25 @@
+name: ville
+main: com.jeroensteenbeeke.bk.ville.Ville
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+  jurisdiction:
+    description: Determines under whose jurisdiction your current location is
+    permission: ville.use
+    usage: /jurisdiction
+  ville:
+    description: Access ville commands
+    permission: ville.use
+    usage: /ville claim|check|unclaim
+  ville-admin:
+    description: Access ville admin commands
+    permission: ville.admin
+    usage: /ville set|unset
+permissions:
+  ville.use:
+    description: Allows people to use the ville basic commands
+    default: true
+  ville.admin:
+    description: Allows people to use the ville admin commands
+    default: false

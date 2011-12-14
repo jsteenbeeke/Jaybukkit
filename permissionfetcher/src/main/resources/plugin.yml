@@ -1,0 +1,5 @@
+name: permissionfetcher
+main: com.jeroensteenbeeke.bk.permfetch.PermissionsFetcher
+version: 1.0-SNAPSHOT
+
+commands:

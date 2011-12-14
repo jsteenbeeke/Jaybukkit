@@ -1,0 +1,55 @@
+name: jayconomy
+main: com.jeroensteenbeeke.bk.jayconomy.Jayconomy
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+    balance:
+        description: Displays a player's balance
+        permission: jayconomy.balance
+        usage: /balance
+    signowner:
+        description: Displays the owner of a sign
+        permission: jayconomy.sign.viewowner
+        usage: /signowner
+    reclaim:
+        description: Reclaims one item from a sell sign
+        permission: jayconomy.sign.place
+        usage: /reclaim
+    setprice:
+        description: Sets the price of the targeted sign
+        permission: jayconomy.sign.place
+        usage: /setprice <price>
+    setmax:
+        description: Sets the max of the targeted buy sign
+        permission: jayconomy.sign.place
+        usage: /setmax <max>
+    transfer:
+        description: Transfers a certain amount to another player's balance
+        permission: jayconomy.transfer
+        usage: /transfer amount player
+permissions:
+    jayconomy.*:
+        description: Allows a player to requests his balance
+        default: true
+        children:
+            jayconomy.balance: true
+            jayconomy.sign.place: true
+            jayconomy.sign.use: true
+            jayconomy.sign.viewowner: true
+            jayconomy.transfer: true            
+    jayconomy.balance:
+        description: Allows a player to requests his balance
+        default: false
+    jayconomy.sign.place:
+        description: Allows a player to place a Jayconomy sign
+        default: false
+    jayconomy.sign.use:
+        description: Allows a player to place a Jayconomy sign
+        default: false
+    jayconomy.sign.viewowner:
+        description: Allows a player to view a Jayconomy sign owner
+        default: false
+    jayconomy.transfer:
+        description: Allows a player to transfer money to other players
+        default: false

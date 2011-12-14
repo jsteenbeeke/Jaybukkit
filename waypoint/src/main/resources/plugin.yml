@@ -1,0 +1,35 @@
+name: waypoint
+main: com.jeroensteenbeeke.bk.waypoint.WaypointPlugin
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+  wp-go:
+    description: Travels from your current waypoint to the indicated waypoint
+    permission: waypoint.use
+    usage: /wp-go <name>
+  wp-list:
+    description: List all waypoints in your current world
+    permission: waypoint.use
+    usage: /wp-list
+  wp-create:
+    description: Create a new waypoint
+    permission: waypoint.create
+    usage: /wp-create <name>
+  wp-destroy:
+    description: Destroys an existing waypoint
+    permission: waypoint.create
+    usage: /wp-destroy <name>
+permissions:
+    waypoint.*:
+        description: Gives access to all waypoint commands
+        default: false
+        children:
+            waypoint.use: true
+            waypoint.create: true
+    waypoint.use:
+        description: Allows players to use waypoints
+        default: true
+    waypoint.create:
+        description: Allows players to create waypoints
+        default: false

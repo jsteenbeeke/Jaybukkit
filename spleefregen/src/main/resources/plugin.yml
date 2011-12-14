@@ -1,0 +1,59 @@
+name: spleefregen
+main: com.jeroensteenbeeke.bk.spleefregen.SpleefRegen
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+  spleefgen:
+        description: Marks the current position as a spleef arena and fills it with spleefable blocks (limited to dirt, wool, netherrack and snow)
+        permission: spleefregen.create
+        usage: /spleefgen <name> <dirt|wool|nether|snow>
+  respleef:
+        description: Regenerates the indicated spleef arena
+        permission: spleefregen.regenerate
+        usage: /respleef <name> 
+  unspleef:
+        description: Removes the indicated spleef area, rendering the respleef command useless
+        permission: spleefregen.remove
+        usage: /unspleef <name>        
+  splock:
+        description: Locks an indicated spleef arena
+        permission: spleefregen.lock
+        usage: /splock <name>      
+  unsplock:
+        description: Unlocks an indicated spleef arena
+        permission: spleefregen.lock
+        usage: /unsplock <name>
+  splist:
+        description: Lists all spleef arenas
+        permission: spleefregen.list
+        usage: /splist        
+  splood:
+        description: Floods an area underneath a spleef arena with lava
+        permission: spleefregen.create
+        usage: /splood
+permissions:
+    spleefregen.*:
+        description: Gives access to all spleefregen commands
+        default: false
+        children:
+            spleefregen.create: true
+            spleefregen.regenerate: true
+            spleefregen.remove: true
+            spleefregen.lock: true
+            spleefregen.list: true
+    spleefregen.create:
+        description: Allows the player to designate an area as a spleef arena
+        default: false
+    spleefregen.regenerate:
+        description: Allows the player to regenerate a given spleef arena
+        default: false
+    spleefregen.remove:
+        description: Allows the player to remove spleef arena's
+        default: false
+    spleefregen.lock:
+        description: Allows the player to lock and unlock a given spleef arena
+        default: false
+    spleefregen.list:
+        description: Allows the player to list existing spleef points
+        default: false        

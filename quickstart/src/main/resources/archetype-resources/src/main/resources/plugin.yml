@@ -1,0 +1,5 @@
+name: ${artifactId}
+main: ${package}.Plugin
+version: ${version}
+
+commands:

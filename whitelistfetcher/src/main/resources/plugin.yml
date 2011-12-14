@@ -1,0 +1,5 @@
+name: whitelistfetcher
+main: com.jeroensteenbeeke.bk.whitelist.WhitelistFetcher
+version: 1.0-SNAPSHOT
+
+commands:

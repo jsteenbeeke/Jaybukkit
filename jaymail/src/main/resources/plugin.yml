@@ -1,0 +1,26 @@
+name: jaymail
+main: com.jeroensteenbeeke.bk.jaymail.JaymailPlugin
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+    mail-send:
+        description: Sends a mail to another person
+        permission: jaymail.mail
+        usage: /mail-send <player> <message>
+    mail-read:
+        description: Reads a mail from your inbox
+        permission: jaymail.mail
+        usage: /mail-read <number>
+    mail-delete:
+        description: Sends a mail to another person
+        permission: jaymail.mail
+        usage: /mail-delete <player> <message>
+    mail:
+        description: Shows whether or not you have mail waiting 
+        permission: jaymail.mail
+        usage: /mail
+permissions:
+    jaymail.mail:
+        description: Gives users access to their e-mail
+        default: false

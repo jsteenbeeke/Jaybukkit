@@ -1,0 +1,8 @@
+name: firestopper
+main: com.jeroensteenbeeke.bk.firestopper.Firestopper
+version: 1.0-SNAPSHOT
+
+permissions:
+    firestarter.fire:
+        description: Allows a player to start fires
+        default: false    

@@ -1,0 +1,46 @@
+name: playerbasics
+main: com.jeroensteenbeeke.bk.playerbasics.PlayerBasics
+version: 1.0-SNAPSHOT
+
+commands:
+  help:
+    description: Displays player help
+    permission: playerbasics.help
+    usage: /help <page|command>
+  list:
+    description: List all online players
+    permission: playerbasics.list
+    usage: /list
+  rules:
+    description: Lists the rules of this server
+    permission: playerbasics.rules
+    usage: /rules
+  killme:
+    description: Kills yourself
+    permission: playerbasics.killme
+    usage: /killme    
+permissions:
+    playerbasics.*:
+        description: Gives access to all playerbasics commands
+        default: true
+        children:
+            playerbasics.help: true
+            playerbasics.list: true
+            playerbasics.motd: true
+            playerbasics.rules: true
+            playerbasics.killme: true       
+    playerbasics.help:
+        description: Allows players to view the help
+        default: true
+    playerbasics.list:
+        description: Allows players to view a list of members
+        default: true
+    playerbasics.motd:
+        description: Allows players to view the MOTD 
+        default: true
+    playerbasics.rules:
+        description: Allows players to view the rules
+        default: true
+    playerbasics.killme:
+        description: Allows players to kill themselves
+        default: true        

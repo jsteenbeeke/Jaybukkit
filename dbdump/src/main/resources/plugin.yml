@@ -1,0 +1,15 @@
+name: dbdump
+main: com.jeroensteenbeeke.bk.dbdump.DatabaseDump
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+    dbrestore:
+        description: Restores the last database dump to the database
+        permission: dbdump.restore
+        usage: /dbrestore
+permissions:
+    dbdump.restore:
+        description: Allows a user to restore database dumps
+        default: false
+        

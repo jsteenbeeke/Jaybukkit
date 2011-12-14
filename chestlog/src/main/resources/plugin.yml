@@ -1,0 +1,17 @@
+name: chestlog
+main: com.jeroensteenbeeke.bk.chestlog.ChestLogPlugin
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+    chestlog:
+        description: Shows the log for the currently targeted chest
+        permission: chestlog.view
+        usage: /chestlog [page]
+permissions:
+    chestlog.view:
+        description: Grants the ability to view chest logs
+        default: true
+    chestlog.remove:
+        description: Grants the ability to remove chests not owned by you
+        default: false        

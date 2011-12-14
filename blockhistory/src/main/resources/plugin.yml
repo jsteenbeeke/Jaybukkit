@@ -1,0 +1,21 @@
+name: blockhistory
+main: com.jeroensteenbeeke.bk.blockhistory.BlockHistory
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+    history:
+        description: View the history of a targeted block
+        permission: blockhistory.view
+        usage: /history [page]
+    revert:
+        description: Revert the history of a targeted block
+        permission: blockhistory.revert
+        usage: /revert <player> <fromDate>
+permissions:
+    blockhistory.view:
+        description: Allows players to view a block's history
+        default: true
+    blockhistory.revert:
+        description: Allows players to view a block's history
+        default: false           
