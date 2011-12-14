@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.jeroensteenbeeke.bukkit</groupId>
-	<artifactId>bukkit-parent</artifactId>
+	<artifactId>jaybukkit-parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>JS Bukkit Plugin Parent</name>
+	<name>Jaybukkit Plugin Parent</name>
 	<url>http://www.jeroensteenbeeke.nl</url>
 
 	<properties>
@@ -17,6 +17,22 @@
 		<junit.version>4.9</junit.version>
 		<mysql.version>5.1.17</mysql.version>
 	</properties>
+
+	<licenses>
+		<license>
+			<name>GPL v3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>jsteenbeeke</id>
+			<name>Jeroen Steenbeeke</name>
+			<email>j.steenbeeke@gmail.com</email>
+			<url>http://www.jeroensteenbeeke.nl/</url>
+		</developer>
+	</developers>
 
 	<dependencyManagement>
 		<dependencies>
