@@ -41,12 +41,12 @@ public enum TokenRepository {
 	private Random rnd = new Random();
 
 	private TokenRepository() {
-		String folderFilename = System.getProperty("users.file");
+		String userFileName = System.getProperty("users.file");
 
 		users = new Properties();
 		try {
-			if (folderFilename != null) {
-				users.loadFromXML(new FileInputStream(folderFilename));
+			if (userFileName != null) {
+				users.loadFromXML(new FileInputStream(userFileName));
 			} else {
 				log.error("NO USER FILE INDICATED! ALL WEB SERVICE CALLS WILL FAIL!");
 				log.error("Please start this server with -Dusers.file=/location/of/user/file");
