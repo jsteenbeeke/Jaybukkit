@@ -29,6 +29,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avaje.ebean.SqlQuery;
+import com.avaje.ebean.SqlRow;
 import com.avaje.ebean.SqlUpdate;
 import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
@@ -59,6 +60,29 @@ public abstract class JSPlugin extends JavaPlugin {
 		}
 
 		return false;
+	}
+
+	protected final void updateType(String table, String field,
+			String currentType, String newType) {
+		SqlQuery q = getDatabase().createSqlQuery(
+				"SHOW COLUMNS FROM " + table + " WHERE Field=:name");
+		q.setParameter("name", field);
+
+		SqlRow row = q.findUnique();
+		if (row != null) {
+
+			if (!currentType.equals(row.getString("Type"))) {
+
+				SqlUpdate update = getDatabase().createSqlUpdate(
+						"ALTER TABLE " + table + " MODIFY " + field + " "
+								+ newType);
+
+				update.execute();
+
+				log.info("Updated field " + field + " on table " + table
+						+ " to type " + newType);
+			}
+		}
 	}
 
 	protected final void checkIndex(boolean unique, String table, String name,

@@ -140,6 +140,8 @@ public class Jayconomy extends JSPlugin {
 					.execute();
 		}
 		checkIndex(true, "jayconomy_sign", "location", "x", "y", "z", "world");
+		updateType("jayconomy_sign", "subtype", "tinyint(4)", "integer");
+		updateType("jayconomy_deal", "sub_type", "tinyint(4)", "integer");
 	}
 
 	@Override
