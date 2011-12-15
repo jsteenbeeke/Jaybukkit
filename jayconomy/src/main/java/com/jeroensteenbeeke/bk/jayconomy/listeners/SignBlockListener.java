@@ -125,7 +125,7 @@ public class SignBlockListener extends BlockListener {
 			int material = Integer.parseInt(m1.group(1));
 
 			String sub = m1.group(3);
-			Byte subcode = sub != null ? Byte.parseByte(sub) : null;
+			Short subcode = sub != null ? Short.parseShort(sub) : null;
 			BigDecimal value = new BigDecimal(m2.group(1));
 
 			int amount = Integer.parseInt(amountMax.group(1));
@@ -156,7 +156,7 @@ public class SignBlockListener extends BlockListener {
 			BigDecimal value = new BigDecimal(m2.group(1));
 			int amount = Integer.parseInt(m3.group(1));
 			String sub = m1.group(3);
-			Byte subcode = sub != null ? Byte.parseByte(sub) : null;
+			Short subcode = sub != null ? Short.parseShort(sub) : null;
 
 			Material m = Material.getMaterial(material);
 
@@ -173,7 +173,7 @@ public class SignBlockListener extends BlockListener {
 
 	private void createBuySign(Player player, SignChangeEvent event,
 			Material material, BigDecimal value, int amount, int max,
-			Byte subcode) {
+			Short subcode) {
 		event.setLine(0, "\u00A7a[ Buy ]\u00A70");
 		event.setLine(
 				1,
@@ -239,7 +239,7 @@ public class SignBlockListener extends BlockListener {
 			int amount = Integer.parseInt(m2.group(1));
 			BigDecimal value = new BigDecimal(m3.group(1));
 			String sub = m1.group(3);
-			Byte subcode = sub != null ? Byte.parseByte(sub) : null;
+			Short subcode = sub != null ? Short.parseShort(sub) : null;
 
 			Material m = Material.getMaterial(material);
 
@@ -292,7 +292,7 @@ public class SignBlockListener extends BlockListener {
 			m1.matches();
 			int material = Integer.parseInt(m1.group(1));
 			String sub = m1.group(3);
-			Byte subcode = sub != null ? Byte.parseByte(sub) : null;
+			Short subcode = sub != null ? Short.parseShort(sub) : null;
 
 			Material m = Material.getMaterial(material);
 

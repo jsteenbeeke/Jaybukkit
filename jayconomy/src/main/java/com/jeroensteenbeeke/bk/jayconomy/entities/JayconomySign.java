@@ -71,7 +71,7 @@ public class JayconomySign extends BaseEntity<Long> {
 	private Integer amount;
 
 	@Column(nullable = true)
-	private Byte subtype;
+	private Short subtype;
 
 	public JayconomySign() {
 	}
@@ -165,11 +165,11 @@ public class JayconomySign extends BaseEntity<Long> {
 		this.amount = amount;
 	}
 
-	public Byte getSubtype() {
+	public Short getSubtype() {
 		return subtype;
 	}
 
-	public void setSubtype(Byte subtype) {
+	public void setSubtype(Short subtype) {
 		this.subtype = subtype;
 	}
 

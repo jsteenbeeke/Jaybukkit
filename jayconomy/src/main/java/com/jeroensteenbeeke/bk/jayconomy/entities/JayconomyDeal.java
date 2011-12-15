@@ -39,9 +39,9 @@ public class JayconomyDeal extends BaseEntity<Long> {
 
 	@Column(nullable = false)
 	private String player;
-	
+
 	@Column(nullable = false)
-	private Byte subType;
+	private Short subType;
 
 	@Override
 	public Long getId() {
@@ -76,13 +76,12 @@ public class JayconomyDeal extends BaseEntity<Long> {
 		this.player = player;
 	}
 
-	public Byte getSubType() {
+	public Short getSubType() {
 		return subType;
 	}
 
-	public void setSubType(Byte subType) {
+	public void setSubType(Short subType) {
 		this.subType = subType;
 	}
-	
-	
+
 }

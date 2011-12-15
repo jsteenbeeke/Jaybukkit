@@ -152,10 +152,11 @@ public class SignPlayerListener extends PlayerListener {
 					Messages.send(event.getPlayer(), String.format(
 							"&aSold &e%s %s&a to &e%s &afor &e%s", stack
 									.getAmount(), plugin.formatMaterial(stack
-									.getType(), stack.getData() != null ? stack
-									.getData().getData() : null), sign
-									.getOwner(), plugin.formatCurrency(sign
-									.getValue())));
+									.getType(),
+									stack.getData() != null ? new Byte(stack
+											.getData().getData()).shortValue()
+											: null), sign.getOwner(), plugin
+									.formatCurrency(sign.getValue())));
 					log.info(String.format(
 							"[Jayconomy] %s sold %s %s to %s for %s", event
 									.getPlayer().getName(), stack.getAmount(),
@@ -182,7 +183,7 @@ public class SignPlayerListener extends PlayerListener {
 	private boolean giveToPlayer(ItemStack stack, Player player,
 			String playerName, boolean makeDeal) {
 		Material m = stack.getType();
-		Byte data = stack.getData().getData();
+		Short data = new Byte(stack.getData().getData()).shortValue();
 
 		if (player != null) {
 			PlayerInventory targetInventory = player.getInventory();
@@ -248,8 +249,8 @@ public class SignPlayerListener extends PlayerListener {
 
 		if (sign.getMaterialType() == stack.getTypeId()
 				&& compareStackTypes(sign.getSubtype(),
-						stack.getData() != null ? stack.getData().getData()
-								: null)) {
+						stack.getData() != null ? new Byte(stack.getData()
+								.getData()).shortValue() : null)) {
 
 			if (hasEnough(inventory, stack)) {
 
@@ -294,9 +295,9 @@ public class SignPlayerListener extends PlayerListener {
 					String.format(
 							"&cIncorrect material. You are holding &e%s&c, while this sign sells &e%s",
 							plugin.formatMaterial(stack.getType(), stack
-									.getData() != null ? stack.getData()
-									.getData() : null), plugin
-									.formatMaterial(sign)));
+									.getData() != null ? new Byte(stack
+									.getData().getData()).shortValue() : null),
+							plugin.formatMaterial(sign)));
 		}
 
 		plugin.updateSellSign((Sign) event.getClickedBlock().getState(), sign);
@@ -308,13 +309,14 @@ public class SignPlayerListener extends PlayerListener {
 	}
 
 	private boolean compareStackTypes(MaterialData data, MaterialData data2) {
-		return compareStackTypes(data != null ? data.getData() : null,
-				data2 != null ? data2.getData() : null);
+		return compareStackTypes(
+				data != null ? new Byte(data.getData()).shortValue() : null,
+				data2 != null ? new Byte(data2.getData()).shortValue() : null);
 	}
 
-	private boolean compareStackTypes(Byte a, Byte b) {
-		Byte aa = a != null && a.byteValue() == 0 ? null : a;
-		Byte bb = b != null && b.byteValue() == 0 ? null : b;
+	private boolean compareStackTypes(Short a, Short b) {
+		Short aa = a != null && a.byteValue() == 0 ? null : a;
+		Short bb = b != null && b.byteValue() == 0 ? null : b;
 
 		if (aa == null && bb == null)
 			return true;
@@ -391,7 +393,7 @@ public class SignPlayerListener extends PlayerListener {
 				"&aSold &e%s %s &afor &e%s", material.getStackSize(), plugin
 						.formatMaterial(
 								Material.getMaterial(stash.getMaterialType()),
-								(byte) 0), plugin.formatCurrency(material
+								(short) 0), plugin.formatCurrency(material
 						.getWorth())));
 	}
 

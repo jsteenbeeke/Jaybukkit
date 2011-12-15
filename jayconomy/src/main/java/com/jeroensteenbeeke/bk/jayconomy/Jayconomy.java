@@ -264,12 +264,12 @@ public class Jayconomy extends JSPlugin {
 
 	public String formatMaterial(JayconomySign jsign) {
 		Material m = Material.getMaterial(jsign.getMaterialType());
-		Byte data = jsign.getSubtype();
+		Short data = jsign.getSubtype();
 
 		return formatMaterial(m, data);
 	}
 
-	public String formatMaterial(Material m, Byte data) {
+	public String formatMaterial(Material m, Short data) {
 		if (data == null || data == 0) {
 			String name = m.name();
 
@@ -277,146 +277,250 @@ public class Jayconomy extends JSPlugin {
 		} else {
 			if (m == Material.LOG) {
 				switch (data) {
-					case 1:
-						return "spruce";
-					case 2:
-						return "birch";
-					default:
-						return "tree";
+				case 1:
+					return "spruce";
+				case 2:
+					return "birch";
+				default:
+					return "tree";
 				}
 			}
 			if (m == Material.LEAVES) {
 				switch (data) {
-					case 1:
-						return "spruceleaves";
-					case 2:
-						return "birchleaves";
-					default:
-						return "leaves";
+				case 1:
+					return "spruceleaves";
+				case 2:
+					return "birchleaves";
+				default:
+					return "leaves";
 				}
 			}
 			if (m == Material.COAL) {
 				switch (data) {
-					case 1:
-						return "charcoal";
-					default:
-						return "coal";
+				case 1:
+					return "charcoal";
+				default:
+					return "coal";
 				}
 			}
 			if (m == Material.SAPLING) {
 				switch (data) {
-					case 1:
-						return "spruceling";
-					case 2:
-						return "birchling";
-					default:
-						return "sapling";
+				case 1:
+					return "spruceling";
+				case 2:
+					return "birchling";
+				default:
+					return "sapling";
 				}
 			}
 			if (m == Material.WOOL) {
 				switch (data) {
-					case 1:
-						return "orng wool";
-					case 2:
-						return "mag wool";
-					case 3:
-						return "lblu wool";
-					case 4:
-						return "yllw wool";
-					case 5:
-						return "lme wool";
-					case 6:
-						return "pnk wool";
-					case 7:
-						return "gry wool";
-					case 8:
-						return "lgry wool";
-					case 9:
-						return "cyan wool";
-					case 10:
-						return "prpl wool";
-					case 11:
-						return "blue wool";
-					case 12:
-						return "brwn wool";
-					case 13:
-						return "grn wool";
-					case 14:
-						return "rd wool";
-					case 15:
-						return "blck wool";
-					default:
-						return "white wool";
+				case 1:
+					return "orng wool";
+				case 2:
+					return "mag wool";
+				case 3:
+					return "lblu wool";
+				case 4:
+					return "yllw wool";
+				case 5:
+					return "lme wool";
+				case 6:
+					return "pnk wool";
+				case 7:
+					return "gry wool";
+				case 8:
+					return "lgry wool";
+				case 9:
+					return "cyan wool";
+				case 10:
+					return "prpl wool";
+				case 11:
+					return "blue wool";
+				case 12:
+					return "brwn wool";
+				case 13:
+					return "grn wool";
+				case 14:
+					return "rd wool";
+				case 15:
+					return "blck wool";
+				default:
+					return "white wool";
 				}
 			}
 			if (m == Material.INK_SACK) {
 				switch (data) {
-					case 1:
-						return "rose rd";
-					case 2:
-						return "ccts grn";
-					case 3:
-						return "cocoa bn";
-					case 4:
-						return "lps dye";
-					case 5:
-						return "prpl dye";
-					case 6:
-						return "cyan dye";
-					case 7:
-						return "lgry dye";
-					case 8:
-						return "gry dye";
-					case 9:
-						return "pnk dye";
-					case 10:
-						return "lm dye";
-					case 11:
-						return "dnd ylw";
-					case 12:
-						return "lbl dye";
-					case 13:
-						return "mag dye";
-					case 14:
-						return "orng dye";
-					case 15:
-						return "bone meal";
-					default:
-						return "ink sac";
+				case 1:
+					return "rose rd";
+				case 2:
+					return "ccts grn";
+				case 3:
+					return "cocoa bn";
+				case 4:
+					return "lps dye";
+				case 5:
+					return "prpl dye";
+				case 6:
+					return "cyan dye";
+				case 7:
+					return "lgry dye";
+				case 8:
+					return "gry dye";
+				case 9:
+					return "pnk dye";
+				case 10:
+					return "lm dye";
+				case 11:
+					return "dnd ylw";
+				case 12:
+					return "lbl dye";
+				case 13:
+					return "mag dye";
+				case 14:
+					return "orng dye";
+				case 15:
+					return "bone meal";
+				default:
+					return "ink sac";
 				}
 			}
 			if (m == Material.STEP) {
 				switch (data) {
-					case 1:
-						return "snd slb";
-					case 2:
-						return "wd slb";
-					case 3:
-						return "cbl slb";
-					case 4:
-						return "brk slb";
-					case 5:
-						return "stn brk slb";
-					default:
-						return "stn slb";
+				case 1:
+					return "snd slb";
+				case 2:
+					return "wd slb";
+				case 3:
+					return "cbl slb";
+				case 4:
+					return "brk slb";
+				case 5:
+					return "stn brk slb";
+				default:
+					return "stn slb";
 				}
 			}
 			if (m == Material.DOUBLE_STEP) {
 				switch (data) {
-					case 1:
-						return "snd dslb";
-					case 2:
-						return "wd dslb";
-					case 3:
-						return "cbl dslb";
-					case 4:
-						return "brk dslb";
-					case 5:
-						return "stn brk dslb";
-					default:
-						return "stn dslb";
+				case 1:
+					return "snd dslb";
+				case 2:
+					return "wd dslb";
+				case 3:
+					return "cbl dslb";
+				case 4:
+					return "brk dslb";
+				case 5:
+					return "stn brk dslb";
+				default:
+					return "stn dslb";
 				}
 
+			}
+			if (m == Material.POTION) {
+				switch (data) {
+				case 0:
+					return "water bottle";
+				case 16:
+					return "awkwrd pot";
+				case 32:
+					return "thick pot";
+				case 64:
+					return "ex mnd pot";
+				case 8192:
+					return "mnd pot";
+				case 8193:
+					return ".75m rgn pot";
+				case 8257:
+					return "2m rgn pot";
+				case 8225:
+					return ".2m rgn2 pot";
+				case 8194:
+					return "3m swft pot";
+				case 8258:
+					return "8m swft pot";
+				case 8226:
+					return "1.5m swft2 pot";
+				case 8195:
+					return "3m fr pot";
+				case 8259:
+					return "8m fr pot";
+				case 8197:
+					return "heal pot";
+				case 8229:
+					return "heal2 pot";
+				case 8201:
+					return "3m str pot";
+				case 8265:
+					return "8m str pot";
+				case 8233:
+					return "1.5m str2 pot";
+				case 8196:
+					return ".75m psn pot";
+				case 8260:
+					return "2m psn pot";
+				case 8228:
+					return ".2m psn2 pot";
+				case 8200:
+					return "1.5m weak pot";
+				case 8264:
+					return "4m weak pot";
+				case 8202:
+					return "1.5m slow pot";
+				case 8266:
+					return "4m slow pot";
+				case 8204:
+					return "harm pot";
+				case 8236:
+					return "harm2 pot";
+				case 16384:
+					return "mnd splot";
+				case 16385:
+					return "spl .5m rgn";
+				case 16449:
+					return "spl 1.5m rgn";
+				case 16417:
+					return "spl .25m rgn2";
+				case 16386:
+					return "spl 2.25m swft";
+				case 16450:
+					return "spl 6m swft";
+				case 16418:
+					return "spl 1m swft2";
+				case 16387:
+					return "spl 2.25m fr";
+				case 16451:
+					return "spl 6m fr";
+				case 16389:
+					return "spl heal";
+				case 16421:
+					return "spl heal2";
+				case 16393:
+					return "spl 2.25m str";
+				case 16457:
+					return "spl 6m str";
+				case 16425:
+					return "spl 1m str2";
+				case 16388:
+					return "spl .5m psn";
+				case 16452:
+					return "spl 1.5m psn";
+				case 16420:
+					return "spl .25m psn2";
+				case 16392:
+					return "spl 1m weak";
+				case 16456:
+					return "spl 3m weak";
+				case 16394:
+					return "spl 1m slow";
+				case 16458:
+					return "spl 3m slow";
+				case 16396:
+					return "spl harm";
+				case 16428:
+					return "spl harm2";
+				}
 			}
 		}
 
@@ -424,12 +528,22 @@ public class Jayconomy extends JSPlugin {
 	}
 
 	public ItemStack getSignStack(JayconomySign sign) {
-		return new ItemStack(sign.getMaterialType(), sign.getAmount(),
-				(short) 0, sign.getSubtype());
+		if (sign.getMaterialType() == Material.POTION.getId()) {
+			return new ItemStack(sign.getMaterialType(), sign.getAmount(),
+					sign.getSubtype(), null);
+		} else {
+			return new ItemStack(sign.getMaterialType(), sign.getAmount(),
+					(short) 0, sign.getSubtype().byteValue());
+		}
 	}
 
 	public ItemStack getDealStack(JayconomyDeal deal) {
-		return new ItemStack(deal.getMaterialType(), deal.getAmount(),
-				(short) 0, deal.getSubType());
+		if (deal.getMaterialType() == Material.POTION.getId()) {
+			return new ItemStack(deal.getMaterialType(), deal.getAmount(),
+					deal.getSubType(), null);
+		} else {
+			return new ItemStack(deal.getMaterialType(), deal.getAmount(),
+					(short) 0, deal.getSubType().byteValue());
+		}
 	}
 }
