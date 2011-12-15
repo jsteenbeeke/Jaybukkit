@@ -535,7 +535,8 @@ public class Jayconomy extends JSPlugin {
 					sign.getSubtype(), null);
 		} else {
 			return new ItemStack(sign.getMaterialType(), sign.getAmount(),
-					(short) 0, sign.getSubtype().byteValue());
+					(short) 0, sign.getSubtype() != null ? sign.getSubtype()
+							.byteValue() : null);
 		}
 	}
 
@@ -545,7 +546,8 @@ public class Jayconomy extends JSPlugin {
 					deal.getSubType(), null);
 		} else {
 			return new ItemStack(deal.getMaterialType(), deal.getAmount(),
-					(short) 0, deal.getSubType().byteValue());
+					(short) 0, deal.getSubType() != null ? deal.getSubType()
+							.byteValue() : null);
 		}
 	}
 }

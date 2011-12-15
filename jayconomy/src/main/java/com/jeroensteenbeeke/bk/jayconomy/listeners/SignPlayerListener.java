@@ -247,57 +247,40 @@ public class SignPlayerListener extends PlayerListener {
 
 		Material m = Material.getMaterial(sign.getMaterialType());
 
-		if (sign.getMaterialType() == stack.getTypeId()
-				&& compareStackTypes(sign.getSubtype(),
-						stack.getData() != null ? new Byte(stack.getData()
-								.getData()).shortValue() : null)) {
+		if (hasEnough(inventory, stack)) {
 
-			if (hasEnough(inventory, stack)) {
+			if (sign.getAmount() == 1) {
+				if (stack.getDurability() < m.getMaxDurability()
+						&& stack.getDurability() > 0) {
+					log.info(String
+							.format("Attempt to sell item with durability %s, which is less than max %s",
+									stack.getDurability(), m.getMaxDurability()));
 
-				if (sign.getAmount() == 1) {
-					if (stack.getDurability() < m.getMaxDurability()
-							&& stack.getDurability() > 0) {
-						log.info(String
-								.format("Attempt to sell item with durability %s, which is less than max %s",
-										stack.getDurability(),
-										m.getMaxDurability()));
-
-						Messages.send(event.getPlayer(),
-								"&cYou can only add unused items");
-						return;
-					}
+					Messages.send(event.getPlayer(),
+							"&cYou can only add unused items");
+					return;
 				}
-
-				sign.setMax(sign.getMax() + 1);
-				plugin.getDatabase().update(sign);
-				inventory.removeItem(stack);
-				player.updateInventory();
-
-				Messages.send(
-						event.getPlayer(),
-						String.format("&aAdded &e%s %s &ato sign",
-								sign.getAmount(), plugin.formatMaterial(sign)));
-
-				log.info(String.format(
-						"%s added %s %s to sign at (%s, %s, %s)",
-						player.getName(), sign.getAmount(), m, sign.getX(),
-						sign.getY(), sign.getZ()));
-			} else {
-				Messages.send(
-						player,
-						String.format(
-								"&cYou do not have enough materials to add to this sign (required: &e%s&c, in inventory: &e%s&c)",
-								sign.getAmount(), count(inventory, stack)));
 			}
+
+			inventory.removeItem(stack);
+
+			sign.setMax(sign.getMax() + 1);
+			plugin.getDatabase().update(sign);
+			player.updateInventory();
+
+			Messages.send(event.getPlayer(), String.format(
+					"&aAdded &e%s %s &ato sign", sign.getAmount(),
+					plugin.formatMaterial(sign)));
+
+			log.info(String.format("%s added %s %s to sign at (%s, %s, %s)",
+					player.getName(), sign.getAmount(), m, sign.getX(),
+					sign.getY(), sign.getZ()));
 		} else {
 			Messages.send(
-					event.getPlayer(),
+					player,
 					String.format(
-							"&cIncorrect material. You are holding &e%s&c, while this sign sells &e%s",
-							plugin.formatMaterial(stack.getType(), stack
-									.getData() != null ? new Byte(stack
-									.getData().getData()).shortValue() : null),
-							plugin.formatMaterial(sign)));
+							"&cYou do not have enough materials to add to this sign (required: &e%s&c, in inventory: &e%s&c)",
+							sign.getAmount(), count(inventory, stack)));
 		}
 
 		plugin.updateSellSign((Sign) event.getClickedBlock().getState(), sign);
@@ -333,13 +316,25 @@ public class SignPlayerListener extends PlayerListener {
 
 		for (ItemStack s : stacks) {
 			if (s != null && s.getTypeId() == signStack.getTypeId()) {
-				if (compareStackTypes(s.getData(), signStack.getData())) {
+				if (isSameType(s, signStack)) {
 					total += s.getAmount();
 				}
 			}
 		}
 
 		return total;
+	}
+
+	private boolean isSameType(ItemStack a, ItemStack b) {
+
+		if (a.getTypeId() != b.getTypeId())
+			return false;
+
+		if (a.getType() == Material.POTION) {
+			return a.getDurability() == b.getDurability();
+		}
+
+		return compareStackTypes(a.getData(), b.getData());
 	}
 
 	private void deposit(PlayerInteractEvent event, JayconomySign sign) {
