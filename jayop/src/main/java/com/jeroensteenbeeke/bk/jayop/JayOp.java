@@ -60,15 +60,15 @@ public class JayOp extends JSPlugin {
 		addListener(Type.PLAYER_LOGIN, new SuspendedPlayerListener(this),
 				Priority.Highest);
 
-		addCommandHandler(new WeatherCommandHandler());
+		addCommandHandler(new WeatherCommandHandler(this));
 		addCommandHandler(new TeleportCommandHandler(this));
 		addCommandHandler(new TeleportToMeCommandHandler());
 		addCommandHandler(new TeleportOthersCommandHandler(this));
-		addCommandHandler(new TimeCommandHandler());
+		addCommandHandler(new TimeCommandHandler(this));
 		addCommandHandler(new KickCommandHandler());
 		addCommandHandler(new SuspendCommandHandler(this));
 		addCommandHandler(new BanCommandHandler());
-		addCommandHandler(new UnbanCommandHandler(this));
+		addCommandHandler(new UnbanCommandHandler());
 		addCommandHandler(new UnsuspendCommandHandler(this));
 		addCommandHandler(new GiveItemCommandHandler());
 		addCommandHandler(new ClearInventoryCommandHandler());

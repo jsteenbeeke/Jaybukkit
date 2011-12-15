@@ -27,6 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
@@ -51,8 +52,8 @@ public class GetHistoryCommand extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "history".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("history").itMatches();
 	}
 
 	@Override

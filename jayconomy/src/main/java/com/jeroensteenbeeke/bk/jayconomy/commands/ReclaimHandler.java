@@ -21,6 +21,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
@@ -36,8 +37,8 @@ public class ReclaimHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "reclaim".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("reclaim").itMatches();
 	}
 
 	@Override

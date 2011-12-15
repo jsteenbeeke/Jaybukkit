@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -34,8 +35,8 @@ public class GiveItemCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "give".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("give").itMatches();
 	}
 
 	@Override

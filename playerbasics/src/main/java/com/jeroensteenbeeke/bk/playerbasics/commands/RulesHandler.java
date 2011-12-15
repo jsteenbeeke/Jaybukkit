@@ -22,18 +22,19 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
 
-public class RulesHandler implements CommandHandler {
+public class RulesHandler extends PermissibleCommandHandler {
 
-	private List<String> rules;
+	private final List<String> rules;
 
-	@SuppressWarnings("deprecation")
 	public RulesHandler(PlayerBasics plugin) {
+		super(PlayerBasics.PERMISSION_RULES);
 		rules = new LinkedList<String>();
-		String ruleConfig = plugin.getConfiguration().getString("rules", "");
+		String ruleConfig = plugin.getConfig().getString("rules", "");
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < ruleConfig.length(); i++) {
 			char next = ruleConfig.charAt(i);
@@ -54,25 +55,21 @@ public class RulesHandler implements CommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "rules".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("rules").itMatches();
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
+	public boolean onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
-		if (sender
-				.hasPermission(com.jeroensteenbeeke.bk.playerbasics.PlayerBasics.PERMISSION_RULES)) {
-			Messages.send(sender, "&1Server rules: ");
-			for (String rule : rules) {
-				Messages.send(sender, "  &1- &e" + rule);
-			}
 
-			return true;
-		} else {
-			sender.sendMessage("\u00A7cYou do not have permission to use this command\u00A7f");
-			return true;
+		Messages.send(sender, "&1Server rules: ");
+		for (String rule : rules) {
+			Messages.send(sender, "  &1- &e" + rule);
 		}
+
+		return true;
+
 	}
 
 }

@@ -19,35 +19,35 @@ package com.jeroensteenbeeke.bk.playerbasics.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
 import com.jeroensteenbeeke.bk.playerbasics.util.PlayerUtil;
 
-public class PlayerListHandler implements CommandHandler {
+public class PlayerListHandler extends PermissibleCommandHandler {
 
-	@Override
-	public boolean matches(Command command, String[] args) {
-		return "list".equals(command.getName());
+	public PlayerListHandler() {
+		super(PlayerBasics.PERMISSION_LIST);
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
+	public CommandMatcher getMatcher() {
+		return ifNameIs("list").itMatches();
+	}
+
+	@Override
+	public boolean onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
-		if (sender.hasPermission(PlayerBasics.PERMISSION_LIST)) {
-			StringBuilder online = new StringBuilder();
-			online.append("&fThe following players are online: [");
-			online.append(PlayerUtil.compilePlayerList(sender.getServer()));
-			online.append("&f]");
+		StringBuilder online = new StringBuilder();
+		online.append("&fThe following players are online: [");
+		online.append(PlayerUtil.compilePlayerList(sender.getServer()));
+		online.append("&f]");
 
-			Messages.send(sender, online.toString());
+		Messages.send(sender, online.toString());
 
-			return true;
+		return true;
 
-		} else {
-			sender.sendMessage("\u00A7cYou do not have permission to use this command\u00A7f");
-			return true;
-		}
 	}
 
 }

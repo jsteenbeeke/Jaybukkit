@@ -20,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
@@ -34,8 +35,8 @@ public class WaypointDestroyHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "wp-destroy".equals(command.getName()) && args.length == 1;
+	public CommandMatcher getMatcher() {
+		return ifNameIs("wp-destroy").itMatches();
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -30,8 +31,8 @@ public class KickCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "kick".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("kick").itMatches();
 	}
 
 	@Override

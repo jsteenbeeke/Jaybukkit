@@ -20,73 +20,63 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefLocation;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefPoint;
 
-public class SpleefDeleteHandler implements CommandHandler {
+public class SpleefDeleteHandler extends PlayerAwareCommandHandler {
 
 	private final SpleefRegen plugin;
 
 	public SpleefDeleteHandler(SpleefRegen plugin) {
+		super(plugin.getServer(), SpleefRegen.PERMISSION_SPLEEF_REMOVE);
 		this.plugin = plugin;
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "unspleef".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("unspleef").itMatches();
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
+	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (sender.hasPermission(SpleefRegen.PERMISSION_SPLEEF_REMOVE)) {
+		{
 			if (args.length == 1) {
-				Player player = plugin.getServer().getPlayerExact(
-						sender.getName());
-				if (player != null) {
-					String name = args[0];
+				String name = args[0];
 
-					SpleefPoint point = plugin.getDatabase()
-							.createQuery(SpleefPoint.class).where()
-							.eq("name", name).findUnique();
+				SpleefPoint point = plugin.getDatabase()
+						.createQuery(SpleefPoint.class).where()
+						.eq("name", name).findUnique();
 
-					if (point != null) {
-						World world = plugin.getServer().getWorld(
-								point.getWorld());
+				if (point != null) {
+					World world = plugin.getServer().getWorld(point.getWorld());
 
-						for (SpleefLocation loc : point.getLocations()) {
-							Block b = world.getBlockAt(loc.getX(), loc.getY(),
-									loc.getZ());
-							b.setType(Material.AIR);
+					for (SpleefLocation loc : point.getLocations()) {
+						Block b = world.getBlockAt(loc.getX(), loc.getY(),
+								loc.getZ());
+						b.setType(Material.AIR);
 
-							plugin.getDatabase().delete(loc);
-						}
-
-						plugin.getDatabase().delete(point);
-
-						Messages.broadcast(plugin.getServer(),
-								"&2Spleef location: &e" + args[0]
-										+ "&2 removes");
-
-						return true;
-					} else {
-						Messages.send(sender, "&cUnknown spleef location: &e"
-								+ args[0]);
-						return true;
+						plugin.getDatabase().delete(loc);
 					}
+
+					plugin.getDatabase().delete(point);
+
+					Messages.broadcast(plugin.getServer(),
+							"&2Spleef location: &e" + args[0] + "&2 removes");
+
+					return true;
+				} else {
+					Messages.send(player, "&cUnknown spleef location: &e"
+							+ args[0]);
+					return true;
 				}
 			}
-
-		} else {
-			Messages.send(sender,
-					"&cYou do not have permission to create spleef areas");
-			return true;
 		}
 
 		return false;

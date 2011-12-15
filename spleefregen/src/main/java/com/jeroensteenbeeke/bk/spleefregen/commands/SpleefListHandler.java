@@ -21,52 +21,47 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefPoint;
 
-public class SpleefListHandler implements CommandHandler {
+public class SpleefListHandler extends PermissibleCommandHandler {
 
 	private final SpleefRegen plugin;
 
 	public SpleefListHandler(SpleefRegen plugin) {
+		super(SpleefRegen.PERMISSION_SPLEEF_LIST);
 		this.plugin = plugin;
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "splist".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("splist").itMatches();
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
+	public boolean onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
-		if (sender.hasPermission(SpleefRegen.PERMISSION_SPLEEF_LIST)) {
-			if (args.length == 0) {
-				List<SpleefPoint> points = plugin.getDatabase()
-						.createQuery(SpleefPoint.class).findList();
 
-				if (!points.isEmpty()) {
-					Messages.send(sender, "&2Spleef locations on this server");
+		if (args.length == 0) {
+			List<SpleefPoint> points = plugin.getDatabase()
+					.createQuery(SpleefPoint.class).findList();
 
-					for (SpleefPoint point : points) {
-						Messages.send(sender, "  &2- &e" + point.getName()
-								+ " &2in " + point.getWorld() + "&e");
-					}
+			if (!points.isEmpty()) {
+				Messages.send(sender, "&2Spleef locations on this server");
 
-					return true;
-				} else {
-					Messages.send(sender,
-							"&cNo spleef locations on this server");
-					return true;
+				for (SpleefPoint point : points) {
+					Messages.send(sender, "  &2- &e" + point.getName()
+							+ " &2in " + point.getWorld() + "&e");
 				}
-			}
 
-		} else {
-			Messages.send(sender,
-					"&cYou do not have permission to list spleef areas");
-			return true;
+				return true;
+			} else {
+				Messages.send(sender, "&cNo spleef locations on this server");
+				return true;
+			}
 		}
 
 		return false;

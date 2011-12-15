@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
@@ -37,8 +38,8 @@ public class SpleefFloodHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "splood".matches(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("splood").itMatches();
 	}
 
 	@Override

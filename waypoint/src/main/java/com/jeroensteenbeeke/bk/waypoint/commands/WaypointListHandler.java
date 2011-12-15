@@ -21,6 +21,7 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
@@ -35,8 +36,8 @@ public class WaypointListHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "wp-list".equals(command.getName()) && args.length == 0;
+	public CommandMatcher getMatcher() {
+		return ifNameIs("wp-list").itMatches();
 	}
 
 	@Override

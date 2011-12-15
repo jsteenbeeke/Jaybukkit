@@ -21,6 +21,7 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
@@ -30,8 +31,8 @@ public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "jurisdiction".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("jurisdiction").itMatches();
 	}
 
 	@Override

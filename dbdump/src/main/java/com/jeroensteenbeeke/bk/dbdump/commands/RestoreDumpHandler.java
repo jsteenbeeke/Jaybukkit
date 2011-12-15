@@ -19,6 +19,7 @@ package com.jeroensteenbeeke.bk.dbdump.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.dbdump.DatabaseDump;
 import com.jeroensteenbeeke.bk.dbdump.DatabaseDumper;
@@ -32,8 +33,8 @@ public class RestoreDumpHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "dbrestore".matches(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("dbrestore").itMatches();
 	}
 
 	@Override

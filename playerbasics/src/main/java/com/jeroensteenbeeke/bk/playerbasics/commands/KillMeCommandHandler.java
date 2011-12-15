@@ -17,29 +17,28 @@
 package com.jeroensteenbeeke.bk.playerbasics.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
+import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
 
-public class KillMeCommandHandler implements CommandHandler {
-
-	@Override
-	public boolean matches(Command command, String[] args) {
-		return command.equals("killme");
+public class KillMeCommandHandler extends PlayerAwareCommandHandler {
+	public KillMeCommandHandler(PlayerBasics playerBasics) {
+		super(playerBasics.getServer());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
+	public CommandMatcher getMatcher() {
+		return ifNameIs("killme").itMatches();
+	}
+
+	@Override
+	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		Player player = sender.getServer().getPlayerExact(sender.getName());
 
-		if (player != null) {
-			player.damage(10000);
-			return true;
-		}
-
-		return false;
+		player.damage(10000);
+		return true;
 	}
 
 }

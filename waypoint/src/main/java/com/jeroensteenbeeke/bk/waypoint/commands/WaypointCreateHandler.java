@@ -20,36 +20,33 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
+import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
 
-public class WaypointCreateHandler implements CommandHandler {
+public class WaypointCreateHandler extends PlayerAwareCommandHandler {
 	private final WaypointPlugin plugin;
 
 	public WaypointCreateHandler(WaypointPlugin plugin) {
-		super();
+		super(plugin.getServer(), WaypointPlugin.CREATE_PERMISSION);
 		this.plugin = plugin;
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "wp-create".equals(command.getName()) && args.length == 1;
+	public CommandMatcher getMatcher() {
+		return ifNameIs("wp-create").itMatches();
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
+	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (sender.hasPermission(WaypointPlugin.CREATE_PERMISSION)) {
+		if (args.length == 1) {
 			String name = args[0];
 
 			if (plugin.getWaypoints().getWaypoint(name) == null) {
-
-				Player player = plugin.getServer().getPlayerExact(
-						sender.getName());
-
 				int lx = player.getLocation().getBlockX();
 				int y = player.getLocation().getBlockY();
 				int lz = player.getLocation().getBlockZ();
@@ -159,17 +156,17 @@ public class WaypointCreateHandler implements CommandHandler {
 				plugin.getWaypoints().newWaypoint(loc, name);
 				player.teleport(loc.add(0, 2, 0));
 
-				player.sendRawMessage("Waypoint \u00A7a" + name
-						+ "\u00A7f created");
+				Messages.send(player,
+						String.format("Waypoint &a%s&f created", name));
 				return true;
 			} else {
-				sender.sendMessage("\u00A7cWaypoint \u00A7a" + name
-						+ "\u00A7c already exists\u00A7f");
+				Messages.send(player,
+						String.format("&cWaypoint &a%s&c already exists", name));
 				return true;
 			}
-		} else {
-			sender.sendMessage("\u00A7cYou do not have permission to create Waypoints\u00A7f");
-			return true;
+
 		}
+
+		return false;
 	}
 }

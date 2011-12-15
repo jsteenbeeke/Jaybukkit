@@ -22,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.avaje.ebean.Transaction;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
@@ -37,8 +38,8 @@ public class BalanceHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "balance".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("balance").itMatches();
 	}
 
 	@Override

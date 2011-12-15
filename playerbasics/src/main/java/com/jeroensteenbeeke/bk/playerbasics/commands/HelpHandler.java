@@ -28,12 +28,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.MapOp;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
 
-public class HelpHandler implements CommandHandler {
+public class HelpHandler extends PermissibleCommandHandler {
 	private static final String KEY_PERMISSIONS = "permission";
 	private static final String KEY_USAGE = "usage";
 	private static final String KEY_DESCRIPTION = "description";
@@ -83,32 +84,34 @@ public class HelpHandler implements CommandHandler {
 
 	private Map<String, List<CommandData>> nameToCommandMap = null;
 
-	@Override
-	public boolean matches(Command command, String[] args) {
-		return "help".equals(command.getName());
+	public HelpHandler() {
+		super(PlayerBasics.PERMISSION_HELP);
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String label, String[] args) {
-		if (sender.hasPermission(PlayerBasics.PERMISSION_HELP)) {
-			if (permissionsToCommandMap == null || nameToCommandMap == null)
-				initMaps(sender);
+	public CommandMatcher getMatcher() {
+		return ifNameIs("help").itMatches();
+	}
 
-			if (args.length == 0) {
-				// Equivalent to /help 1
-				printHelp(sender, 1);
-				return true;
-			} else if (args.length == 1) {
-				try {
-					int page = Integer.parseInt(args[0]);
-					printHelp(sender, page);
-				} catch (NumberFormatException nfe) {
-					// Requested help on specific command
-					printHelp(sender, args[0]);
-				}
-				return true;
+	@Override
+	public boolean onAuthorized(CommandSender sender, Command command,
+			String label, String[] args) {
+		if (permissionsToCommandMap == null || nameToCommandMap == null)
+			initMaps(sender);
+
+		if (args.length == 0) {
+			// Equivalent to /help 1
+			printHelp(sender, 1);
+			return true;
+		} else if (args.length == 1) {
+			try {
+				int page = Integer.parseInt(args[0]);
+				printHelp(sender, page);
+			} catch (NumberFormatException nfe) {
+				// Requested help on specific command
+				printHelp(sender, args[0]);
 			}
+			return true;
 		}
 
 		return false;

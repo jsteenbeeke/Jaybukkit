@@ -16,6 +16,9 @@
  */
 package com.jeroensteenbeeke.bk.basics.commands;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -82,5 +85,119 @@ public abstract class PermissibleCommandHandler implements CommandHandler {
 
 	public abstract boolean onAuthorized(CommandSender sender, Command command,
 			String label, String[] args);
+
+	public MatcherBuilder ifArgIs(int index, String value) {
+		return new DefaultMatcherBuilder().andArgIs(index, value);
+	}
+
+	public MatcherBuilder ifArgLike(int index, String regex) {
+		return new DefaultMatcherBuilder().andArgLike(index, regex);
+	}
+
+	public MatcherBuilder ifNameIs(String name) {
+		return new DefaultMatcherBuilder().andNameIs(name);
+	}
+
+	private static class DefaultMatcherBuilder implements MatcherBuilder {
+
+		private final List<CommandMatcher> matchers;
+
+		public DefaultMatcherBuilder() {
+			super();
+			this.matchers = new LinkedList<CommandMatcher>();
+		}
+
+		@Override
+		public MatcherBuilder andNameIs(String name) {
+			matchers.add(new NameEquals(name));
+			return this;
+		}
+
+		@Override
+		public MatcherBuilder andArgIs(int index, String value) {
+			matchers.add(new ArgEquals(value, index));
+			return this;
+		}
+
+		@Override
+		public MatcherBuilder andArgLike(int index, String regex) {
+			matchers.add(new ArgMatches(regex, index));
+			return this;
+		}
+
+		@Override
+		public CommandMatcher itMatches() {
+			return new CompoundCommandMatcher(matchers);
+		}
+
+	}
+
+	private static class CompoundCommandMatcher implements CommandMatcher {
+		private final List<CommandMatcher> matchers;
+
+		public CompoundCommandMatcher(List<CommandMatcher> matchers) {
+			super();
+			this.matchers = matchers;
+		}
+
+		@Override
+		public boolean matches(Command command, String[] args) {
+			for (CommandMatcher m : matchers) {
+				if (!m.matches(command, args)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	private static class NameEquals implements CommandMatcher {
+		private final String name;
+
+		public NameEquals(String name) {
+			super();
+			this.name = name;
+		}
+
+		@Override
+		public boolean matches(Command command, String[] args) {
+			return name.equals(command.getName());
+		}
+	}
+
+	private static class ArgEquals implements CommandMatcher {
+		private final String arg;
+
+		private final int index;
+
+		public ArgEquals(String arg, int index) {
+			super();
+			this.arg = arg;
+			this.index = index;
+		}
+
+		@Override
+		public boolean matches(Command command, String[] args) {
+			return args.length > index && args[index].equals(arg);
+		}
+	}
+
+	private static class ArgMatches implements CommandMatcher {
+		private final String regex;
+
+		private final int index;
+
+		public ArgMatches(String regex, int index) {
+			super();
+			this.regex = regex;
+			this.index = index;
+		}
+
+		@Override
+		public boolean matches(Command command, String[] args) {
+			return args.length > index && args[index].matches(regex);
+		}
+	}
 
 }

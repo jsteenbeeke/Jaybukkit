@@ -28,6 +28,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
@@ -45,8 +46,8 @@ public class RevertCommand extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "revert".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("revert").itMatches();
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class PlayerBasics extends JSPlugin {
 		addCommandHandler(new HelpHandler());
 		addCommandHandler(new PlayerListHandler());
 		addCommandHandler(new RulesHandler(this));
-		addCommandHandler(new KillMeCommandHandler());
+		addCommandHandler(new KillMeCommandHandler(this));
 		addListener(Type.PLAYER_JOIN, new LoginListener(this), Priority.Low);
 	}
 

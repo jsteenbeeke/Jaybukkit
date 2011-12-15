@@ -16,8 +16,9 @@
  */
 package com.jeroensteenbeeke.bk.basics;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
@@ -30,14 +31,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.avaje.ebean.SqlQuery;
 import com.avaje.ebean.SqlUpdate;
 import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 
 public abstract class JSPlugin extends JavaPlugin {
-	private List<CommandHandler> handlers = new ArrayList<CommandHandler>();
+	private Map<CommandMatcher, CommandHandler> handlers = new HashMap<CommandMatcher, CommandHandler>();
 
 	protected static final Logger log = Logger.getLogger("Minecraft");
 
 	protected final void addCommandHandler(CommandHandler handler) {
-		handlers.add(handler);
+		handlers.put(handler.getMatcher(), handler);
 	}
 
 	protected final void addListener(Type type, Listener listener,
@@ -49,9 +51,9 @@ public abstract class JSPlugin extends JavaPlugin {
 	@Override
 	public final boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
-		for (CommandHandler handler : handlers) {
-			if (handler.matches(command, args)) {
-				if (handler.onCommand(sender, command, label, args))
+		for (Entry<CommandMatcher, CommandHandler> e : handlers.entrySet()) {
+			if (e.getKey().matches(command, args)) {
+				if (e.getValue().onCommand(sender, command, label, args))
 					return true;
 			}
 		}
@@ -100,4 +102,5 @@ public abstract class JSPlugin extends JavaPlugin {
 
 		}
 	}
+
 }

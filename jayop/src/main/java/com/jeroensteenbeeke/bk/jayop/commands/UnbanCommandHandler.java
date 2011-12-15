@@ -20,62 +20,41 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import com.jeroensteenbeeke.bk.basics.commands.CommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
+import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
 
-public class UnbanCommandHandler implements CommandHandler
-{
-	private final JayOp plugin;
-
-	public UnbanCommandHandler(JayOp plugin)
-	{
-		super();
-		this.plugin = plugin;
-	}
-
-	public JayOp getPlugin()
-	{
-		return plugin;
+public class UnbanCommandHandler extends PermissibleCommandHandler {
+	public UnbanCommandHandler() {
+		super(JayOp.PERMISSION_ENFORCEMENT);
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args)
-	{
-		return "unban".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("unban").itMatches();
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
-	{
-		if (sender.hasPermission(JayOp.PERMISSION_ENFORCEMENT))
-		{
-			if (args.length == 1)
-			{
-				OfflinePlayer target = sender.getServer().getOfflinePlayer(args[0]);
+	public boolean onAuthorized(CommandSender sender, Command command,
+			String label, String[] args) {
 
-				if (target != null)
-				{
-					target.setBanned(false);
+		if (args.length == 1) {
+			OfflinePlayer target = sender.getServer().getOfflinePlayer(args[0]);
 
-					sender.getServer().broadcastMessage(
-						"\u00A7cPlayer \u00A7e" + args[0] + "\u00A7c has been unbanned\u00A7f");
+			if (target != null) {
+				target.setBanned(false);
 
-					return true;
-				}
-				else
-				{
-					sender.sendMessage("\u00A7cUnknown player: " + args[0] + "\u00A7f");
+				Messages.send(sender, "&cPlayer &e" + args[0]
+						+ "&c has been unbanned");
 
-					return true;
-				}
+				return true;
+			} else {
+				Messages.send(sender, "&cUnknown player: " + args[0] + "");
 
+				return true;
 			}
-		}
-		else
-		{
-			sender.sendMessage("\u00A7cYou do not have permission to ban people\u00A7f");
 
-			return true;
 		}
 
 		return false;

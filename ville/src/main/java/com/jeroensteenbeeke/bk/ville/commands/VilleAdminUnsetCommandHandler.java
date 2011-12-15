@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Jaybukkit.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jeroensteenbeeke.bk.jayop.commands;
+package com.jeroensteenbeeke.bk.ville.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
@@ -22,54 +22,38 @@ import org.bukkit.entity.Player;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
-import com.jeroensteenbeeke.bk.jayop.JayOp;
+import com.jeroensteenbeeke.bk.ville.Ville;
+import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
-public class WeatherCommandHandler extends PlayerAwareCommandHandler {
+public class VilleAdminUnsetCommandHandler extends PlayerAwareCommandHandler {
+	private Ville ville;
 
-	public WeatherCommandHandler(JayOp jayOp) {
-		super(jayOp.getServer(), JayOp.PERMISSION_ENVIRONMENT);
+	public VilleAdminUnsetCommandHandler(Ville ville) {
+		super(ville.getServer(), Ville.PERMISSION_ADMIN);
+		this.ville = ville;
 	}
 
 	@Override
+	
 	public CommandMatcher getMatcher() {
-		return ifNameIs("weather").itMatches();
+		return ifNameIs("ville-admin").andArgIs(0, "unset").itMatches();
 	}
 
 	@Override
 	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
+		if (args.length == 2) {
+			String name = args[1];
+			VillageLocation location = ville.getDatabase()
+					.find(VillageLocation.class).where().eq("name", name)
+					.findUnique();
 
-		if (args.length == 1) {
+			ville.getDatabase().delete(location);
 
-			if ("sun".equals(args[0])) {
-				player.getWorld().setStorm(false);
-				player.getWorld().setThundering(false);
+			Messages.send(player,
+					String.format("Village location &e%s &fdeleted", name));
 
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &esun");
-
-				return true;
-			}
-			if ("rain".equals(args[0]) || "snow".equals(args[0])) {
-				player.getWorld().setStorm(true);
-				player.getWorld().setThundering(false);
-
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &erain and snow");
-
-				return true;
-			}
-			if ("thunderstorm".equals(args[0])) {
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &ethunderstorm");
-
-				player.getWorld().setStorm(true);
-				player.getWorld().setThundering(true);
-
-				return true;
-			}
-
-			return false;
+			return true;
 		}
 
 		return false;

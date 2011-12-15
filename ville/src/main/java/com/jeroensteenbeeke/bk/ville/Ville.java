@@ -29,6 +29,11 @@ import org.bukkit.plugin.Plugin;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
+import com.jeroensteenbeeke.bk.ville.commands.VilleAdminSetCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleAdminUnsetCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleCheckCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleClaimCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleUnclaimCommandHandler;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
 public class Ville extends JSPlugin {
@@ -109,8 +114,11 @@ public class Ville extends JSPlugin {
 	void initJayconomy(Jayconomy jayconomy) {
 		logger.info("Linking ville to jayconomy");
 
-		addCommandHandler(new VilleCommandHandler(this, jayconomy));
-		addCommandHandler(new VilleAdminCommandHandler(this));
+		addCommandHandler(new VilleCheckCommandHandler(this));
+		addCommandHandler(new VilleClaimCommandHandler(this, jayconomy));
+		addCommandHandler(new VilleUnclaimCommandHandler(this));
+		addCommandHandler(new VilleAdminSetCommandHandler(this));
+		addCommandHandler(new VilleAdminUnsetCommandHandler(this));
 		addCommandHandler(new JurisdictionCommandHandler(this));
 	}
 

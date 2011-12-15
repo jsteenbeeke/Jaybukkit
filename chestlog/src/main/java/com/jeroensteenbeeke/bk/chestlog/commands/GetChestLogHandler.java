@@ -29,6 +29,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.chestlog.ChestLogPlugin;
@@ -54,8 +55,8 @@ public class GetChestLogHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean matches(Command command, String[] args) {
-		return "chestlog".equals(command.getName());
+	public CommandMatcher getMatcher() {
+		return ifNameIs("chestlog").itMatches();
 	}
 
 	@Override

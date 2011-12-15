@@ -14,62 +14,49 @@
  * You should have received a copy of the GNU General Public License
  * along with Jaybukkit.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jeroensteenbeeke.bk.jayop.commands;
+package com.jeroensteenbeeke.bk.ville.commands;
+
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
-import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
-import com.jeroensteenbeeke.bk.jayop.JayOp;
+import com.jeroensteenbeeke.bk.ville.AbstractVilleCommandHandler;
+import com.jeroensteenbeeke.bk.ville.Ville;
+import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
-public class WeatherCommandHandler extends PlayerAwareCommandHandler {
-
-	public WeatherCommandHandler(JayOp jayOp) {
-		super(jayOp.getServer(), JayOp.PERMISSION_ENVIRONMENT);
+public class VilleCheckCommandHandler extends AbstractVilleCommandHandler {
+	public VilleCheckCommandHandler(Ville ville) {
+		super(ville, Ville.PERMISSION_USE);
 	}
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("weather").itMatches();
+		return ifNameIs("ville").andArgIs(0, "check").itMatches();
 	}
 
 	@Override
 	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-
 		if (args.length == 1) {
 
-			if ("sun".equals(args[0])) {
-				player.getWorld().setStorm(false);
-				player.getWorld().setThundering(false);
-
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &esun");
-
-				return true;
-			}
-			if ("rain".equals(args[0]) || "snow".equals(args[0])) {
-				player.getWorld().setStorm(true);
-				player.getWorld().setThundering(false);
-
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &erain and snow");
-
-				return true;
-			}
-			if ("thunderstorm".equals(args[0])) {
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &ethunderstorm");
-
-				player.getWorld().setStorm(true);
-				player.getWorld().setThundering(true);
-
-				return true;
+			List<VillageLocation> closestLocations = getClosestLocations(player
+					.getLocation());
+			if (closestLocations.size() == 0) {
+				Messages.send(player, "&aThis location is suitable");
+			} else {
+				Messages.send(player, "&cThis location is unsuitable");
+				for (VillageLocation loc : closestLocations) {
+					Messages.send(
+							player,
+							String.format("&e- &cToo close to &e%s",
+									loc.getName()));
+				}
 			}
 
-			return false;
+			return true;
 		}
 
 		return false;
