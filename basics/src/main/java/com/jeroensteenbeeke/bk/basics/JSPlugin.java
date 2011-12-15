@@ -71,7 +71,7 @@ public abstract class JSPlugin extends JavaPlugin {
 		SqlRow row = q.findUnique();
 		if (row != null) {
 
-			if (!currentType.equals(row.getString("Type"))) {
+			if (currentType.equals(row.getString("Type"))) {
 
 				SqlUpdate update = getDatabase().createSqlUpdate(
 						"ALTER TABLE " + table + " MODIFY " + field + " "
