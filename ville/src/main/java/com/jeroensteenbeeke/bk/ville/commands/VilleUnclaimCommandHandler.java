@@ -21,7 +21,6 @@ import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
-import com.jeroensteenbeeke.bk.ville.AbstractVilleCommandHandler;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
@@ -47,6 +46,8 @@ public class VilleUnclaimCommandHandler extends AbstractVilleCommandHandler {
 			if (location != null) {
 
 				getVille().getDatabase().delete(location);
+
+				getLocationsHandle().remapJurisdictions();
 
 				Messages.send(player,
 						String.format("Village location &e%s &fdeleted", name));

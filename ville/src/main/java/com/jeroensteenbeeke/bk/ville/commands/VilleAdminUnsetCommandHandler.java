@@ -20,21 +20,17 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
-import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
-public class VilleAdminUnsetCommandHandler extends PlayerAwareCommandHandler {
-	private Ville ville;
+public class VilleAdminUnsetCommandHandler extends AbstractVilleCommandHandler {
 
 	public VilleAdminUnsetCommandHandler(Ville ville) {
-		super(ville.getServer(), Ville.PERMISSION_ADMIN);
-		this.ville = ville;
+		super(ville, Ville.PERMISSION_ADMIN);
 	}
 
 	@Override
-	
 	public CommandMatcher getMatcher() {
 		return ifNameIs("ville-admin").andArgIs(0, "unset").itMatches();
 	}
@@ -44,11 +40,13 @@ public class VilleAdminUnsetCommandHandler extends PlayerAwareCommandHandler {
 			String label, String[] args) {
 		if (args.length == 2) {
 			String name = args[1];
-			VillageLocation location = ville.getDatabase()
+			VillageLocation location = getVille().getDatabase()
 					.find(VillageLocation.class).where().eq("name", name)
 					.findUnique();
 
-			ville.getDatabase().delete(location);
+			getVille().getDatabase().delete(location);
+
+			getLocationsHandle().remapJurisdictions();
 
 			Messages.send(player,
 					String.format("Village location &e%s &fdeleted", name));

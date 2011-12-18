@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with Jaybukkit.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.jeroensteenbeeke.bk.ville;
-
-import java.util.List;
+package com.jeroensteenbeeke.bk.ville.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
+import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
 public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
@@ -38,23 +37,8 @@ public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
 	@Override
 	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		VillageLocation jurisdiction = null;
-		int lastDistance = 0;
-
-		List<VillageLocation> closestLocations = getClosestLocations(player
-				.getLocation());
-		for (VillageLocation loc : closestLocations) {
-			if (jurisdiction == null) {
-				jurisdiction = loc;
-				lastDistance = distance(loc, player.getLocation());
-			} else {
-				int curDistance = distance(loc, player.getLocation());
-				if (curDistance < lastDistance) {
-					jurisdiction = loc;
-					lastDistance = curDistance;
-				}
-			}
-		}
+		VillageLocation jurisdiction = getLocationsHandle().getJurisdiction(
+				player.getLocation());
 
 		if (jurisdiction == null) {
 			Messages.send(player, "This area is not within any jurisdiction");
@@ -65,7 +49,8 @@ public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
 					String.format(
 							"You are in the jurisdiction of &e%s&f, contact &e%s&f for more information",
 							jurisdiction.getName(), jurisdiction.getOwner()));
-			if (lastDistance >= (getVille().getMinimumDistance() / 2)) {
+			if (getLocationsHandle().getDistance(jurisdiction,
+					player.getLocation()) >= (getVille().getMinimumDistance() / 2)) {
 				Messages.send(
 						player,
 

@@ -16,9 +16,14 @@
  */
 package com.jeroensteenbeeke.bk.ville.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.jeroensteenbeeke.bk.basics.entities.BaseEntity;
 
@@ -43,6 +48,12 @@ public class VillageLocation extends BaseEntity<String> {
 
 	@Column(nullable = false)
 	private int z;
+
+	@Column(nullable = false)
+	private boolean restricted;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	private List<VilleBuilder> builders;
 
 	@Override
 	public String getId() {
@@ -95,6 +106,25 @@ public class VillageLocation extends BaseEntity<String> {
 
 	public void setZ(int z) {
 		this.z = z;
+	}
+
+	public boolean isRestricted() {
+		return restricted;
+	}
+
+	public void setRestricted(boolean restricted) {
+		this.restricted = restricted;
+	}
+
+	public List<VilleBuilder> getBuilders() {
+		if (builders == null)
+			builders = new ArrayList<VilleBuilder>(0);
+
+		return builders;
+	}
+
+	public void setBuilders(List<VilleBuilder> builders) {
+		this.builders = builders;
 	}
 
 }

@@ -5,17 +5,13 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
-import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
-public class VilleAdminSetCommandHandler extends PlayerAwareCommandHandler {
-	private final Ville ville;
-
+public class VilleAdminSetCommandHandler extends AbstractVilleCommandHandler {
 	public VilleAdminSetCommandHandler(Ville ville) {
-		super(ville.getServer(), Ville.PERMISSION_ADMIN);
-		this.ville = ville;
+		super(ville, Ville.PERMISSION_ADMIN);
 	}
 
 	@Override
@@ -30,8 +26,9 @@ public class VilleAdminSetCommandHandler extends PlayerAwareCommandHandler {
 			String name = args[1];
 			String owner = args[2];
 
-			boolean nameTaken = ville.getDatabase().find(VillageLocation.class)
-					.where().eq("name", name).findRowCount() > 0;
+			boolean nameTaken = getVille().getDatabase()
+					.find(VillageLocation.class).where().eq("name", name)
+					.findRowCount() > 0;
 
 			if (!nameTaken) {
 				Location loc = player.getLocation();
@@ -44,7 +41,9 @@ public class VilleAdminSetCommandHandler extends PlayerAwareCommandHandler {
 				vl.setY(loc.getBlockY());
 				vl.setZ(loc.getBlockZ());
 
-				ville.getDatabase().save(vl);
+				getVille().getDatabase().save(vl);
+
+				getLocationsHandle().remapJurisdictions();
 
 				Messages.send(player,
 						String.format("Village location &e%s &fset", name));
@@ -58,5 +57,4 @@ public class VilleAdminSetCommandHandler extends PlayerAwareCommandHandler {
 
 		return false;
 	}
-
 }

@@ -85,6 +85,27 @@ public abstract class JSPlugin extends JavaPlugin {
 		}
 	}
 
+	protected final void addColumnIfNotExists(String table, String field,
+			String definition) {
+		SqlQuery q = getDatabase().createSqlQuery(
+				"SHOW COLUMNS FROM " + table + " WHERE Field=:name");
+		q.setParameter("name", field);
+
+		SqlRow row = q.findUnique();
+		if (row == null) {
+
+			SqlUpdate update = getDatabase()
+					.createSqlUpdate(
+							"ALTER TABLE " + table + " ADD " + field + " "
+									+ definition);
+
+			update.execute();
+
+			log.info("Added field " + field + " to table " + table
+					+ " with definition " + definition);
+		}
+	}
+
 	protected final void checkIndex(boolean unique, String table, String name,
 			String... columns) {
 		if (columns.length == 0)

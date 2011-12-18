@@ -23,18 +23,26 @@ import javax.persistence.PersistenceException;
 
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
+import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
 import org.bukkit.plugin.Plugin;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
+import com.jeroensteenbeeke.bk.ville.commands.JurisdictionCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleAddBuilderCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminSetCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminUnsetCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleCheckCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleClaimCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleRemoveBuilderCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleRestrictCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleUnclaimCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleUnrestrictCommandHandler;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
+import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
+import com.jeroensteenbeeke.bk.ville.listeners.BuildPermissionListener;
 
 public class Ville extends JSPlugin {
 	public static final String PERMISSION_USE = "ville.use";
@@ -45,14 +53,20 @@ public class Ville extends JSPlugin {
 
 	private int minimumDistance;
 
-	private int price;
+	private int claimPrice;
+
+	private int restrictPrice;
+
+	private VilleLocations locations;
 
 	@Override
 	public void onEnable() {
 		logger.info("Enabled ville plugin");
 
 		minimumDistance = getConfig().getInt("minimumDistance", 1000);
-		price = getConfig().getInt("price", 5000);
+		claimPrice = getConfig().getInt("price", 5000);
+		restrictPrice = getConfig().getInt("restrictPrice", 12000);
+
 		saveConfig();
 
 		setupDatabase();
@@ -84,19 +98,35 @@ public class Ville extends JSPlugin {
 
 	}
 
+	public VilleLocations getLocations() {
+		return locations;
+	}
+
 	public int getMinimumDistance() {
 		return minimumDistance;
 	}
 
-	public int getPrice() {
-		return price;
+	public int getClaimPrice() {
+		return claimPrice;
+	}
+
+	public int getRestrictPrice() {
+		return restrictPrice;
 	}
 
 	private void setupDatabase() {
+		addColumnIfNotExists("VillageLocation", "restricted",
+				"tinyint(1) not null default 0");
 		try {
 			getDatabase().find(VillageLocation.class).findRowCount();
 		} catch (PersistenceException ex) {
 			logger.info("Installing Ville database");
+			installDDL();
+		}
+		try {
+			getDatabase().find(VilleBuilder.class).findRowCount();
+		} catch (PersistenceException ex) {
+			logger.info("Adding VilleBuilder table");
 			installDDL();
 		}
 	}
@@ -107,6 +137,7 @@ public class Ville extends JSPlugin {
 		List<Class<?>> classes = super.getDatabaseClasses();
 
 		classes.add(VillageLocation.class);
+		classes.add(VilleBuilder.class);
 
 		return classes;
 	}
@@ -114,12 +145,25 @@ public class Ville extends JSPlugin {
 	void initJayconomy(Jayconomy jayconomy) {
 		logger.info("Linking ville to jayconomy");
 
+		locations = new VilleLocations(this);
+
 		addCommandHandler(new VilleCheckCommandHandler(this));
 		addCommandHandler(new VilleClaimCommandHandler(this, jayconomy));
 		addCommandHandler(new VilleUnclaimCommandHandler(this));
 		addCommandHandler(new VilleAdminSetCommandHandler(this));
 		addCommandHandler(new VilleAdminUnsetCommandHandler(this));
 		addCommandHandler(new JurisdictionCommandHandler(this));
+		addCommandHandler(new VilleRestrictCommandHandler(this, jayconomy));
+		addCommandHandler(new VilleUnrestrictCommandHandler(this));
+		addCommandHandler(new VilleAddBuilderCommandHandler(this));
+		addCommandHandler(new VilleRemoveBuilderCommandHandler(this));
+		addCommandHandler(new VilleCedeCommandHandler(this));
+
+		BlockListener listener = new BuildPermissionListener(this);
+
+		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
+		addListener(Type.BLOCK_PLACE, listener, Priority.Highest);
+		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
 	}
 
 	@Override

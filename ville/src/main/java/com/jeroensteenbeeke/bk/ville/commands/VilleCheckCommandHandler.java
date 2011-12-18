@@ -23,7 +23,6 @@ import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
-import com.jeroensteenbeeke.bk.ville.AbstractVilleCommandHandler;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
@@ -42,8 +41,8 @@ public class VilleCheckCommandHandler extends AbstractVilleCommandHandler {
 			String label, String[] args) {
 		if (args.length == 1) {
 
-			List<VillageLocation> closestLocations = getClosestLocations(player
-					.getLocation());
+			List<VillageLocation> closestLocations = getLocationsHandle()
+					.getNearbyVillages(player.getLocation());
 			if (closestLocations.size() == 0) {
 				Messages.send(player, "&aThis location is suitable");
 			} else {

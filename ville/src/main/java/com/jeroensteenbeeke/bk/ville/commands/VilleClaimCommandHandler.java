@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
-import com.jeroensteenbeeke.bk.ville.AbstractVilleCommandHandler;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
@@ -51,9 +50,10 @@ public class VilleClaimCommandHandler extends AbstractVilleCommandHandler {
 			Location loc = player.getLocation();
 			String name = args[1];
 
-			List<VillageLocation> closestLocations = getClosestLocations(loc);
+			List<VillageLocation> closestLocations = getLocationsHandle()
+					.getNearbyVillages(loc);
 			if (closestLocations.size() == 0) {
-				BigDecimal price = new BigDecimal(getVille().getPrice());
+				BigDecimal price = new BigDecimal(getVille().getClaimPrice());
 
 				boolean nameTaken = getVille().getDatabase()
 						.find(VillageLocation.class).where().eq("name", name)
@@ -72,6 +72,8 @@ public class VilleClaimCommandHandler extends AbstractVilleCommandHandler {
 						getVille().getDatabase().save(vl);
 
 						jayconomy.decreaseBalance(player.getName(), price);
+
+						getLocationsHandle().remapJurisdictions();
 
 						Messages.send(player, String.format(
 								"Village location &e%s &fclaimed", name));

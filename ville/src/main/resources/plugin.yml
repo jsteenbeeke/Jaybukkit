@@ -28,7 +28,7 @@ commands:
   ville:
     description: Access ville commands
     permission: ville.use
-    usage: /ville claim|check|unclaim
+    usage: /ville claim|check|unclaim|cede|restrict|unrestrict|builder add|builder remove
   ville-admin:
     description: Access ville admin commands
     permission: ville.admin
