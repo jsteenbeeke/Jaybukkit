@@ -96,7 +96,7 @@ public class VilleLocations {
 
 				XYZCoordinate locXYZ = XYZCoordinate.get(loc.getValue());
 
-				if (i.contains(locXYZ)) {
+				if (i.contains(coord)) {
 					int dist = coord.distanceTo(locXYZ);
 
 					if (dist < ville.getMinimumDistance()) {
@@ -134,7 +134,7 @@ public class VilleLocations {
 				for (Entry<SpatialIndex, VillageLocation> loc : locs.entrySet()) {
 					XYZCoordinate xyz = XYZCoordinate.get(loc.getValue());
 
-					if (loc.getKey().contains(xyz)) {
+					if (loc.getKey().contains(coord)) {
 						if (xyz.distanceTo(coord) < ville.getMinimumDistance()) {
 							found.add(loc.getValue());
 						}

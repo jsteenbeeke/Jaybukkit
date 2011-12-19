@@ -1,6 +1,7 @@
 package com.jeroensteenbeeke.bk.ville;
 
-public class SpatialIndex {
+
+public final class SpatialIndex {
 	private final int minX;
 
 	private final int maxX;
@@ -15,11 +16,11 @@ public class SpatialIndex {
 
 	public SpatialIndex(int radius, int x, int y, int z) {
 		this.minX = x - radius;
-		this.maxX = x - radius;
+		this.maxX = x + radius;
 		this.minY = y - radius;
-		this.maxY = y - radius;
+		this.maxY = y + radius;
 		this.minZ = z - radius;
-		this.maxZ = z - radius;
+		this.maxZ = z + radius;
 	}
 
 	public int getMinX() {
@@ -47,7 +48,7 @@ public class SpatialIndex {
 	}
 
 	public boolean contains(XYZCoordinate xyz) {
-		if (xyz.getX() < minX || xyz.getY() > maxX)
+		if (xyz.getX() < minX || xyz.getX() > maxX)
 			return false;
 
 		if (xyz.getY() < minY || xyz.getY() > maxY)
