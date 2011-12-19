@@ -5,6 +5,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.VilleLocations;
 
@@ -21,8 +22,11 @@ public class BuildPermissionListener extends BlockListener {
 			return;
 
 		if (!locations.hasBuilderPermission(event.getPlayer(), event.getBlock()
-				.getLocation()))
+				.getLocation())) {
 			event.setCancelled(true);
+			Messages.send(event.getPlayer(),
+					"&cYou do not have permission to build here");
+		}
 	}
 
 	@Override
@@ -31,8 +35,11 @@ public class BuildPermissionListener extends BlockListener {
 			return;
 
 		if (!locations.hasBuilderPermission(event.getPlayer(), event.getBlock()
-				.getLocation()))
+				.getLocation())) {
 			event.setCancelled(true);
+			Messages.send(event.getPlayer(),
+					"&cYou do not have permission to build here");
+		}
 	}
 
 	@Override
@@ -41,8 +48,11 @@ public class BuildPermissionListener extends BlockListener {
 			return;
 
 		if (!locations.hasBuilderPermission(event.getPlayer(), event.getBlock()
-				.getLocation()))
+				.getLocation())) {
 			event.setCancelled(true);
+			Messages.send(event.getPlayer(),
+					"&cYou do not have permission to build here");
+		}
 	}
 
 }

@@ -52,7 +52,7 @@ public class VillageLocation extends BaseEntity<String> {
 	@Column(nullable = false)
 	private boolean restricted;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location")
 	private List<VilleBuilder> builders;
 
 	@Override

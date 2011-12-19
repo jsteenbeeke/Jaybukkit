@@ -300,6 +300,8 @@ public abstract class PermissibleCommandHandler implements CommandHandler {
 				String label, String[] args) {
 			for (ParameterIntegrityChecker checker : checkers) {
 				if (!checker.isProperlyInvoked(sender, command, label, args)) {
+					System.out
+							.println("Checker " + checker + " returned false");
 					return false;
 				}
 			}

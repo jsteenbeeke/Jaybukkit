@@ -34,6 +34,7 @@ import com.jeroensteenbeeke.bk.ville.commands.JurisdictionCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAddBuilderCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminSetCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminUnsetCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleCedeCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleCheckCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleClaimCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleRemoveBuilderCommandHandler;
@@ -115,14 +116,14 @@ public class Ville extends JSPlugin {
 	}
 
 	private void setupDatabase() {
-		addColumnIfNotExists("VillageLocation", "restricted",
-				"tinyint(1) not null default 0");
 		try {
 			getDatabase().find(VillageLocation.class).findRowCount();
 		} catch (PersistenceException ex) {
 			logger.info("Installing Ville database");
 			installDDL();
 		}
+		addColumnIfNotExists("village_location", "restricted",
+				"tinyint(1) not null default 0");
 		try {
 			getDatabase().find(VilleBuilder.class).findRowCount();
 		} catch (PersistenceException ex) {

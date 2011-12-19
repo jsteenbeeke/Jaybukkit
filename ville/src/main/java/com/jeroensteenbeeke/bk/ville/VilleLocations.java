@@ -20,8 +20,6 @@ import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
 public class VilleLocations {
 	private final Map<String, Map<XYZCoordinate, VillageLocation>> jurisdictions;
 
-	private final Map<String, Multimap<XYZCoordinate, VillageLocation>> proximities;
-
 	private final Multimap<VillageLocation, String> builders;
 
 	private final Ville ville;
@@ -29,15 +27,12 @@ public class VilleLocations {
 	public VilleLocations(Ville ville) {
 		this.ville = ville;
 		this.jurisdictions = Maps.newTreeMap();
-		this.proximities = Maps.newTreeMap();
 		builders = LinkedListMultimap.create();
 		initLocations(ville.getDatabase().find(VillageLocation.class)
 				.findList());
 	}
 
 	private void initLocations(List<VillageLocation> foundLocations) {
-		int minDist = ville.getMinimumDistance();
-
 		Multimap<String, VillageLocation> locsPerWorld = LinkedListMultimap
 				.create();
 
@@ -47,44 +42,17 @@ public class VilleLocations {
 
 		for (Entry<String, Collection<VillageLocation>> e : locsPerWorld
 				.asMap().entrySet()) {
-			Multimap<VillageLocation, XYZCoordinate> claimed = LinkedListMultimap
-					.create();
+			Map<XYZCoordinate, VillageLocation> coords = Maps.newHashMap();
 			String world = e.getKey();
 
 			for (VillageLocation loc : e.getValue()) {
-				claimed.putAll(getClaimedCoordinates(minDist, loc));
+				coords.put(XYZCoordinate.get(loc), loc);
 				for (VilleBuilder builder : loc.getBuilders()) {
 					builders.put(loc, builder.getPlayer());
 				}
 			}
 
-			Map<XYZCoordinate, VillageLocation> jcoords = Maps.newHashMap();
-			Multimap<XYZCoordinate, VillageLocation> pcoords = LinkedListMultimap
-					.create();
-
-			for (Entry<VillageLocation, XYZCoordinate> ce : claimed.entries()) {
-				if (jcoords.containsKey(ce.getValue())) {
-					// Contested
-					VillageLocation existing = jcoords.get(ce.getValue());
-					VillageLocation current = ce.getKey();
-
-					XYZCoordinate existingLoc = XYZCoordinate.get(existing);
-					XYZCoordinate currentLoc = XYZCoordinate.get(current);
-
-					int eDist = existingLoc.distanceTo(ce.getValue());
-					int nDist = currentLoc.distanceTo(ce.getValue());
-
-					if (nDist < eDist) {
-						jcoords.put(ce.getValue(), current);
-					}
-
-				} else {
-					jcoords.put(ce.getValue(), ce.getKey());
-				}
-			}
-
-			jurisdictions.put(world, jcoords);
-			proximities.put(world, pcoords);
+			jurisdictions.put(world, coords);
 		}
 	}
 
@@ -103,7 +71,6 @@ public class VilleLocations {
 
 	public void remapJurisdictions() {
 		jurisdictions.clear();
-		proximities.clear();
 		builders.clear();
 
 		initLocations(ville.getDatabase().find(VillageLocation.class)
@@ -115,7 +82,28 @@ public class VilleLocations {
 		String world = location.getWorld().getName();
 
 		if (jurisdictions.containsKey(world)) {
-			return jurisdictions.get(world).get(coord);
+
+			int minDist = Integer.MAX_VALUE;
+			VillageLocation closestLoc = null;
+
+			for (Entry<XYZCoordinate, VillageLocation> loc : jurisdictions.get(
+					world).entrySet()) {
+				int dist = coord.distanceTo(loc.getKey());
+
+				if (dist < ville.getMinimumDistance()) {
+					if (closestLoc == null) {
+						minDist = dist;
+						closestLoc = loc.getValue();
+					} else if (minDist > dist) {
+						minDist = dist;
+						closestLoc = loc.getValue();
+					}
+				}
+			}
+
+			if (closestLoc != null) {
+				return closestLoc;
+			}
 		}
 
 		return null;
@@ -127,44 +115,28 @@ public class VilleLocations {
 		String world = location.getWorld().getName();
 
 		if (jurisdictions.containsKey(world)) {
-			Collection<VillageLocation> locs = proximities.get(world)
-					.get(coord);
+			Map<XYZCoordinate, VillageLocation> locs = jurisdictions.get(world);
 
 			if (locs != null) {
-				return new ArrayList<VillageLocation>(locs);
+				List<VillageLocation> found = new ArrayList<VillageLocation>(
+						locs.size());
+
+				for (Entry<XYZCoordinate, VillageLocation> loc : locs
+						.entrySet()) {
+					if (loc.getKey().distanceTo(coord) < ville
+							.getMinimumDistance()) {
+						found.add(loc.getValue());
+					}
+				}
+
+				if (found.size() > 0) {
+					return found;
+				}
 			}
 		}
 
 		return Collections.emptyList();
 
-	}
-
-	private Multimap<VillageLocation, XYZCoordinate> getClaimedCoordinates(
-			int minDist, VillageLocation loc) {
-		XYZCoordinate center = XYZCoordinate.get(loc);
-
-		Multimap<VillageLocation, XYZCoordinate> claimed = LinkedListMultimap
-				.create();
-
-		int minX = center.getX() - minDist;
-		int maxX = center.getX() + minDist;
-		int minZ = center.getZ() - minDist;
-		int maxZ = center.getZ() + minDist;
-		int minY = center.getY() - minDist;
-		int maxY = center.getY() + minDist;
-
-		for (int x = minX; x <= maxX; x++) {
-			for (int y = minY; y <= maxY; y++) {
-				for (int z = minZ; z <= maxZ; z++) {
-					XYZCoordinate c = new XYZCoordinate(x, y, z);
-					if (center.distanceTo(c) <= minDist) {
-						claimed.put(loc, c);
-					}
-				}
-			}
-		}
-
-		return claimed;
 	}
 
 	private static final class XYZCoordinate {

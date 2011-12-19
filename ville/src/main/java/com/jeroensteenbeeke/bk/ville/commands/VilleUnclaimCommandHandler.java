@@ -49,6 +49,7 @@ public class VilleUnclaimCommandHandler extends AbstractVilleCommandHandler {
 				.eq("owner", player.getName()).findUnique();
 
 		if (location != null) {
+
 			getVille().getDatabase().delete(location);
 
 			getLocationsHandle().remapJurisdictions();
@@ -56,11 +57,10 @@ public class VilleUnclaimCommandHandler extends AbstractVilleCommandHandler {
 			Messages.send(player,
 					String.format("Village location &e%s &fdeleted", name));
 		} else {
-			Messages.send(
-					player,
-					String.format(
-							"&cVillage location &e%s &c unknown or not owned by you",
-							name));
+			Messages.send(player, String.format(
+					"&cVillage location &e%s &c unknown or not owned by you",
+					name));
 		}
+
 	}
 }

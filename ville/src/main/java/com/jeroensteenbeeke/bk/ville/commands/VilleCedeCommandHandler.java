@@ -1,4 +1,4 @@
-package com.jeroensteenbeeke.bk.ville;
+package com.jeroensteenbeeke.bk.ville.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
-import com.jeroensteenbeeke.bk.ville.commands.AbstractVilleCommandHandler;
+import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
 public class VilleCedeCommandHandler extends AbstractVilleCommandHandler {
