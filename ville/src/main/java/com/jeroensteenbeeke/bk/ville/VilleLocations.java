@@ -1,6 +1,5 @@
 package com.jeroensteenbeeke.bk.ville;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +17,7 @@ import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
 
 public class VilleLocations {
-	private final Map<String, Map<XYZCoordinate, VillageLocation>> jurisdictions;
+	private final Map<String, Map<SpatialIndex, VillageLocation>> jurisdictions;
 
 	private final Multimap<VillageLocation, String> builders;
 
@@ -42,11 +41,16 @@ public class VilleLocations {
 
 		for (Entry<String, Collection<VillageLocation>> e : locsPerWorld
 				.asMap().entrySet()) {
-			Map<XYZCoordinate, VillageLocation> coords = Maps.newHashMap();
+			Map<SpatialIndex, VillageLocation> coords = Maps.newHashMap();
 			String world = e.getKey();
 
 			for (VillageLocation loc : e.getValue()) {
-				coords.put(XYZCoordinate.get(loc), loc);
+				XYZCoordinate xyz = XYZCoordinate.get(loc);
+				SpatialIndex index = new SpatialIndex(
+						ville.getMinimumDistance(), xyz.getX(), xyz.getY(),
+						xyz.getZ());
+
+				coords.put(index, loc);
 				for (VilleBuilder builder : loc.getBuilders()) {
 					builders.put(loc, builder.getPlayer());
 				}
@@ -86,17 +90,23 @@ public class VilleLocations {
 			int minDist = Integer.MAX_VALUE;
 			VillageLocation closestLoc = null;
 
-			for (Entry<XYZCoordinate, VillageLocation> loc : jurisdictions.get(
+			for (Entry<SpatialIndex, VillageLocation> loc : jurisdictions.get(
 					world).entrySet()) {
-				int dist = coord.distanceTo(loc.getKey());
+				SpatialIndex i = loc.getKey();
 
-				if (dist < ville.getMinimumDistance()) {
-					if (closestLoc == null) {
-						minDist = dist;
-						closestLoc = loc.getValue();
-					} else if (minDist > dist) {
-						minDist = dist;
-						closestLoc = loc.getValue();
+				XYZCoordinate locXYZ = XYZCoordinate.get(loc.getValue());
+
+				if (i.contains(locXYZ)) {
+					int dist = coord.distanceTo(locXYZ);
+
+					if (dist < ville.getMinimumDistance()) {
+						if (closestLoc == null) {
+							minDist = dist;
+							closestLoc = loc.getValue();
+						} else if (minDist > dist) {
+							minDist = dist;
+							closestLoc = loc.getValue();
+						}
 					}
 				}
 			}
@@ -115,17 +125,19 @@ public class VilleLocations {
 		String world = location.getWorld().getName();
 
 		if (jurisdictions.containsKey(world)) {
-			Map<XYZCoordinate, VillageLocation> locs = jurisdictions.get(world);
+			Map<SpatialIndex, VillageLocation> locs = jurisdictions.get(world);
 
 			if (locs != null) {
 				List<VillageLocation> found = new ArrayList<VillageLocation>(
 						locs.size());
 
-				for (Entry<XYZCoordinate, VillageLocation> loc : locs
-						.entrySet()) {
-					if (loc.getKey().distanceTo(coord) < ville
-							.getMinimumDistance()) {
-						found.add(loc.getValue());
+				for (Entry<SpatialIndex, VillageLocation> loc : locs.entrySet()) {
+					XYZCoordinate xyz = XYZCoordinate.get(loc.getValue());
+
+					if (loc.getKey().contains(xyz)) {
+						if (xyz.distanceTo(coord) < ville.getMinimumDistance()) {
+							found.add(loc.getValue());
+						}
 					}
 				}
 
@@ -136,90 +148,6 @@ public class VilleLocations {
 		}
 
 		return Collections.emptyList();
-
-	}
-
-	private static final class XYZCoordinate {
-		private final int x;
-
-		private final int y;
-
-		private final int z;
-
-		public XYZCoordinate(int x, int y, int z) {
-			super();
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-
-		public static XYZCoordinate get(Location location) {
-			return new XYZCoordinate(location.getBlockX(),
-					location.getBlockY(), location.getBlockZ());
-		}
-
-		public int getX() {
-			return x;
-		}
-
-		public int getY() {
-			return y;
-		}
-
-		public int getZ() {
-			return z;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + x;
-			result = prime * result + y;
-			result = prime * result + z;
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			XYZCoordinate other = (XYZCoordinate) obj;
-			if (x != other.x)
-				return false;
-			if (y != other.y)
-				return false;
-			if (z != other.z)
-				return false;
-			return true;
-		}
-
-		public int distanceTo(XYZCoordinate other) {
-			int xDist = Math.max(getX(), other.getX())
-					- Math.min(getX(), other.getX());
-			int yDist = Math.max(getY(), other.getY())
-					- Math.min(getY(), other.getY());
-			int zDist = Math.max(getZ(), other.getZ())
-					- Math.min(getZ(), other.getZ());
-
-			BigDecimal xd = new BigDecimal(xDist);
-			BigDecimal yd = new BigDecimal(yDist);
-			BigDecimal zd = new BigDecimal(zDist);
-
-			BigDecimal x2_z2 = xd.pow(2).add(zd.pow(2));
-			BigDecimal xzDist = new BigDecimal(Math.sqrt(x2_z2.doubleValue()));
-			BigDecimal xz2_y2 = xzDist.pow(2).add(yd.pow(2));
-
-			return new BigDecimal(Math.sqrt(xz2_y2.doubleValue())).intValue();
-		}
-
-		public static XYZCoordinate get(VillageLocation vl) {
-			return new XYZCoordinate(vl.getX(), vl.getY(), vl.getZ());
-		}
 
 	}
 
