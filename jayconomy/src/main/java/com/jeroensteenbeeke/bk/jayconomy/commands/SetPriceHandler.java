@@ -24,6 +24,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
@@ -45,63 +46,54 @@ public class SetPriceHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentLike(0, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-			Block block = player.getTargetBlock(Jayconomy.transparent, 100);
+		Block block = player.getTargetBlock(Jayconomy.transparent, 100);
 
-			JayconomySign sign = plugin.getDatabase()
-					.createQuery(JayconomySign.class).where()
-					.eq("x", block.getX()).eq("y", block.getY())
-					.eq("z", block.getZ())
-					.eq("world", block.getWorld().getName()).findUnique();
+		JayconomySign sign = plugin.getDatabase()
+				.createQuery(JayconomySign.class).where().eq("x", block.getX())
+				.eq("y", block.getY()).eq("z", block.getZ())
+				.eq("world", block.getWorld().getName()).findUnique();
 
-			if (sign != null) {
-				if (sign.getSignMode() == SignMode.BUY
-						|| sign.getSignMode() == SignMode.SELL) {
-					if (sign.getSignMode() == SignMode.SELL
-							&& sign.getMax() == null) {
-						Messages.send(player,
-								"&cCannot set the value of server-controlled substances");
-					} else {
-
-						if (player.getName().equals(sign.getOwner())) {
-							try {
-								int price = Integer.parseInt(args[0]);
-
-								sign.setValue(new BigDecimal(price));
-
-								plugin.getDatabase().update(sign);
-
-								if (sign.getSignMode() == SignMode.SELL) {
-									plugin.updateSellSign(
-											(Sign) block.getState(), sign);
-								} else {
-									plugin.updateBuySign(
-											(Sign) block.getState(), sign);
-								}
-
-							} catch (NumberFormatException nfe) {
-								Messages.send(player, "&cUnreadable price: &e"
-										+ args[0]);
-							}
-						} else {
-							Messages.send(player, "&cYou do not own this sign");
-						}
-					}
-				} else {
+		if (sign != null) {
+			if (sign.getSignMode() == SignMode.BUY
+					|| sign.getSignMode() == SignMode.SELL) {
+				if (sign.getSignMode() == SignMode.SELL
+						&& sign.getMax() == null) {
 					Messages.send(player,
-							"&cCan only use this command on Buy and Sell signs");
+							"&cCannot set the value of server-controlled substances");
+				} else {
+
+					if (player.getName().equals(sign.getOwner())) {
+						int price = Integer.parseInt(args[0]);
+
+						sign.setValue(new BigDecimal(price));
+
+						plugin.getDatabase().update(sign);
+
+						if (sign.getSignMode() == SignMode.SELL) {
+							plugin.updateSellSign((Sign) block.getState(), sign);
+						} else {
+							plugin.updateBuySign((Sign) block.getState(), sign);
+						}
+
+					} else {
+						Messages.send(player, "&cYou do not own this sign");
+					}
 				}
 			} else {
 				Messages.send(player,
-						"&cYou are not looking at a Jayconomy sign");
+						"&cCan only use this command on Buy and Sell signs");
 			}
-
-			return true;
+		} else {
+			Messages.send(player, "&cYou are not looking at a Jayconomy sign");
 		}
 
-		return false;
 	}
 
 }

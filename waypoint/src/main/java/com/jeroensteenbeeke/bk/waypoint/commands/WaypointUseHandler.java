@@ -22,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
@@ -41,54 +42,47 @@ public class WaypointUseHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
+		Waypoint wp = plugin.getWaypoints().getWaypoint(player.getLocation());
 
-		if (args.length == 1) {
-			Waypoint wp = plugin.getWaypoints().getWaypoint(
-					player.getLocation());
+		if (wp != null) {
+			String target = args[0];
+			if (!target.equals(wp.getName())) {
+				Waypoint targetWaypoint = plugin.getWaypoints().getWaypoint(
+						target);
+				if (targetWaypoint != null) {
+					World targetWorld = plugin.getServer().getWorld(
+							targetWaypoint.getWorldName());
+					if (targetWorld.equals(player.getWorld())) {
+						Location location = new Location(targetWorld,
+								targetWaypoint.getX(),
+								targetWaypoint.getY() + 1,
+								targetWaypoint.getZ());
 
-			if (wp != null) {
-				String target = args[0];
-				if (!target.equals(wp.getName())) {
-					Waypoint targetWaypoint = plugin.getWaypoints()
-							.getWaypoint(target);
-					if (targetWaypoint != null) {
-						World targetWorld = plugin.getServer().getWorld(
-								targetWaypoint.getWorldName());
-						if (targetWorld.equals(player.getWorld())) {
-							Location location = new Location(targetWorld,
-									targetWaypoint.getX(),
-									targetWaypoint.getY() + 1,
-									targetWaypoint.getZ());
-
-							player.teleport(location);
-							Messages.send(player, "Teleporting to &a"
-									+ targetWaypoint.getName() + "");
-							return true;
-						} else {
-							Messages.send(player,
-									"&cCannot use waypoints to cross dimensions");
-							return true;
-						}
-
+						player.teleport(location);
+						Messages.send(player, "Teleporting to &a"
+								+ targetWaypoint.getName() + "");
 					} else {
-						Messages.send(player, "&cUnknown waypoint: &a" + target
-								+ "");
-						return true;
+						Messages.send(player,
+								"&cCannot use waypoints to cross dimensions");
 					}
+
 				} else {
-					Messages.send(player, "&cYou are already there");
-					return true;
+					Messages.send(player, "&cUnknown waypoint: &a" + target
+							+ "");
 				}
 			} else {
-				Messages.send(player,
-						"&cThis command can only be used on Waypoints");
-				return true;
+				Messages.send(player, "&cYou are already there");
 			}
-
+		} else {
+			Messages.send(player,
+					"&cThis command can only be used on Waypoints");
 		}
-
-		return false;
 	}
 }

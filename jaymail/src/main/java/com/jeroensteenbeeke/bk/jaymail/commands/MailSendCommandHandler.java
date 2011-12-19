@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.jaymail.JaymailPlugin;
 import com.jeroensteenbeeke.bk.jaymail.entities.JayMail;
@@ -34,34 +35,35 @@ public class MailSendCommandHandler extends PlayerAwareCommandHandler {
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("mail-send").itMatches();
+		return ifNameIs("mail").andArgIs(0, "send").itMatches();
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountAtLeast(3).andArgumentEquals(0, "send")
+				.andArgumentIsValidPlayerName(1).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length >= 2) {
-			String recipient = args[0];
+		String recipient = args[1];
 
-			StringBuilder message = new StringBuilder();
-			for (int i = 1; i < args.length; i++) {
-				if (i > 1) {
-					message.append(" ");
-				}
-
-				message.append(args[i]);
+		StringBuilder message = new StringBuilder();
+		for (int i = 2; i < args.length; i++) {
+			if (i > 2) {
+				message.append(" ");
 			}
 
-			JayMail mail = new JayMail();
-			mail.setMessage(message.toString());
-			mail.setRecipient(recipient);
-			mail.setSender(player.getName());
-			plugin.getDatabase().save(mail);
-
-			return true;
+			message.append(args[i]);
 		}
 
-		return false;
+		JayMail mail = new JayMail();
+		mail.setMessage(message.toString());
+		mail.setRecipient(recipient);
+		mail.setSender(player.getName());
+		plugin.getDatabase().save(mail);
+
 	}
 
 }

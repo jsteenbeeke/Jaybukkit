@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jaymail.JaymailPlugin;
@@ -35,34 +36,28 @@ public class MailDeleteCommandHandler extends PlayerAwareCommandHandler {
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("mail-delete").itMatches();
+		return ifNameIs("mail").andArgIs(0, "delete").itMatches();
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(2).andArgumentEquals(0, "delete")
+				.andArgumentLike(1, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-			try {
-				Long id = Long.parseLong(args[0]);
+		Long id = Long.parseLong(args[1]);
 
-				JayMail mail = plugin.getDatabase().find(JayMail.class).where()
-						.eq("recipient", player.getName()).eq("id", id)
-						.findUnique();
+		JayMail mail = plugin.getDatabase().find(JayMail.class).where()
+				.eq("recipient", player.getName()).eq("id", id).findUnique();
 
-				if (mail != null) {
-					plugin.getDatabase().delete(mail);
-					Messages.send(player,
-							String.format("&aMail &e%s&a deleted", id));
-				} else {
-					Messages.send(player, "&cInvalid mail number: &e" + id);
-				}
-			} catch (NumberFormatException nfe) {
-				Messages.send(player, "&cInvalid mail number: &e" + args[0]);
-			}
-
-			return true;
+		if (mail != null) {
+			plugin.getDatabase().delete(mail);
+			Messages.send(player, String.format("&aMail &e%s&a deleted", id));
+		} else {
+			Messages.send(player, "&cInvalid mail number: &e" + id);
 		}
-
-		return false;
 	}
 }

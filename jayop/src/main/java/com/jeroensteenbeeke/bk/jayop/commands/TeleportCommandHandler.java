@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -38,22 +39,19 @@ public class TeleportCommandHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentIsValidPlayerName(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-			String target = args[0].toLowerCase();
-			Player targetPlayer = plugin.getServer().getPlayerExact(target);
+		String target = args[0].toLowerCase();
+		Player targetPlayer = plugin.getServer().getPlayerExact(target);
 
-			Messages.broadcast(
-					plugin.getServer(),
-					String.format("Teleporting &e%s&f to &e%s",
-							player.getName(), target));
+		Messages.broadcast(plugin.getServer(), String.format(
+				"Teleporting &e%s&f to &e%s", player.getName(), target));
 
-			player.teleport(targetPlayer);
-
-			return true;
-		}
-
-		return false;
+		player.teleport(targetPlayer);
 	}
 }

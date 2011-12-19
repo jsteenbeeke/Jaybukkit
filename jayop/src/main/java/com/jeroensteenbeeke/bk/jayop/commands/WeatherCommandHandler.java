@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -36,42 +37,33 @@ public class WeatherCommandHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentEquals(0, "sun", "rain",
+				"thunderstorm").itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
+		if ("sun".equals(args[0])) {
+			player.getWorld().setStorm(false);
+			player.getWorld().setThundering(false);
 
-		if (args.length == 1) {
-
-			if ("sun".equals(args[0])) {
-				player.getWorld().setStorm(false);
-				player.getWorld().setThundering(false);
-
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &esun");
-
-				return true;
-			}
-			if ("rain".equals(args[0]) || "snow".equals(args[0])) {
-				player.getWorld().setStorm(true);
-				player.getWorld().setThundering(false);
-
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &erain and snow");
-
-				return true;
-			}
-			if ("thunderstorm".equals(args[0])) {
-				Messages.broadcast(player.getServer(),
-						"Weather changed to &ethunderstorm");
-
-				player.getWorld().setStorm(true);
-				player.getWorld().setThundering(true);
-
-				return true;
-			}
-
-			return false;
+			Messages.broadcast(player.getServer(), "Weather changed to &esun");
 		}
+		if ("rain".equals(args[0]) || "snow".equals(args[0])) {
+			player.getWorld().setStorm(true);
+			player.getWorld().setThundering(false);
 
-		return false;
+			Messages.broadcast(player.getServer(),
+					"Weather changed to &erain and snow");
+		}
+		if ("thunderstorm".equals(args[0])) {
+			Messages.broadcast(player.getServer(),
+					"Weather changed to &ethunderstorm");
+
+			player.getWorld().setStorm(true);
+			player.getWorld().setThundering(true);
+		}
 	}
 }

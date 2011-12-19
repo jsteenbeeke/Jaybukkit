@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
@@ -40,31 +41,27 @@ public class SpleefLockHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-			String name = args[0];
+		String name = args[0];
 
-			SpleefPoint point = plugin.getDatabase()
-					.createQuery(SpleefPoint.class).where().eq("name", name)
-					.findUnique();
+		SpleefPoint point = plugin.getDatabase().createQuery(SpleefPoint.class)
+				.where().eq("name", name).findUnique();
 
-			if (point != null) {
-				point.setLocked(true);
-				plugin.getDatabase().update(point);
+		if (point != null) {
+			point.setLocked(true);
+			plugin.getDatabase().update(point);
 
-				Messages.broadcast(plugin.getServer(), "&2Spleef location: &e"
-						+ args[0] + "&2 locked");
-
-				return true;
-			} else {
-				Messages.send(sender, "&cUnknown spleef location: &e" + args[0]);
-				return true;
-			}
-
+			Messages.broadcast(plugin.getServer(), "&2Spleef location: &e"
+					+ args[0] + "&2 locked");
+		} else {
+			Messages.send(sender, "&cUnknown spleef location: &e" + args[0]);
 		}
-
-		return false;
 	}
 
 }

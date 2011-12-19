@@ -23,6 +23,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
@@ -60,15 +61,18 @@ public class RulesHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 
 		Messages.send(sender, "&1Server rules: ");
 		for (String rule : rules) {
 			Messages.send(sender, "  &1- &e" + rule);
 		}
-
-		return true;
 
 	}
 

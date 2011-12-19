@@ -25,6 +25,8 @@ import org.bukkit.command.CommandSender;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 
 public abstract class PermissibleCommandHandler implements CommandHandler {
+	protected final String DECIMAL = "^\\d+$";
+
 	protected static enum PermissionPolicy {
 		ANY {
 			@Override
@@ -75,7 +77,13 @@ public abstract class PermissibleCommandHandler implements CommandHandler {
 	public final boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
 		if (policy.isAuthorized(sender, requiredPermissions)) {
-			return onAuthorized(sender, command, label, args);
+			if (getParameterChecker().isProperlyInvoked(sender, command, label,
+					args)) {
+				onAuthorized(sender, command, label, args);
+				return true;
+			}
+
+			return false;
 		} else {
 			Messages.send(sender,
 					"&cYou are not authorized to perform this action");
@@ -83,7 +91,9 @@ public abstract class PermissibleCommandHandler implements CommandHandler {
 		}
 	}
 
-	public abstract boolean onAuthorized(CommandSender sender, Command command,
+	public abstract ParameterIntegrityChecker getParameterChecker();
+
+	public abstract void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args);
 
 	public MatcherBuilder ifArgIs(int index, String value) {
@@ -96,6 +106,206 @@ public abstract class PermissibleCommandHandler implements CommandHandler {
 
 	public MatcherBuilder ifNameIs(String name) {
 		return new DefaultMatcherBuilder().andNameIs(name);
+	}
+
+	public ParameterIntegrityCheckerBuilder ifArgCountIs(int count) {
+		return new DefaultParameterIntegrityCheckerBuilder(count, true);
+	}
+
+	public ParameterIntegrityCheckerBuilder ifArgCountAtLeast(int count) {
+		return new DefaultParameterIntegrityCheckerBuilder(count, false);
+	}
+
+	private static class DefaultParameterIntegrityCheckerBuilder implements
+			ParameterIntegrityCheckerBuilder {
+
+		private final List<ParameterIntegrityChecker> checkers;
+
+		public DefaultParameterIntegrityCheckerBuilder(final int count,
+				final boolean exact) {
+			this.checkers = new LinkedList<ParameterIntegrityChecker>();
+			this.checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+					if (exact) {
+						return args.length == count;
+					} else {
+						return args.length >= count;
+					}
+				}
+			});
+
+		}
+
+		@Override
+		@Deprecated
+		public ParameterIntegrityCheckerBuilder andArgCountAtMost(
+				final int count) {
+			checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+
+					return args.length <= count;
+				}
+			});
+
+			return this;
+		}
+
+		@Override
+		public ParameterIntegrityCheckerBuilder andArgumentEquals(
+				final int index, final String... possibleValues) {
+			checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+
+					if (args.length > index) {
+						for (String possibleValue : possibleValues) {
+							if (args[index].equals(possibleValue)) {
+								return true;
+							}
+						}
+					}
+
+					return false;
+				}
+			});
+
+			return this;
+		}
+
+		@Override
+		public ParameterIntegrityCheckerBuilder andArgumentEqualsIfExists(
+				final int index, final String... possibleValues) {
+			checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+
+					if (args.length > index) {
+						for (String possibleValue : possibleValues) {
+							if (args[index].equals(possibleValue)) {
+								return true;
+							}
+						}
+
+						return false;
+					}
+
+					return true;
+				}
+			});
+
+			return this;
+		}
+
+		@Override
+		public ParameterIntegrityCheckerBuilder andArgumentLike(
+				final int index, final String... possibleRegex) {
+			checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+
+					if (args.length > index) {
+						for (String possibleValue : possibleRegex) {
+							if (args[index].matches(possibleValue)) {
+								return true;
+							}
+						}
+					}
+
+					return false;
+				}
+			});
+
+			return this;
+		}
+
+		@Override
+		public ParameterIntegrityCheckerBuilder andArgumentLikeIfExists(
+				final int index, final String... possibleRegex) {
+			checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+
+					if (args.length > index) {
+						for (String possibleValue : possibleRegex) {
+							if (args[index].matches(possibleValue)) {
+								return true;
+							}
+						}
+
+						return false;
+					}
+
+					return true;
+
+				}
+			});
+
+			return this;
+		}
+
+		@Override
+		public ParameterIntegrityCheckerBuilder andArgumentIsValidPlayerName(
+				final int index) {
+			checkers.add(new ParameterIntegrityChecker() {
+
+				@Override
+				public boolean isProperlyInvoked(CommandSender sender,
+						Command command, String label, String[] args) {
+					if (args.length > index) {
+						if (args[index].length() <= 16
+								&& args[index].length() >= 2) {
+							return args[index].matches("([a-zA-Z]|\\d|_)+");
+						}
+					}
+
+					return false;
+				}
+			});
+
+			return this;
+		}
+
+		@Override
+		public ParameterIntegrityChecker itIsProper() {
+			return new CompoundParameterIntegrityChecker(checkers);
+		}
+
+	}
+
+	private static class CompoundParameterIntegrityChecker implements
+			ParameterIntegrityChecker {
+		private final List<ParameterIntegrityChecker> checkers;
+
+		public CompoundParameterIntegrityChecker(
+				List<ParameterIntegrityChecker> checkers) {
+			this.checkers = checkers;
+		}
+
+		@Override
+		public boolean isProperlyInvoked(CommandSender sender, Command command,
+				String label, String[] args) {
+			for (ParameterIntegrityChecker checker : checkers) {
+				if (!checker.isProperlyInvoked(sender, command, label, args)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
 	}
 
 	private static class DefaultMatcherBuilder implements MatcherBuilder {

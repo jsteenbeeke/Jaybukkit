@@ -1,19 +1,3 @@
-/**
- * This file is part of Jaybukkit.
- *
- * Jaybukkit is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Jaybukkit is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Jaybukkit.  If not, see <http://www.gnu.org/licenses/>.
- */
 package com.jeroensteenbeeke.bk.spleefregen.commands;
 
 import org.bukkit.Material;
@@ -30,18 +14,18 @@ import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefLocation;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefPoint;
 
-public class SpleefDeleteHandler extends PlayerAwareCommandHandler {
+public class DespleefHandler extends PlayerAwareCommandHandler {
 
 	private final SpleefRegen plugin;
 
-	public SpleefDeleteHandler(SpleefRegen plugin) {
+	public DespleefHandler(SpleefRegen plugin) {
 		super(plugin.getServer(), SpleefRegen.PERMISSION_SPLEEF_REMOVE);
 		this.plugin = plugin;
 	}
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("unspleef").itMatches();
+		return ifNameIs("despleef").itMatches();
 	}
 
 	@Override
@@ -64,14 +48,9 @@ public class SpleefDeleteHandler extends PlayerAwareCommandHandler {
 				Block b = world.getBlockAt(loc.getX(), loc.getY(), loc.getZ());
 				b.setType(Material.AIR);
 
-				plugin.getDatabase().delete(loc);
 			}
 
-			plugin.getDatabase().delete(point);
-
-			Messages.broadcast(plugin.getServer(), "&2Spleef location: &e"
-					+ args[0] + "&2 removed");
-
+			Messages.broadcast(plugin.getServer(), "&cThat's gotta hurt!");
 		} else {
 			Messages.send(player, "&cUnknown spleef location: &e" + args[0]);
 		}

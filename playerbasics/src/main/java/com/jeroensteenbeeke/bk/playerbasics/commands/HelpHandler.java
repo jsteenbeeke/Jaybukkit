@@ -29,6 +29,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.MapOp;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
@@ -93,8 +94,15 @@ public class HelpHandler extends PermissibleCommandHandler {
 		return ifNameIs("help").itMatches();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountAtLeast(0).andArgCountAtMost(1)
+				.andArgumentLikeIfExists(1, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 		if (permissionsToCommandMap == null || nameToCommandMap == null)
 			initMaps(sender);
@@ -102,7 +110,6 @@ public class HelpHandler extends PermissibleCommandHandler {
 		if (args.length == 0) {
 			// Equivalent to /help 1
 			printHelp(sender, 1);
-			return true;
 		} else if (args.length == 1) {
 			try {
 				int page = Integer.parseInt(args[0]);
@@ -111,10 +118,7 @@ public class HelpHandler extends PermissibleCommandHandler {
 				// Requested help on specific command
 				printHelp(sender, args[0]);
 			}
-			return true;
 		}
-
-		return false;
 	}
 
 	private void printHelp(CommandSender sender, String name) {

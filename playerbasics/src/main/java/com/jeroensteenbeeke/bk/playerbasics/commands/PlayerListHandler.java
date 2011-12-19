@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
@@ -37,7 +38,12 @@ public class PlayerListHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 		StringBuilder online = new StringBuilder();
 		online.append("&fThe following players are online: [");
@@ -45,9 +51,6 @@ public class PlayerListHandler extends PermissibleCommandHandler {
 		online.append("&f]");
 
 		Messages.send(sender, online.toString());
-
-		return true;
-
 	}
 
 }

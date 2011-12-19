@@ -21,6 +21,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -36,28 +37,24 @@ public class UnbanCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentIsValidPlayerName(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
+		OfflinePlayer target = sender.getServer().getOfflinePlayer(args[0]);
 
-		if (args.length == 1) {
-			OfflinePlayer target = sender.getServer().getOfflinePlayer(args[0]);
+		if (target != null) {
+			target.setBanned(false);
 
-			if (target != null) {
-				target.setBanned(false);
-
-				Messages.send(sender, "&cPlayer &e" + args[0]
-						+ "&c has been unbanned");
-
-				return true;
-			} else {
-				Messages.send(sender, "&cUnknown player: " + args[0] + "");
-
-				return true;
-			}
-
+			Messages.send(sender, "&cPlayer &e" + args[0]
+					+ "&c has been unbanned");
+		} else {
+			Messages.send(sender, "&cUnknown player: " + args[0] + "");
 		}
 
-		return false;
 	}
 
 }

@@ -22,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
@@ -42,29 +43,26 @@ public class SpleefListHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
+		List<SpleefPoint> points = plugin.getDatabase()
+				.createQuery(SpleefPoint.class).findList();
 
-		if (args.length == 0) {
-			List<SpleefPoint> points = plugin.getDatabase()
-					.createQuery(SpleefPoint.class).findList();
+		if (!points.isEmpty()) {
+			Messages.send(sender, "&2Spleef locations on this server");
 
-			if (!points.isEmpty()) {
-				Messages.send(sender, "&2Spleef locations on this server");
-
-				for (SpleefPoint point : points) {
-					Messages.send(sender, "  &2- &e" + point.getName()
-							+ " &2in " + point.getWorld() + "&e");
-				}
-
-				return true;
-			} else {
-				Messages.send(sender, "&cNo spleef locations on this server");
-				return true;
+			for (SpleefPoint point : points) {
+				Messages.send(sender, "  &2- &e" + point.getName() + " &2in "
+						+ point.getWorld() + "&e");
 			}
+		} else {
+			Messages.send(sender, "&cNo spleef locations on this server");
 		}
-
-		return false;
 	}
 
 }

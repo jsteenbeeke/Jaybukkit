@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -37,29 +38,25 @@ public class ClearInventoryCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentIsValidPlayerName(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
+		String playerName = args[0];
+		Player player = sender.getServer().getPlayerExact(playerName);
 
-		if (args.length == 1) {
-			String playerName = args[0];
-			Player player = sender.getServer().getPlayerExact(playerName);
-
-			if (player != null) {
-				player.getInventory().clear();
-				Messages.send(sender, "&aInventory of &e" + playerName
-						+ "&a cleared");
-				Messages.send(player, "&cYour inventory has been cleared by &e"
-						+ sender.getName());
-
-				return true;
-			} else {
-				Messages.send(sender, "&cUnknown player &e" + playerName);
-
-				return true;
-			}
+		if (player != null) {
+			player.getInventory().clear();
+			Messages.send(sender, "&aInventory of &e" + playerName
+					+ "&a cleared");
+			Messages.send(player, "&cYour inventory has been cleared by &e"
+					+ sender.getName());
+		} else {
+			Messages.send(sender, "&cUnknown player &e" + playerName);
 		}
-
-		return false;
 	}
 
 }

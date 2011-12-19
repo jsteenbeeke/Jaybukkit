@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
@@ -35,33 +36,31 @@ public class VilleUnclaimCommandHandler extends AbstractVilleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(2).andArgumentEquals(0, "unclaim").itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 2) {
-			String name = args[1];
-			VillageLocation location = getVille().getDatabase()
-					.find(VillageLocation.class).where().eq("name", name)
-					.eq("owner", player.getName()).findUnique();
+		String name = args[1];
+		VillageLocation location = getVille().getDatabase()
+				.find(VillageLocation.class).where().eq("name", name)
+				.eq("owner", player.getName()).findUnique();
 
-			if (location != null) {
+		if (location != null) {
+			getVille().getDatabase().delete(location);
 
-				getVille().getDatabase().delete(location);
+			getLocationsHandle().remapJurisdictions();
 
-				getLocationsHandle().remapJurisdictions();
-
-				Messages.send(player,
-						String.format("Village location &e%s &fdeleted", name));
-			} else {
-				Messages.send(
-						player,
-						String.format(
-								"&cVillage location &e%s &c unknown or not owned by you",
-								name));
-			}
-
-			return true;
+			Messages.send(player,
+					String.format("Village location &e%s &fdeleted", name));
+		} else {
+			Messages.send(
+					player,
+					String.format(
+							"&cVillage location &e%s &c unknown or not owned by you",
+							name));
 		}
-
-		return false;
 	}
 }

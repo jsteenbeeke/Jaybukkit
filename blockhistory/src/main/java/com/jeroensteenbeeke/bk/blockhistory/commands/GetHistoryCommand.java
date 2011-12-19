@@ -28,6 +28,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
@@ -56,58 +57,56 @@ public class GetHistoryCommand extends PlayerAwareCommandHandler {
 		return ifNameIs("history").itMatches();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountAtLeast(0).andArgCountAtMost(1)
+				.andArgumentLikeIfExists(0, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 0 || args.length == 1) {
-			Block block = player.getTargetBlock(transparent, 100);
+		Block block = player.getTargetBlock(transparent, 100);
 
-			List<BlockChange> history = new ArrayList<BlockChange>(5);
+		List<BlockChange> history = new ArrayList<BlockChange>(5);
 
-			if (args.length == 0) {
-				for (BlockChange b : plugin.getBaseQuery(block).findList()) {
-					history.add(0, b);
-				}
-			} else {
-				try {
-					int page = Integer.parseInt(args[1]);
-
-					for (BlockChange b : plugin.getBaseQuery(block)
-							.setFirstRow(page * 5).findList()) {
-						history.add(0, b);
-					}
-				} catch (NumberFormatException nfe) {
-					Messages.send(player, "&cInvalid page: &e" + args[1]);
-					return true;
-				}
+		if (args.length == 0) {
+			for (BlockChange b : plugin.getBaseQuery(block).findList()) {
+				history.add(0, b);
 			}
+		} else {
+			int page = Integer.parseInt(args[1]);
 
-			if (history.isEmpty()) {
-				if (args.length == 0) {
-					Messages.send(player, "&cNo history for this block");
-				} else {
-					Messages.send(player, "&cInvalid page: &e" + args[1]);
-				}
-			} else {
-				Messages.send(player, String.format(
-						"&aHistory for (&e%s&a, &e%s&a, &e%s&a)", block.getX(),
-						block.getY(), block.getZ()));
-				for (BlockChange change : history) {
-					String culpritString = change.getCulprit() == null ? ""
-							: "by " + change.getCulprit();
-
-					Messages.send(player, String.format(
-							"  &e- %s&a: &e%s &ato &e%s %s",
-							FORMAT.format(change.getChangeDate()), change
-									.getChangeType().name().toLowerCase(),
-							Material.getMaterial(change.getBlockType()).name(),
-							culpritString));
-				}
+			for (BlockChange b : plugin.getBaseQuery(block)
+					.setFirstRow(page * 5).findList()) {
+				history.add(0, b);
 			}
-
-			return true;
 		}
-		return false;
+
+		if (history.isEmpty()) {
+			if (args.length == 0) {
+				Messages.send(player, "&cNo history for this block");
+			} else {
+				Messages.send(player, "&cInvalid page: &e" + args[1]);
+			}
+		} else {
+			Messages.send(player, String.format(
+					"&aHistory for (&e%s&a, &e%s&a, &e%s&a)", block.getX(),
+					block.getY(), block.getZ()));
+			for (BlockChange change : history) {
+				String culpritString = change.getCulprit() == null ? "" : "by "
+						+ change.getCulprit();
+
+				Messages.send(player, String.format(
+						"  &e- %s&a: &e%s &ato &e%s %s", FORMAT.format(change
+								.getChangeDate()), change.getChangeType()
+								.name().toLowerCase(),
+						Material.getMaterial(change.getBlockType()).name(),
+						culpritString));
+			}
+		}
+
 	}
 
 }

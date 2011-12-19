@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -39,37 +40,36 @@ public class TeleportOthersCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(2).andArgumentIsValidPlayerName(0)
+				.andArgumentIsValidPlayerName(1).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
-		if (args.length == 2) {
-			String subject = args[0].toLowerCase();
-			String target = args[1].toLowerCase();
+		String subject = args[0].toLowerCase();
+		String target = args[1].toLowerCase();
 
-			Player toTeleport = sender.getServer().getPlayerExact(subject);
-			Player teleportTo = sender.getServer().getPlayerExact(target);
+		Player toTeleport = sender.getServer().getPlayerExact(subject);
+		Player teleportTo = sender.getServer().getPlayerExact(target);
 
-			if (toTeleport != null && teleportTo != null) {
-				toTeleport.teleport(teleportTo);
+		if (toTeleport != null && teleportTo != null) {
+			toTeleport.teleport(teleportTo);
 
-				Messages.broadcast(jayop.getServer(), "Teleporting " + subject
-						+ " to " + target);
+			Messages.broadcast(jayop.getServer(), "Teleporting " + subject
+					+ " to " + target);
 
-			} else {
-				if (toTeleport == null) {
-					Messages.send(sender, "&cUnknown player: &e" + subject
-							+ "&f");
+		} else {
+			if (toTeleport == null) {
+				Messages.send(sender, "&cUnknown player: &e" + subject + "&f");
 
-				}
-				if (teleportTo == null) {
-					Messages.send(sender, "&cUnknown player: &e" + target
-							+ "&f");
-
-				}
 			}
+			if (teleportTo == null) {
+				Messages.send(sender, "&cUnknown player: &e" + target + "&f");
 
-			return true;
+			}
 		}
 
-		return false;
 	}
 }

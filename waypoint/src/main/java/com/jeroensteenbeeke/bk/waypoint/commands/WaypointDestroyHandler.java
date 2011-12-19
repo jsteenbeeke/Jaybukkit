@@ -21,6 +21,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
@@ -40,7 +41,12 @@ public class WaypointDestroyHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
 
 		String name = args[0];
@@ -77,7 +83,5 @@ public class WaypointDestroyHandler extends PlayerAwareCommandHandler {
 			Messages.send(player,
 					String.format("&cUnknown waypoint &e%s", name));
 		}
-
-		return true;
 	}
 }

@@ -21,6 +21,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
 import com.jeroensteenbeeke.bk.jayop.entities.Suspension;
@@ -39,25 +40,25 @@ public class UnsuspendCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentIsValidPlayerName(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-			OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
+		OfflinePlayer player = plugin.getServer().getOfflinePlayer(args[0]);
 
-			if (player != null) {
-				for (Suspension suspension : plugin.getDatabase()
-						.find(Suspension.class).where()
-						.eq("playerName", player.getName()).findList()) {
-					plugin.getDatabase().delete(suspension);
-				}
-			} else {
-				sender.sendMessage("\u00A7cUnknown player \u00A7e" + args[0]
-						+ "\u00A7f");
-				return true;
+		if (player != null) {
+			for (Suspension suspension : plugin.getDatabase()
+					.find(Suspension.class).where()
+					.eq("playerName", player.getName()).findList()) {
+				plugin.getDatabase().delete(suspension);
 			}
+		} else {
+			sender.sendMessage("\u00A7cUnknown player \u00A7e" + args[0]
+					+ "\u00A7f");
 		}
-
-		return false;
 	}
 
 }

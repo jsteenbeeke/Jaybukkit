@@ -30,6 +30,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.chestlog.ChestLogPlugin;
@@ -59,71 +60,69 @@ public class GetChestLogHandler extends PlayerAwareCommandHandler {
 		return ifNameIs("chestlog").itMatches();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountAtLeast(0).andArgCountAtMost(1)
+				.andArgumentLikeIfExists(0, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 0 || args.length == 1) {
-			Block block = player.getTargetBlock(transparent, 100);
+		Block block = player.getTargetBlock(transparent, 100);
 
-			if (block != null) {
+		if (block != null) {
 
-				Location loc = block.getLocation();
+			Location loc = block.getLocation();
 
-				ChestLocation location = plugin.getDatabase()
-						.createQuery(ChestLocation.class).where()
-						.eq("x", loc.getBlockX()).eq("y", loc.getBlockY())
-						.eq("z", loc.getBlockZ())
-						.eq("world", loc.getWorld().getName()).findUnique();
+			ChestLocation location = plugin.getDatabase()
+					.createQuery(ChestLocation.class).where()
+					.eq("x", loc.getBlockX()).eq("y", loc.getBlockY())
+					.eq("z", loc.getBlockZ())
+					.eq("world", loc.getWorld().getName()).findUnique();
 
-				if (location != null) {
-					ChestData chest = location.getChest();
+			if (location != null) {
+				ChestData chest = location.getChest();
 
-					int logsize = chest.getLogs().size();
+				int logsize = chest.getLogs().size();
 
-					if (logsize > 7) {
-						int pages = 1 + (logsize / 7);
+				if (logsize > 7) {
+					int pages = 1 + (logsize / 7);
 
-						List<ChestLog> logs = new ArrayList<ChestLog>(7);
-						try {
-							int page = (args.length == 0) ? 1 : Integer
-									.parseInt(args[0]);
+					List<ChestLog> logs = new ArrayList<ChestLog>(7);
+					try {
+						int page = (args.length == 0) ? 1 : Integer
+								.parseInt(args[0]);
 
-							if (page > pages || page < 1) {
-								Messages.send(player, "&cInvalid page: &e"
-										+ page);
-							} else {
+						if (page > pages || page < 1) {
+							Messages.send(player, "&cInvalid page: &e" + page);
+						} else {
 
-								int last = page * 7 >= logsize ? logsize
-										: page * 7;
+							int last = page * 7 >= logsize ? logsize : page * 7;
 
-								logs.addAll(chest.getLogs().subList(
-										(page - 1) * 7, last));
+							logs.addAll(chest.getLogs().subList((page - 1) * 7,
+									last));
 
-								sendLogs(player, logs);
-							}
-
-						} catch (NumberFormatException nfe) {
-							Messages.send(player, "&cInvalid page: &e"
-									+ args[0]);
+							sendLogs(player, logs);
 						}
 
-					} else {
-						sendLogs(player, chest.getLogs());
+					} catch (NumberFormatException nfe) {
+						Messages.send(player, "&cInvalid page: &e" + args[0]);
 					}
 
 				} else {
-					Messages.send(player,
-							"&cYou do not seem to be looking at a known chest");
+					sendLogs(player, chest.getLogs());
 				}
+
 			} else {
 				Messages.send(player,
-						"&cYou do not seem to be looking at anything");
+						"&cYou do not seem to be looking at a known chest");
 			}
-
-			return true;
+		} else {
+			Messages.send(player, "&cYou do not seem to be looking at anything");
 		}
 
-		return false;
 	}
 
 	private void sendLogs(Player player, List<ChestLog> logs) {

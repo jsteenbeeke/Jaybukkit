@@ -22,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
@@ -37,27 +38,23 @@ public class VilleCheckCommandHandler extends AbstractVilleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-
-			List<VillageLocation> closestLocations = getLocationsHandle()
-					.getNearbyVillages(player.getLocation());
-			if (closestLocations.size() == 0) {
-				Messages.send(player, "&aThis location is suitable");
-			} else {
-				Messages.send(player, "&cThis location is unsuitable");
-				for (VillageLocation loc : closestLocations) {
-					Messages.send(
-							player,
-							String.format("&e- &cToo close to &e%s",
-									loc.getName()));
-				}
+		List<VillageLocation> closestLocations = getLocationsHandle()
+				.getNearbyVillages(player.getLocation());
+		if (closestLocations.size() == 0) {
+			Messages.send(player, "&aThis location is suitable");
+		} else {
+			Messages.send(player, "&cThis location is unsuitable");
+			for (VillageLocation loc : closestLocations) {
+				Messages.send(player,
+						String.format("&e- &cToo close to &e%s", loc.getName()));
 			}
-
-			return true;
 		}
-
-		return false;
 	}
 }

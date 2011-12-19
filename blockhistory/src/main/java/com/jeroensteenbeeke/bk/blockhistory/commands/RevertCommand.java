@@ -29,6 +29,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
@@ -51,81 +52,80 @@ public class RevertCommand extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+
+		return ifArgCountIs(2).andArgumentIsValidPlayerName(0)
+				.andArgumentLike(1, "^\\d{4}-\\d{2}-\\d{2}$").itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 2) {
-			String playerName = args[0];
-			try {
-				Date date = FORMAT.parse(args[1]);
+		String playerName = args[0];
+		try {
+			Date date = FORMAT.parse(args[1]);
 
-				List<BlockChange> changes = history.getDatabase()
-						.find(BlockChange.class).where()
-						.eq("culprit", playerName).ge("changeDate", date)
-						.order().desc("changeDate").findList();
+			List<BlockChange> changes = history.getDatabase()
+					.find(BlockChange.class).where().eq("culprit", playerName)
+					.ge("changeDate", date).order().desc("changeDate")
+					.findList();
 
-				for (BlockChange change : changes) {
-					if (change.getOverrides() != null) {
-						World world = history.getServer().getWorld(
-								change.getWorld());
+			for (BlockChange change : changes) {
+				if (change.getOverrides() != null) {
+					World world = history.getServer().getWorld(
+							change.getWorld());
 
-						Block b = world.getBlockAt(change.getX(),
-								change.getY(), change.getZ());
+					Block b = world.getBlockAt(change.getX(), change.getY(),
+							change.getZ());
 
-						Material m = Material.getMaterial(change.getOverrides()
-								.getBlockType());
+					Material m = Material.getMaterial(change.getOverrides()
+							.getBlockType());
 
-						if (b.getType() == Material.AIR) {
-							if (m != Material.AIR) {
+					if (b.getType() == Material.AIR) {
+						if (m != Material.AIR) {
+							history.addBlock(b.getX(), b.getY(), b.getZ(),
+									m.getId(), b.getWorld().getName(),
+									player.getName(), BlockChangeType.REVERTED);
+						}
+					} else {
+						if (m != b.getType()) {
+							if (m == Material.AIR) {
+								history.removeBlock(b.getX(), b.getY(), b
+										.getZ(), b.getTypeId(), b.getWorld()
+										.getName(), player.getName(),
+										BlockChangeType.REVERTED);
+							} else {
+								history.removeBlock(b.getX(), b.getY(), b
+										.getZ(), b.getTypeId(), b.getWorld()
+										.getName(), player.getName(),
+										BlockChangeType.REVERTED);
 								history.addBlock(b.getX(), b.getY(), b.getZ(),
 										m.getId(), b.getWorld().getName(),
 										player.getName(),
 										BlockChangeType.REVERTED);
-							}
-						} else {
-							if (m != b.getType()) {
-								if (m == Material.AIR) {
-									history.removeBlock(b.getX(), b.getY(), b
-											.getZ(), b.getTypeId(), b
-											.getWorld().getName(), player
-											.getName(),
-											BlockChangeType.REVERTED);
-								} else {
-									history.removeBlock(b.getX(), b.getY(), b
-											.getZ(), b.getTypeId(), b
-											.getWorld().getName(), player
-											.getName(),
-											BlockChangeType.REVERTED);
-									history.addBlock(b.getX(), b.getY(), b
-											.getZ(), m.getId(), b.getWorld()
-											.getName(), player.getName(),
-											BlockChangeType.REVERTED);
 
-								}
 							}
 						}
-
-						b.setType(m);
-
-						Messages.send(
-								player,
-								String.format(
-										"&aReverted &a(&e%s&a,&e%s&a,&e%s&a) in &e%s&a to &e%s",
-										change.getX(), change.getY(),
-										change.getZ(), change.getWorld(),
-										m.name()));
 					}
+
+					b.setType(m);
+
+					Messages.send(
+							player,
+							String.format(
+									"&aReverted &a(&e%s&a,&e%s&a,&e%s&a) in &e%s&a to &e%s",
+									change.getX(), change.getY(),
+									change.getZ(), change.getWorld(), m.name()));
 				}
-
-				Messages.send(player, "&aRevert complete");
-
-			} catch (ParseException e) {
-				Messages.send(player, "&cInvalid date. Format is yyyy-mm-dd");
 			}
 
-			return true;
+			Messages.send(player, "&aRevert complete");
+
+		} catch (ParseException e) {
+			// Should never happen
+			Messages.send(player, "&cInvalid date. Format is yyyy-mm-dd");
 		}
 
-		return false;
 	}
 
 }

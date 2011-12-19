@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.jaymail.JaymailPlugin;
 
@@ -33,15 +34,18 @@ public class MailListCommandHandler extends PlayerAwareCommandHandler {
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("mail").itMatches();
+		return ifNameIs("mail").andArgIs(0, "list").itMatches();
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentEquals(0, "list").itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
 		plugin.viewMails(player);
-
-		return true;
 	}
 
 }

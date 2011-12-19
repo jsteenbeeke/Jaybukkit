@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -35,23 +36,20 @@ public class TimeCommandHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentEquals(0, "day", "night")
+				.itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 1) {
-			if ("day".equals(args[0])) {
-				player.getWorld().setTime(0);
-				Messages.broadcast(player.getServer(), "Time set to &eday");
-			} else if ("night".equals(args[0])) {
-				player.getWorld().setTime(14000);
-				Messages.broadcast(player.getServer(), "Time set to &enight");
-			} else {
-				return false;
-			}
-
-			return true;
-
+		if ("day".equals(args[0])) {
+			player.getWorld().setTime(0);
+			Messages.broadcast(player.getServer(), "Time set to &eday");
+		} else if ("night".equals(args[0])) {
+			player.getWorld().setTime(14000);
+			Messages.broadcast(player.getServer(), "Time set to &enight");
 		}
-
-		return false;
 	}
 }

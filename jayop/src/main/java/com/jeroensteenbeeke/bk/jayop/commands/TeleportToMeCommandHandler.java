@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -37,26 +38,24 @@ public class TeleportToMeCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(1).andArgumentIsValidPlayerName(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
+		String subject = args[0].toLowerCase();
+		Player subjectPlayer = sender.getServer().getPlayerExact(subject);
+		Player targetPlayer = sender.getServer().getPlayerExact(
+				sender.getName());
 
-		if (args.length == 1) {
-			String subject = args[0].toLowerCase();
-			Player subjectPlayer = sender.getServer().getPlayerExact(subject);
-			Player targetPlayer = sender.getServer().getPlayerExact(
-					sender.getName());
+		Messages.broadcast(
+				sender.getServer(),
+				String.format("Teleporting &e%s&f to &e%s",
+						subjectPlayer.getName(), targetPlayer.getName()));
 
-			Messages.broadcast(
-					sender.getServer(),
-					String.format("Teleporting &e%s&f to &e%s",
-							subjectPlayer.getName(), targetPlayer.getName()));
-
-			subjectPlayer.teleport(targetPlayer);
-
-			return true;
-		}
-
-		return false;
+		subjectPlayer.teleport(targetPlayer);
 	}
 
 }

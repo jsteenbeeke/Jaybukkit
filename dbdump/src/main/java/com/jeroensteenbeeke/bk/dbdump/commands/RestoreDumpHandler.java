@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.dbdump.DatabaseDump;
 import com.jeroensteenbeeke.bk.dbdump.DatabaseDumper;
@@ -38,13 +39,16 @@ public class RestoreDumpHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 		DatabaseDumper dumper = new DatabaseDumper(plugin);
 
 		dumper.restore(plugin.getDumpFolder());
-
-		return true;
 	}
 
 }

@@ -40,20 +40,19 @@ public abstract class PlayerAwareCommandHandler extends
 		this.server = server;
 	}
 
-	public abstract boolean onAuthorizedAndPlayerFound(Player player,
+	public abstract void onAuthorizedAndPlayerFound(Player player,
 			Command command, String label, String[] args);
 
 	@Override
-	public final boolean onAuthorized(CommandSender sender, Command command,
+	public final void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 		Player player = server.getPlayerExact(sender.getName());
 
 		if (player != null) {
-			return onAuthorizedAndPlayerFound(player, command, label, args);
+			onAuthorizedAndPlayerFound(player, command, label, args);
 		} else {
 			Messages.send(sender,
 					"&cYou are not capable of performing this action");
-			return true;
 		}
 	}
 

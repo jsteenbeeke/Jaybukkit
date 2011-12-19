@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -36,30 +37,30 @@ public class KickCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountAtLeast(2).andArgumentIsValidPlayerName(0)
+				.itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 
-		if (args.length > 1) {
-			StringBuilder reason = new StringBuilder();
-			for (int i = 1; i < args.length; i++) {
-				if (i > 1) {
-					reason.append(" ");
-				}
-				reason.append(args[i]);
+		StringBuilder reason = new StringBuilder();
+		for (int i = 1; i < args.length; i++) {
+			if (i > 1) {
+				reason.append(" ");
 			}
-
-			Player player = sender.getServer().getPlayerExact(args[0]);
-			if (player != null) {
-				player.kickPlayer(reason.toString());
-			} else {
-				Messages.send(sender, "&cUnknown player: " + args[0]);
-
-				return true;
-			}
-
+			reason.append(args[i]);
 		}
 
-		return false;
+		Player player = sender.getServer().getPlayerExact(args[0]);
+		if (player != null) {
+			player.kickPlayer(reason.toString());
+		} else {
+			Messages.send(sender, "&cUnknown player: " + args[0]);
+		}
+
 	}
 
 }

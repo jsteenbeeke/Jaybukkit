@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
@@ -32,28 +33,32 @@ public class VilleAdminUnsetCommandHandler extends AbstractVilleCommandHandler {
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("ville-admin").andArgIs(0, "unset").itMatches();
+		return ifNameIs("ville").andArgIs(0, "admin").andArgIs(1, "unset")
+				.itMatches();
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
-			String label, String[] args) {
-		if (args.length == 2) {
-			String name = args[1];
-			VillageLocation location = getVille().getDatabase()
-					.find(VillageLocation.class).where().eq("name", name)
-					.findUnique();
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(3).andArgumentEquals(0, "admin")
+				.andArgumentEquals(1, "unset").andArgumentIsValidPlayerName(3)
+				.itIsProper();
+	}
 
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
+			String label, String[] args) {
+		String name = args[2];
+		VillageLocation location = getVille().getDatabase()
+				.find(VillageLocation.class).where().eq("name", name)
+				.findUnique();
+
+		if (location != null) {
 			getVille().getDatabase().delete(location);
 
 			getLocationsHandle().remapJurisdictions();
 
 			Messages.send(player,
 					String.format("Village location &e%s &fdeleted", name));
-
-			return true;
 		}
-
-		return false;
 	}
 }

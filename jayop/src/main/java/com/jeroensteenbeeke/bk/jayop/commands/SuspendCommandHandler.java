@@ -22,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
@@ -41,49 +42,42 @@ public class SuspendCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(2).andArgumentIsValidPlayerName(0)
+				.andArgumentLike(1, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 
-		if (args.length == 2) {
-			OfflinePlayer player = plugin.getServer().getOfflinePlayer(
-					args[0].toLowerCase());
+		OfflinePlayer player = plugin.getServer().getOfflinePlayer(
+				args[0].toLowerCase());
 
-			if (player != null) {
-				for (Suspension suspension : plugin.getDatabase()
-						.find(Suspension.class).where()
-						.eq("playerName", player.getName()).findList()) {
-					plugin.getDatabase().delete(suspension);
-				}
-
-				try {
-					int days = Integer.parseInt(args[1]);
-
-					Suspension suspension = new Suspension();
-					suspension.setStart(System.currentTimeMillis());
-					suspension.setDuration(1000 * 60 * 60 * 24 * days);
-					suspension.setPlayerName(player.getName());
-					plugin.getDatabase().save(suspension);
-
-					Player p = plugin.getServer().getPlayerExact(
-							player.getName());
-					if (p != null) {
-						p.kickPlayer("You have been suspended for " + days
-								+ " days");
-					}
-
-					return true;
-				} catch (NumberFormatException nfe) {
-					Messages.send(sender, "&cInvalid number of days &e"
-							+ args[1]);
-					return true;
-				}
-			} else {
-				Messages.send(sender, "&cUnknown player &e" + args[0]);
-				return true;
+		if (player != null) {
+			for (Suspension suspension : plugin.getDatabase()
+					.find(Suspension.class).where()
+					.eq("playerName", player.getName()).findList()) {
+				plugin.getDatabase().delete(suspension);
 			}
+
+			int days = Integer.parseInt(args[1]);
+
+			Suspension suspension = new Suspension();
+			suspension.setStart(System.currentTimeMillis());
+			suspension.setDuration(1000 * 60 * 60 * 24 * days);
+			suspension.setPlayerName(player.getName());
+			plugin.getDatabase().save(suspension);
+
+			Player p = plugin.getServer().getPlayerExact(player.getName());
+			if (p != null) {
+				p.kickPlayer("You have been suspended for " + days + " days");
+			}
+
+		} else {
+			Messages.send(sender, "&cUnknown player &e" + args[0]);
 		}
 
-		return false;
 	}
 
 }

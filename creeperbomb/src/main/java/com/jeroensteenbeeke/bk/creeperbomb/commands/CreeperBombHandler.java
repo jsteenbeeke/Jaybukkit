@@ -21,20 +21,22 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
-import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
+import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.creeperbomb.Plugin;
 
-public class CreeperBombHandler extends PlayerAwareCommandHandler {
+public class CreeperBombHandler extends PermissibleCommandHandler {
 	private final JSPlugin plugin;
 
 	public CreeperBombHandler(JSPlugin plugin) {
-		super(plugin.getServer(), Plugin.PERMISSION_NAME);
+		super(Plugin.PERMISSION_NAME);
 		this.plugin = plugin;
 	}
 
@@ -44,52 +46,43 @@ public class CreeperBombHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(2).andArgumentIsValidPlayerName(0)
+				.andArgumentLike(1, DECIMAL).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
+		Player player = sender.getServer().getPlayerExact(args[0]);
 
-		if (args.length == 2) {
-			if (player != null) {
-				try {
-					int radius = Integer.parseInt(args[1]);
+		if (player != null) {
+			int radius = Integer.parseInt(args[1]);
 
-					if (radius >= 2 && radius <= 5) {
+			if (radius >= 2 && radius <= 5) {
 
-						Location loc = player.getLocation();
+				Location loc = player.getLocation();
 
-						List<Location> locs = getRadius(loc, radius);
+				List<Location> locs = getRadius(loc, radius);
 
-						int success = 0;
+				int success = 0;
 
-						for (Location next : locs) {
-							if (player.getWorld().spawnCreature(next,
-									CreatureType.CREEPER) != null)
-								success++;
-						}
-
-						if (success > 2) {
-							plugin.getServer().broadcastMessage(
-									"LET THERE BE CREEPERS!");
-						}
-
-						return true;
-					} else {
-						Messages.send(player,
-								"Radius must be at least 2 and at most 5");
-						return true;
-					}
-				} catch (NumberFormatException nfe) {
-					Messages.send(player, "Invalid radius: " + args[1] + " - "
-							+ nfe.getMessage());
-					return true;
+				for (Location next : locs) {
+					if (player.getWorld().spawnCreature(next,
+							CreatureType.CREEPER) != null)
+						success++;
 				}
 
+				if (success > 2) {
+					plugin.getServer().broadcastMessage(
+							"LET THERE BE CREEPERS!");
+				}
 			} else {
-				Messages.send(player, "No player and/or radius specified");
-				return true;
+				Messages.send(player, "Radius must be at least 2 and at most 5");
 			}
+		} else {
+			Messages.send(player, "Invalid player: " + args[0]);
 		}
-
-		return false;
 	}
 
 	private List<Location> getRadius(Location loc, int radius) {

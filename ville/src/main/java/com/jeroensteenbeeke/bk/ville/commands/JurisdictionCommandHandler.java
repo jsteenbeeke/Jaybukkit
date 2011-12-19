@@ -20,6 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
@@ -35,7 +36,12 @@ public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
 		VillageLocation jurisdiction = getLocationsHandle().getJurisdiction(
 				player.getLocation());
@@ -57,7 +63,5 @@ public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
 						"Also, it is possible that this area may become part of another jurisdiction in the future");
 			}
 		}
-
-		return true;
 	}
 }

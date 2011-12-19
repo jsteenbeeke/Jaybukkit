@@ -24,6 +24,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
 import com.jeroensteenbeeke.bk.ville.Ville;
@@ -44,62 +45,59 @@ public class VilleClaimCommandHandler extends AbstractVilleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(2).andArgumentEquals(0, "claim").itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 2) {
-			Location loc = player.getLocation();
-			String name = args[1];
+		Location loc = player.getLocation();
+		String name = args[1];
 
-			List<VillageLocation> closestLocations = getLocationsHandle()
-					.getNearbyVillages(loc);
-			if (closestLocations.size() == 0) {
-				BigDecimal price = new BigDecimal(getVille().getClaimPrice());
+		List<VillageLocation> closestLocations = getLocationsHandle()
+				.getNearbyVillages(loc);
+		if (closestLocations.size() == 0) {
+			BigDecimal price = new BigDecimal(getVille().getClaimPrice());
 
-				boolean nameTaken = getVille().getDatabase()
-						.find(VillageLocation.class).where().eq("name", name)
-						.findRowCount() > 0;
+			boolean nameTaken = getVille().getDatabase()
+					.find(VillageLocation.class).where().eq("name", name)
+					.findRowCount() > 0;
 
-				if (!nameTaken) {
-					if (jayconomy.getBalance(player.getName()).compareTo(price) >= 0) {
-						VillageLocation vl = new VillageLocation();
-						vl.setName(args[1]);
-						vl.setOwner(player.getName());
-						vl.setWorld(loc.getWorld().getName());
-						vl.setX(loc.getBlockX());
-						vl.setY(loc.getBlockY());
-						vl.setZ(loc.getBlockZ());
+			if (!nameTaken) {
+				if (jayconomy.getBalance(player.getName()).compareTo(price) >= 0) {
+					VillageLocation vl = new VillageLocation();
+					vl.setName(args[1]);
+					vl.setOwner(player.getName());
+					vl.setWorld(loc.getWorld().getName());
+					vl.setX(loc.getBlockX());
+					vl.setY(loc.getBlockY());
+					vl.setZ(loc.getBlockZ());
 
-						getVille().getDatabase().save(vl);
+					getVille().getDatabase().save(vl);
 
-						jayconomy.decreaseBalance(player.getName(), price);
+					jayconomy.decreaseBalance(player.getName(), price);
 
-						getLocationsHandle().remapJurisdictions();
+					getLocationsHandle().remapJurisdictions();
 
-						Messages.send(player, String.format(
-								"Village location &e%s &fclaimed", name));
-					} else {
-						Messages.send(player, String.format(
-								"&cYou require &e%s&c to claim this location",
-								jayconomy.formatCurrency(price)));
-					}
+					Messages.send(player, String.format(
+							"Village location &e%s &fclaimed", name));
 				} else {
 					Messages.send(player, String.format(
-							"&cThe name &e%s&c is already taken", name));
+							"&cYou require &e%s&c to claim this location",
+							jayconomy.formatCurrency(price)));
 				}
-
 			} else {
-				Messages.send(player, "&cThis location is unsuitable");
-				for (VillageLocation vl : closestLocations) {
-					Messages.send(
-							player,
-							String.format("&e- &cToo close to &e%s",
-									vl.getName()));
-				}
+				Messages.send(player, String.format(
+						"&cThe name &e%s&c is already taken", name));
 			}
-
-			return true;
+		} else {
+			Messages.send(player, "&cThis location is unsuitable");
+			for (VillageLocation vl : closestLocations) {
+				Messages.send(player,
+						String.format("&e- &cToo close to &e%s", vl.getName()));
+			}
 		}
 
-		return false;
 	}
 }

@@ -22,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
@@ -41,30 +42,29 @@ public class WaypointListHandler extends PlayerAwareCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorizedAndPlayerFound(Player player, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		if (args.length == 0) {
-			List<Waypoint> waypoints = plugin.getWaypoints()
-					.getWaypointsByWorld(player.getWorld().getName());
+		List<Waypoint> waypoints = plugin.getWaypoints().getWaypointsByWorld(
+				player.getWorld().getName());
 
-			StringBuilder msg = new StringBuilder();
-			msg.append("Waypoints in your world (&e" + waypoints.size()
-					+ "&f): &a");
+		StringBuilder msg = new StringBuilder();
+		msg.append("Waypoints in your world (&e" + waypoints.size() + "&f): &a");
 
-			int i = 0;
-			for (Waypoint waypoint : waypoints) {
-				if (i++ > 0) {
-					msg.append("&f, &a");
-				}
-
-				msg.append(waypoint.getName());
+		int i = 0;
+		for (Waypoint waypoint : waypoints) {
+			if (i++ > 0) {
+				msg.append("&f, &a");
 			}
 
-			Messages.send(player, msg.toString());
-
-			return true;
+			msg.append(waypoint.getName());
 		}
-		return false;
+
+		Messages.send(player, msg.toString());
 	}
 
 }

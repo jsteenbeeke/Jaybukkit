@@ -23,6 +23,7 @@ import org.bukkit.command.CommandSender;
 
 import com.avaje.ebean.Transaction;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
+import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
@@ -43,7 +44,12 @@ public class BalanceHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public boolean onAuthorized(CommandSender sender, Command command,
+	public ParameterIntegrityChecker getParameterChecker() {
+		return ifArgCountIs(0).itIsProper();
+	}
+
+	@Override
+	public void onAuthorized(CommandSender sender, Command command,
 			String label, String[] args) {
 		Transaction t = plugin.getDatabase().beginTransaction();
 
@@ -64,7 +70,5 @@ public class BalanceHandler extends PermissibleCommandHandler {
 				"&cYour balance is: &e" + plugin.formatCurrency(amount));
 
 		t.commit();
-
-		return true;
 	}
 }

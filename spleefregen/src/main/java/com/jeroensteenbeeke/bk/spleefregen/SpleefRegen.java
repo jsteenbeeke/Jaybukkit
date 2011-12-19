@@ -30,6 +30,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
+import com.jeroensteenbeeke.bk.spleefregen.commands.DespleefHandler;
 import com.jeroensteenbeeke.bk.spleefregen.commands.SpleefCreateHandler;
 import com.jeroensteenbeeke.bk.spleefregen.commands.SpleefDeleteHandler;
 import com.jeroensteenbeeke.bk.spleefregen.commands.SpleefFloodHandler;
@@ -67,6 +68,7 @@ public class SpleefRegen extends JSPlugin {
 		addCommandHandler(new SpleefUnlockHandler(this));
 		addCommandHandler(new SpleefListHandler(this));
 		addCommandHandler(new SpleefFloodHandler(this));
+		addCommandHandler(new DespleefHandler(this));
 		addListener(Type.BLOCK_PLACE, new SpleefBlockListener(this),
 				Priority.Low);
 		addListener(Type.BLOCK_BREAK, new SpleefBlockListener(this),
