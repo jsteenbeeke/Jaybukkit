@@ -1,11 +1,13 @@
 package com.jeroensteenbeeke.bk.ville.entities;
 
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.jeroensteenbeeke.bk.basics.entities.BaseEntity;
 
+@Entity
 public class VilleBuilder extends BaseEntity<String> {
 	private static final long serialVersionUID = 1L;
 
