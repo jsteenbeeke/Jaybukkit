@@ -224,5 +224,6 @@
     <module>dbdump</module>
     <module>carrierreceiver</module>
     <module>sitestats</module>
+    <module>carrier</module>
   </modules>
 </project>

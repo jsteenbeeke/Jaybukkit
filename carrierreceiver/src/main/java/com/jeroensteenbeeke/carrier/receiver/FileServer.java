@@ -29,6 +29,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -64,6 +65,7 @@ public class FileServer {
 
 	@GET
 	@Path("/")
+	@Produces("application/json")
 	public List<String> getFiles(@QueryParam("token") String token,
 			@QueryParam("signature") String signature) {
 		if (TokenRepository.INST.verifySignature(token, "", signature)) {

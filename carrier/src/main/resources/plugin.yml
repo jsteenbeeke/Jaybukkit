@@ -1,0 +1,5 @@
+name: carrier
+main: com.jeroensteenbeeke.bk.carrier.Carrier
+version: 1.0-SNAPSHOT
+
+commands:

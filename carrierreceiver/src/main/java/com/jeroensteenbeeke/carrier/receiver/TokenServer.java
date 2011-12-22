@@ -19,11 +19,13 @@ package com.jeroensteenbeeke.carrier.receiver;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 @Path("/auth")
 public class TokenServer {
 	@GET
 	@Path("/{username}")
+	@Produces("text/plain")
 	public String getToken(@PathParam("username") String username) {
 		return TokenRepository.INST.generateToken(username);
 	}
