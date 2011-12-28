@@ -60,8 +60,8 @@ public class BuildPermissionListener extends BlockListener {
 			case SAND:
 			case GRAVEL:
 			case LAVA:
-				if (!locations.hasBuilderPermission(event.getPlayer(), event
-						.getBlock().getLocation())) {
+				if (!locations.isBuilderAt(event.getPlayer(), event.getBlock()
+						.getLocation())) {
 					event.setCancelled(true);
 					Messages.send(
 							event.getPlayer(),

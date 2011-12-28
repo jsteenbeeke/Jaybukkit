@@ -73,6 +73,16 @@ public class VilleLocations {
 		return true;
 	}
 
+	public boolean isBuilderAt(Player player, Location location) {
+		VillageLocation loc = getJurisdiction(location);
+		if (loc != null) {
+			return loc.getOwner().equals(player.getName())
+					|| builders.containsEntry(loc, player.getName());
+		}
+
+		return true;
+	}
+
 	public void remapJurisdictions() {
 		jurisdictions.clear();
 		builders.clear();
