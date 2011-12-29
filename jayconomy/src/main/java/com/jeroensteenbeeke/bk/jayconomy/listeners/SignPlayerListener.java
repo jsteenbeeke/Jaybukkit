@@ -84,6 +84,14 @@ public class SignPlayerListener extends PlayerListener {
 						.eq("x", b.getX()).eq("y", b.getY()).eq("z", b.getZ())
 						.eq("world", b.getWorld().getName()).findUnique();
 
+				if (!event.getPlayer().hasPermission(
+						Jayconomy.PERMISSION_BUILD_BASIC)) {
+					Messages.send(event.getPlayer(),
+							"&cYou require basic build permissions to use economy signs");
+
+					return;
+				}
+
 				if (sign != null) {
 					if (sign.getSignMode() == SignMode.SELL) {
 						if (sign.getMax() != null) {

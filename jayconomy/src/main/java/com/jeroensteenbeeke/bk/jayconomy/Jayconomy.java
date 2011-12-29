@@ -56,6 +56,8 @@ public class Jayconomy extends JSPlugin {
 
 	public static final String PERMISSION_TRANSFER = "jayconomy.transfer";
 
+	public static final String PERMISSION_BUILD_BASIC = "permissions.build";
+
 	public static final HashSet<Byte> transparent = new HashSet<Byte>();
 
 	static {
