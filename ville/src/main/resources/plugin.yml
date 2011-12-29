@@ -37,10 +37,8 @@ commands:
         - /ville unrestrict <name>
         - /ville builder add <name> <player>
         - /ville builder remove <name> <player>
-  ville-admin:
-    description: Access ville admin commands
-    permission: ville.admin
-    usage: /ville set|unset
+        - /ville admin set <name> <owner>
+        - /ville admin unset <name>
 permissions:
   ville.use:
     description: Allows people to use the ville basic commands
