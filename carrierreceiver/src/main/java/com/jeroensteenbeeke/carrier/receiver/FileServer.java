@@ -19,9 +19,6 @@ package com.jeroensteenbeeke.carrier.receiver;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,11 +29,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,36 +46,45 @@ public class FileServer {
 		if (dataFolderName == null) {
 			log.error("NO DATA FOLDER INDICATED! ALL WEB SERVICE CALLS WILL FAIL!");
 			log.error("Please start this server with -Ddata.folder=/location/of/data/folder");
-		}
 
-		dataFolder = new File(dataFolderName);
+		} else {
 
-		if (dataFolder.exists()) {
-			log.error("Data folder does not exist: " + dataFolderName);
-		} else if (!dataFolder.isDirectory()) {
-			log.error("Data folder is not a directory: " + dataFolderName);
+			dataFolder = new File(dataFolderName);
+
+			if (dataFolder.exists()) {
+				log.error("Data folder does not exist: " + dataFolderName);
+			} else if (!dataFolder.isDirectory()) {
+				log.error("Data folder is not a directory: " + dataFolderName);
+			}
 		}
 	}
 
 	@GET
 	@Path("/")
 	@Produces("application/json")
-	public List<String> getFiles(@QueryParam("token") String token,
+	public String[] getFiles(@QueryParam("token") String token,
 			@QueryParam("signature") String signature) {
 		if (TokenRepository.INST.verifySignature(token, "", signature)) {
+			log.info(String.format("GET /files/ signed %s with token %s",
+					signature, token));
 
-			return Arrays.asList(dataFolder.list());
+			return dataFolder.list();
 		}
+
+		log.warn(String.format(
+				"Auth failed for GET /files/ signed %s with token %s",
+				signature, token));
 
 		throw new WebApplicationException(Status.FORBIDDEN);
 	}
 
 	@POST
 	@Path("/{name}")
-	@Consumes("multipart/form-data")
-	public void uploadFile(@QueryParam("token") String token,
+	@Consumes("application/octet-stream")
+	@Produces("text/plain")
+	public String uploadFile(@QueryParam("token") String token,
 			@QueryParam("signature") String signature,
-			@PathParam("name") String name, MultipartFormDataInput input) {
+			@PathParam("name") String name, byte[] data) {
 		if (TokenRepository.INST.verifySignature(token, name, signature)) {
 
 			File target = new File(dataFolder, name);
@@ -89,36 +92,34 @@ public class FileServer {
 			try {
 				FileOutputStream out = new FileOutputStream(target);
 
-				for (InputPart part : input.getParts()) {
-					String filename = getFileName(part.getHeaders());
-
-					if (filename.equals(name)) {
-						InputStream in = part.getBody(InputStream.class, null);
-						int c;
-
-						while ((c = in.read()) != -1) {
-							out.write(c);
-						}
-
-						in.close();
-					}
+				for (byte b : data) {
+					out.write(b);
 				}
 
 				out.close();
+
+				log.info(String.format(
+						"POST /files/%s signed %s with token %s", name,
+						signature, token));
 			} catch (IOException e) {
 				log.error(e.getMessage(), e);
 				throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 			}
 
-			return;
+			return String.format("File %s created", name);
 		}
+
+		log.warn(String.format(
+				"Auth failed for POST /files/%s signed %s with token %s", name,
+				signature, token));
 
 		throw new WebApplicationException(Status.FORBIDDEN);
 	}
 
 	@DELETE
 	@Path("/{name}")
-	public void deleteFile(@QueryParam("token") String token,
+	@Produces("text/plain")
+	public String deleteFile(@QueryParam("token") String token,
 			@QueryParam("signature") String signature,
 			@PathParam("name") String name) {
 		if (TokenRepository.INST.verifySignature(token, name, signature)) {
@@ -126,30 +127,25 @@ public class FileServer {
 
 			if (target.exists()) {
 				target.delete();
+
+				log.info(String.format(
+						"DELETE /files/%s signed %s with token %s", name,
+						signature, token));
 			} else {
+				log.warn(String
+						.format("File not found on DELETE /files/%s signed %s with token %s",
+								name, signature, token));
+
 				throw new WebApplicationException(Status.NOT_FOUND);
 			}
 
-			return;
+			return String.format("File %s deleted", name);
 		}
+
+		log.warn(String.format(
+				"Auth failed for DELETE /files/%s signed %s with token %s",
+				name, signature, token));
 
 		throw new WebApplicationException(Status.FORBIDDEN);
-	}
-
-	private String getFileName(MultivaluedMap<String, String> header) {
-
-		String[] contentDisposition = header.getFirst("Content-Disposition")
-				.split(";");
-
-		for (String filename : contentDisposition) {
-			if ((filename.trim().startsWith("filename"))) {
-
-				String[] name = filename.split("=");
-
-				String finalFileName = name[1].trim().replaceAll("\"", "");
-				return finalFileName;
-			}
-		}
-		return "unknown";
 	}
 }

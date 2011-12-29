@@ -129,6 +129,10 @@
 									<includes>
 										<include>com.jeroensteenbeeke.bukkit:basics</include>
 										<include>postgresql:postgresql</include>
+										<include>org.apache.httpcomponents:httpclient</include>
+										<include>org.apache.httpcomponents:httpcore</include>
+										<include>commons-logging:commons-logging</include>
+										<include>com.googlecode.json-simple:json-simple</include>
 									</includes>
 								</artifactSet>
 							</configuration>

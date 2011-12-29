@@ -21,12 +21,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Path("/auth")
 public class TokenServer {
+	private static final Logger log = LoggerFactory
+			.getLogger(TokenServer.class);
+
 	@GET
 	@Path("/{username}")
 	@Produces("text/plain")
 	public String getToken(@PathParam("username") String username) {
-		return TokenRepository.INST.generateToken(username);
+		String token = TokenRepository.INST.generateToken(username);
+
+		log.info(String.format("Issued token %s for user %s", token, username));
+
+		return token;
 	}
 }

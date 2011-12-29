@@ -23,13 +23,16 @@ import javax.ws.rs.core.Application;
 
 public class CarrierApplication extends Application {
 
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-		classes.addAll(super.getClasses());
-		classes.add(FileServer.class);
-		classes.add(TokenServer.class);
+	Set<Object> singletons = new HashSet<Object>();
 
-		return classes;
+	public CarrierApplication() {
+		singletons.add(new FileServer());
+		singletons.add(new TokenServer());
 	}
+
+	@Override
+	public Set<Object> getSingletons() {
+		return singletons;
+	}
+
 }

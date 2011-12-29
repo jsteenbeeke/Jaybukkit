@@ -42,8 +42,6 @@ public class FileSyncer implements Runnable {
 
 	private final String password;
 
-	private final HttpClient client = new DefaultHttpClient();
-
 	private final JSONParser parser = new JSONParser();
 
 	public FileSyncer(String targetUrl, String username, String password,
@@ -62,11 +60,10 @@ public class FileSyncer implements Runnable {
 
 	@Override
 	public void run() {
-
 		try {
-			String token = getString(createTokenRequest());
-			Set<String> remote = new HashSet<String>(
-					getList(createFileListRequest(token)));
+			String token = getString(newClient(), createTokenRequest());
+			Set<String> remote = new HashSet<String>(getList(newClient(),
+					createFileListRequest(token)));
 			Map<String, File> local = new HashMap<String, File>();
 
 			for (File folder : trackedFolders) {
@@ -79,8 +76,9 @@ public class FileSyncer implements Runnable {
 			// Delete remote but not local
 			for (String fn : remote) {
 				if (!local.containsKey(fn)) {
-					token = getString(createTokenRequest());
-					int response = perform(createDeleteFileRequest(token, fn));
+					token = getString(newClient(), createTokenRequest());
+					int response = perform(newClient(),
+							createDeleteFileRequest(token, fn));
 					log.info(String.format("Delete remote file %s result %d",
 							fn, response));
 				}
@@ -89,9 +87,9 @@ public class FileSyncer implements Runnable {
 			// Upload local but not remote
 			for (Entry<String, File> e : local.entrySet()) {
 				if (!remote.contains(e.getKey())) {
-					token = getString(createTokenRequest());
-					int response = perform(createUploadFileRequest(token,
-							e.getValue()));
+					token = getString(newClient(), createTokenRequest());
+					int response = perform(newClient(),
+							createUploadFileRequest(token, e.getValue()));
 					log.info(String.format("Upload file %s result %d",
 							e.getKey(), response));
 				}
@@ -104,6 +102,10 @@ public class FileSyncer implements Runnable {
 			log.severe("Failed to parse response: " + pe.getMessage());
 		}
 
+	}
+
+	private HttpClient newClient() {
+		return new DefaultHttpClient();
 	}
 
 	private HttpUriRequest createUploadFileRequest(String token, File value) {
@@ -128,7 +130,7 @@ public class FileSyncer implements Runnable {
 
 	public HttpUriRequest createDeleteFileRequest(String token, String file) {
 		return new HttpDelete(withQueryParams(constructUri("files", file),
-				"token", token, "signature", sign(token, "", password)));
+				"token", token, "signature", sign(token, file, password)));
 	}
 
 	private String withQueryParams(String base, String... parts) {
@@ -183,16 +185,17 @@ public class FileSyncer implements Runnable {
 		return HashUtil.sha1Hash(input.toString());
 	}
 
-	public int perform(HttpUriRequest request) throws IOException {
+	public int perform(HttpClient client, HttpUriRequest request)
+			throws IOException {
 		HttpResponse response = client.execute(request);
 
 		return response.getStatusLine().getStatusCode();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> getList(HttpUriRequest request) throws IOException,
-			ParseException {
-		String res = getString(request);
+	public List<String> getList(HttpClient client, HttpUriRequest request)
+			throws IOException, ParseException {
+		String res = getString(client, request);
 
 		Object o = parser.parse(res);
 		if (o instanceof JSONArray) {
@@ -204,7 +207,8 @@ public class FileSyncer implements Runnable {
 		return Lists.newArrayList();
 	}
 
-	public String getString(HttpUriRequest request) throws IOException {
+	public String getString(HttpClient client, HttpUriRequest request)
+			throws IOException {
 		HttpResponse response = client.execute(request);
 		HttpEntity entity = response.getEntity();
 		InputStream is = entity.getContent();
