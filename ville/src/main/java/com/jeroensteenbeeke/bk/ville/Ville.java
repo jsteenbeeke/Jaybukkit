@@ -62,14 +62,23 @@ public class Ville extends JSPlugin {
 	private VilleLocations locations;
 
 	@Override
+	public void onLoad() {
+		getConfig().addDefault("minimumDistance", 1000);
+		getConfig().addDefault("price", 5000);
+		getConfig().addDefault("restrictPrice", 12000);
+		getConfig().options().copyDefaults(true);
+
+		saveConfig();
+
+	}
+
+	@Override
 	public void onEnable() {
 		logger.info("Enabled ville plugin");
 
 		minimumDistance = getConfig().getInt("minimumDistance", 1000);
 		claimPrice = getConfig().getInt("price", 5000);
 		restrictPrice = getConfig().getInt("restrictPrice", 12000);
-
-		saveConfig();
 
 		setupDatabase();
 
