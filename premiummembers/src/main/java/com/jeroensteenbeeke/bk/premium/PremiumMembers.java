@@ -26,18 +26,30 @@ import com.jeroensteenbeeke.bk.premium.listeners.PremiumPlayerListener;
 
 public class PremiumMembers extends JSPlugin {
 	public static final String PERMISSION_PREMIUM = "premiummembers.premium";
+
+	public static final String PERMISSION_REGULAR = "premiummembers.regular";
+
 	private Logger logger = Logger.getLogger("Minecraft");
+
+	@Override
+	public void onLoad() {
+		getConfig().addDefault("premiumslots", 8);
+		getConfig().addDefault("guestslots", 6);
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+	}
 
 	@Override
 	public void onEnable() {
 		logger.info("Enabled premium members plugin");
 
-		int slots = getConfig().getInt("nonpremiumslots", 0);
+		int premium = getConfig().getInt("premiumslots", 8);
+		int guest = getConfig().getInt("guestslots", 6);
 
 		saveConfig();
 
-		addListener(Type.PLAYER_JOIN, new PremiumPlayerListener(this, slots),
-				Priority.Lowest);
+		addListener(Type.PLAYER_JOIN, new PremiumPlayerListener(this, premium,
+				guest), Priority.Lowest);
 	}
 
 	@Override
