@@ -33,11 +33,17 @@ public class PermissionsFetcher extends JSPlugin {
 	private String url;
 
 	@Override
+	public void onLoad() {
+		getConfig().addDefault("url", DEFAULT_URL);
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+	}
+
+	@Override
 	public void onEnable() {
 		logger.info("Enabled permissionfetcher plugin");
 
 		this.url = getConfig().getString("url", DEFAULT_URL);
-		saveConfig();
 
 		if (!DEFAULT_URL.equals(url)) {
 			addListener(Type.PLUGIN_ENABLE, new FetchActivator(this),
