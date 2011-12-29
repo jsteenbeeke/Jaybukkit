@@ -56,6 +56,8 @@ public class DatabaseDump extends JSPlugin {
 		getConfig().addDefault(Config.DUMP_FOLDER, Config.DUMP_FOLDER_DEFAULT);
 		getConfig().addDefault(Config.DUMP_RELATIVE_TO_PLUGIN_DATA,
 				Config.DUMP_RELATIVE_TO_PLUGIN_DATA_DEFAULT);
+		getConfig().options().copyDefaults(true);
+		saveConfig();
 	}
 
 	@Override
@@ -71,8 +73,6 @@ public class DatabaseDump extends JSPlugin {
 				Config.DUMP_RELATIVE_TO_PLUGIN_DATA_DEFAULT);
 		String dumpFolderName = getConfig().getString(Config.DUMP_FOLDER,
 				Config.DUMP_FOLDER_DEFAULT);
-
-		saveConfig();
 
 		if (relativeToData) {
 			dumpFolder = new File(getDataFolder(), dumpFolderName);
