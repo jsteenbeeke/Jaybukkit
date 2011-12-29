@@ -165,6 +165,7 @@ public class Ville extends JSPlugin {
 		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
 		addListener(Type.BLOCK_PLACE, listener, Priority.Highest);
 		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
+		addListener(Type.PLAYER_BUCKET_EMPTY, listener, Priority.Highest);
 	}
 
 	@Override

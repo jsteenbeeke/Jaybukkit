@@ -55,7 +55,8 @@ public class BuildPermissionListener extends BlockListener {
 					"&cYou do not have permission to build here");
 		} else {
 			Material m = event.getBlock().getType();
-			switch (event.getBlock().getType()) {
+
+			switch (m) {
 			case SAPLING:
 			case SAND:
 			case GRAVEL:
