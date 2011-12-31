@@ -49,7 +49,7 @@ public class Carrier extends JSPlugin {
 				&& !Defaults.USERNAME.equals(username)
 				&& !Defaults.PASSWORD.equals(password)
 				&& !Defaults.TRACKED_FILES.equals(trackedFileNames)) {
-			getServer().getScheduler().scheduleSyncRepeatingTask(
+			getServer().getScheduler().scheduleAsyncRepeatingTask(
 					this,
 					new FileSyncer(targetUrl, username, password,
 							trackedFileNames), 20L * 60L, interval);
