@@ -84,7 +84,7 @@ public class UpdateSiteTask implements Runnable {
 			}
 
 			if ("OK".equals(content.toString())) {
-				logger.fine(String.format("Updated listing at %s", baseUrl));
+				logger.info(String.format("Updated listing at %s", baseUrl));
 			} else if ("FAIL".equals(content.toString())) {
 				logger.severe("Update failed: invalid checksum");
 			} else {
