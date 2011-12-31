@@ -19,6 +19,7 @@ package com.jeroensteenbeeke.carrier.receiver;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -84,7 +85,7 @@ public class FileServer {
 	@Produces("text/plain")
 	public String uploadFile(@QueryParam("token") String token,
 			@QueryParam("signature") String signature,
-			@PathParam("name") String name, byte[] data) {
+			@PathParam("name") String name, InputStream in) {
 		if (TokenRepository.INST.verifySignature(token, name, signature)) {
 
 			File target = new File(dataFolder, name);
@@ -92,10 +93,13 @@ public class FileServer {
 			try {
 				FileOutputStream out = new FileOutputStream(target);
 
-				for (byte b : data) {
+				int b;
+
+				while ((b = in.read()) != -1) {
 					out.write(b);
 				}
 
+				in.close();
 				out.close();
 
 				log.info(String.format(
