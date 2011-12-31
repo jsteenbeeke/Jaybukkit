@@ -54,7 +54,7 @@ public class DatabaseDumper {
 			}
 		}
 	}
-	
+
 	public void dump(File dumpFolder) {
 
 		for (JavaPlugin p : plugin.getPlugins()) {
@@ -63,7 +63,7 @@ public class DatabaseDumper {
 
 			for (Class<?> c : p.getDatabaseClasses()) {
 				String filename = createNewFilename(p, c);
-				
+
 				dumpToFile(dumpFolder, database, json, c, filename);
 			}
 		}
@@ -74,26 +74,26 @@ public class DatabaseDumper {
 			for (Class<?> c : p.getDatabaseClasses()) {
 				DumpFileFinder finder = new DumpFileFinder(p, c);
 				String[] filenames = dumpFolder.list(finder);
-				
-				TreeMap<Long,String> timeToFile = new TreeMap<Long,String>();
-				for (String filename: filenames) {
+
+				TreeMap<Long, String> timeToFile = new TreeMap<Long, String>();
+				for (String filename : filenames) {
 					timeToFile.put(finder.getDumpTime(filename), filename);
 				}
-				
+
 				if (timeToFile.size() > plugin.getMaxDumps()) {
 					int remove = timeToFile.size() - plugin.getMaxDumps();
-					
+
 					int i = 1;
-					for (Entry<Long,String> e: timeToFile.entrySet()) {
+					for (Entry<Long, String> e : timeToFile.entrySet()) {
 						if (i++ > remove) {
 							break;
 						}
-						
+
 						File target = new File(dumpFolder, e.getValue());
 						target.delete();
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -130,14 +130,13 @@ public class DatabaseDumper {
 
 	private void importFromFile(File dumpFolder, EbeanServer database,
 			JsonContext json, Class<?> c, String filename) {
-		logger.info(String.format("Importing from dump file %s",
-				filename));
+		logger.info(String.format("Importing from dump file %s", filename));
 
 		int i = 0;
 
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(
-					new File(dumpFolder, filename)));
+			BufferedReader br = new BufferedReader(new FileReader(new File(
+					dumpFolder, filename)));
 
 			String next;
 
@@ -149,18 +148,15 @@ public class DatabaseDumper {
 
 			logger.info(String.format("Imported %d objects", i));
 		} catch (IOException e) {
-			logger.severe("Failed to parse dump file: "
-					+ e.getMessage());
+			logger.severe("Failed to parse dump file: " + e.getMessage());
 		}
 	}
 
-	
 	private void dumpToFile(File dumpFolder, EbeanServer database,
 			JsonContext json, Class<?> c, String filename) {
 		File output = new File(dumpFolder, filename);
 		try {
-			PrintWriter pw = new PrintWriter(new FileWriter(output),
-					true);
+			PrintWriter pw = new PrintWriter(new FileWriter(output), true);
 
 			List<?> objects = database.find(c).findList();
 
@@ -170,8 +166,8 @@ public class DatabaseDumper {
 
 			pw.close();
 
-			logger.info(String.format("Wrote %d objects to %s",
-					objects.size(), filename));
+			logger.info(String.format("Wrote %d objects to %s", objects.size(),
+					filename));
 		} catch (IOException e) {
 			logger.severe(String.format("Failed to open file: %s",
 					e.getMessage()));
@@ -186,7 +182,7 @@ public class DatabaseDumper {
 		builder.append('.');
 		builder.append(System.currentTimeMillis());
 		builder.append(".dmp");
-		
+
 		String filename = builder.toString();
 		return filename;
 	}
@@ -216,6 +212,19 @@ public class DatabaseDumper {
 			}
 
 			return 0L;
+		}
+	}
+
+	public void restoreOnly(File dumpFolder, String name) {
+		for (JavaPlugin p : plugin.getPlugins()) {
+			if (name.equals(p.getDescription().getName())) {
+				EbeanServer database = p.getDatabase();
+				JsonContext json = database.createJsonContext();
+
+				for (Class<?> c : p.getDatabaseClasses()) {
+					processClass(dumpFolder, p, database, json, c);
+				}
+			}
 		}
 	}
 }

@@ -38,9 +38,10 @@ public class RestoreDumpHandler extends PermissibleCommandHandler {
 		return ifNameIs("dbrestore").itMatches();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ParameterIntegrityChecker getParameterChecker() {
-		return ifArgCountIs(0).itIsProper();
+		return ifArgCountAtLeast(0).andArgCountAtMost(1).itIsProper();
 	}
 
 	@Override
@@ -48,7 +49,11 @@ public class RestoreDumpHandler extends PermissibleCommandHandler {
 			String label, String[] args) {
 		DatabaseDumper dumper = new DatabaseDumper(plugin);
 
-		dumper.restore(plugin.getDumpFolder());
+		if (args.length == 1) {
+			dumper.restoreOnly(plugin.getDumpFolder(), args[0]);
+		} else {
+			dumper.restore(plugin.getDumpFolder());
+		}
 	}
 
 }
