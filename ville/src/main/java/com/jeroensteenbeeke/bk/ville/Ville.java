@@ -44,7 +44,7 @@ import com.jeroensteenbeeke.bk.ville.commands.VilleUnrestrictCommandHandler;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
 import com.jeroensteenbeeke.bk.ville.listeners.BuildPermissionListener;
-import com.jeroensteenbeeke.bk.ville.listeners.LavaListener;
+import com.jeroensteenbeeke.bk.ville.listeners.FluidListener;
 
 public class Ville extends JSPlugin {
 	public static final String PERMISSION_USE = "ville.use";
@@ -175,7 +175,7 @@ public class Ville extends JSPlugin {
 		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
 		addListener(Type.BLOCK_PLACE, listener, Priority.Highest);
 		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
-		addListener(Type.PLAYER_BUCKET_EMPTY, new LavaListener(this),
+		addListener(Type.PLAYER_BUCKET_EMPTY, new FluidListener(this),
 				Priority.Highest);
 	}
 

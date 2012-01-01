@@ -1,6 +1,5 @@
 package com.jeroensteenbeeke.bk.ville.listeners;
 
-import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
@@ -53,27 +52,6 @@ public class BuildPermissionListener extends BlockListener {
 			event.setCancelled(true);
 			Messages.send(event.getPlayer(),
 					"&cYou do not have permission to build here");
-		} else {
-			Material m = event.getBlock().getType();
-
-			switch (m) {
-			case SAPLING:
-			case SAND:
-			case GRAVEL:
-			case LAVA:
-			case STATIONARY_LAVA:
-				if (!locations.isBuilderAt(event.getPlayer(), event.getBlock()
-						.getLocation())) {
-					event.setCancelled(true);
-					Messages.send(
-							event.getPlayer(),
-							String.format(
-									"&cPlacement of &e%s&c is restricted in claimed areas",
-									m.toString()));
-				}
-			default:
-				break;
-			}
 		}
 	}
 

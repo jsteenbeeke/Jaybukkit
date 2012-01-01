@@ -8,10 +8,10 @@ import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.VilleLocations;
 
-public class LavaListener extends PlayerListener {
+public class FluidListener extends PlayerListener {
 	private final VilleLocations locations;
 
-	public LavaListener(Ville ville) {
+	public FluidListener(Ville ville) {
 		locations = ville.getLocations();
 	}
 
@@ -31,6 +31,7 @@ public class LavaListener extends PlayerListener {
 			Material m = event.getBucket();
 
 			switch (m) {
+			case WATER_BUCKET:
 			case LAVA_BUCKET:
 				if (!locations.isBuilderAt(event.getPlayer(), event
 						.getBlockClicked().getLocation())) {
@@ -38,7 +39,7 @@ public class LavaListener extends PlayerListener {
 					Messages.send(
 							event.getPlayer(),
 							String.format(
-									"&cPlacement of &e%s&c is restricted in claimed areas",
+									"&cPlacement of fluids is restricted in claimed areas",
 									m.toString()));
 				}
 			default:

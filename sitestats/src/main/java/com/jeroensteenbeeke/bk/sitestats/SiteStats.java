@@ -43,7 +43,7 @@ public class SiteStats extends JSPlugin {
 		if (key == null || key.isEmpty()) {
 			logger.severe("Please edit the sitestats config.yml file and enter your key");
 		} else {
-			getServer().getScheduler().scheduleSyncRepeatingTask(this,
+			getServer().getScheduler().scheduleAsyncRepeatingTask(this,
 					new UpdateSiteTask(this), 20 * 60 * 1, 20 * 60 * 3);
 		}
 	}
