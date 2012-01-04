@@ -172,9 +172,15 @@ public class Ville extends JSPlugin {
 
 		BlockListener listener = new BuildPermissionListener(this);
 
-		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
+		addListener(Type.BLOCK_PLACE, listener, Priority.Lowest);
 		addListener(Type.BLOCK_PLACE, listener, Priority.Highest);
+
+		addListener(Type.BLOCK_BREAK, listener, Priority.Lowest);
+		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
+
+		addListener(Type.BLOCK_DAMAGE, listener, Priority.Lowest);
 		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
+
 		addListener(Type.PLAYER_BUCKET_EMPTY, new FluidListener(this),
 				Priority.Highest);
 	}
