@@ -1,0 +1,18 @@
+name: jaywire
+main: com.jeroensteenbeeke.bk.jaywire.Jaywire
+version: 1.0-SNAPSHOT
+
+commands:
+permissions:
+    jaywire.place.*:
+        description: Allows a player to place both trip-signs and right-click-triggers
+        default: false
+        children:
+            jaywire.place.trip: true
+            jaywire.place.click: true
+    jaywire.place.trip:
+        description: Allows a player to place a trip-sign
+        default: false
+    jaywire.place.click:
+        description: Allows a player to place a right-click-trigger
+        default: false

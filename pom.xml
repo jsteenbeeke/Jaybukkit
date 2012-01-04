@@ -229,5 +229,6 @@
     <module>carrierreceiver</module>
     <module>sitestats</module>
     <module>carrier</module>
+    <module>jaywire</module>
   </modules>
 </project>
