@@ -61,6 +61,6 @@ public class TestJsonDump {
 
 		String res = context.toJsonString(foo, false, options);
 
-		assertEquals("{\"id\":\"1\",\"bar\":\"bar1\"}", res);
+		assertEquals("{\"id\":1,\"bar\":\"bar1\"}", res);
 	}
 }
