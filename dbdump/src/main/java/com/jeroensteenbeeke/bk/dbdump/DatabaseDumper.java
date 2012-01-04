@@ -34,6 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.text.json.JsonContext;
+import com.avaje.ebean.text.json.JsonWriteOptions;
 
 public class DatabaseDumper {
 	private Logger logger = Logger.getLogger("Minecraft");
@@ -159,9 +160,11 @@ public class DatabaseDumper {
 			PrintWriter pw = new PrintWriter(new FileWriter(output), true);
 
 			List<?> objects = database.find(c).findList();
+			JsonWriteOptions options = new JsonWriteOptions();
+			options.setRootPathVisitor(new ForeignKeyVisitor(database));
 
 			for (Object o : objects) {
-				pw.println(json.toJsonString(o));
+				pw.println(json.toJsonString(o, false, options));
 			}
 
 			pw.close();
