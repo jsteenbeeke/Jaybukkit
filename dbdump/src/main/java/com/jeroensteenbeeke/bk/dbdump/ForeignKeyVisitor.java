@@ -15,7 +15,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.text.json.JsonWriteBeanVisitor;
 import com.avaje.ebean.text.json.JsonWriter;
 import com.google.common.base.Predicate;
@@ -47,12 +46,6 @@ public class ForeignKeyVisitor implements JsonWriteBeanVisitor<Object> {
 			return field.isAnnotationPresent(annotation);
 		}
 
-	}
-
-	private final EbeanServer server;
-
-	public ForeignKeyVisitor(EbeanServer server) {
-		this.server = server;
 	}
 
 	@Override

@@ -161,7 +161,7 @@ public class DatabaseDumper {
 
 			List<?> objects = database.find(c).findList();
 			JsonWriteOptions options = new JsonWriteOptions();
-			options.setRootPathVisitor(new ForeignKeyVisitor(database));
+			options.setRootPathVisitor(new ForeignKeyVisitor());
 
 			for (Object o : objects) {
 				pw.println(json.toJsonString(o, false, options));

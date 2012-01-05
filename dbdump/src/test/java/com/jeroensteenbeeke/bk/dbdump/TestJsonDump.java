@@ -57,7 +57,7 @@ public class TestJsonDump {
 
 		JsonContext context = server.createJsonContext();
 		JsonWriteOptions options = new JsonWriteOptions();
-		options.setRootPathVisitor(new ForeignKeyVisitor(server));
+		options.setRootPathVisitor(new ForeignKeyVisitor());
 
 		String res = context.toJsonString(foo, false, options);
 
