@@ -1,0 +1,15 @@
+name: econchantment
+main: com.jeroensteenbeeke.bk.econchantment.Econchantment
+version: 1.0-SNAPSHOT
+
+commands:
+    enchant:
+      description: Add an enchantment to the selected item
+      permissions: econchantment.use
+      usage:
+          - /enchant info <id>
+          - /enchant apply <id> [level]
+permissions:
+    econchantment.use:
+       default: false
+       description: Allows a player to use the econchantment plugin

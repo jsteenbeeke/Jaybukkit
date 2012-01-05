@@ -230,5 +230,6 @@
     <module>sitestats</module>
     <module>carrier</module>
     <module>jaywire</module>
+    <module>econchantment</module>
   </modules>
 </project>
