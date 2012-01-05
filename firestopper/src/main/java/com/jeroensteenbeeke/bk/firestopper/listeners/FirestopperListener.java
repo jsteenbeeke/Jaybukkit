@@ -24,7 +24,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.block.BlockSpreadEvent;
 
 import com.google.common.collect.Sets;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
@@ -41,14 +40,6 @@ public class FirestopperListener extends BlockListener {
 
 	public FirestopperListener(int burnIfUnauthorized) {
 		this.burnIfUnauthorized = burnIfUnauthorized;
-	}
-
-	@Override
-	public void onBlockSpread(BlockSpreadEvent event) {
-		if (event.isCancelled())
-			return;
-
-		event.setCancelled(true);
 	}
 
 	@Override

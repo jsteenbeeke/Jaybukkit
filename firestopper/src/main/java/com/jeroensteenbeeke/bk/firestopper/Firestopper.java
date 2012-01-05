@@ -38,8 +38,6 @@ public class Firestopper extends JSPlugin {
 
 		addListener(Type.BLOCK_IGNITE, new FirestopperListener(
 				burnIfUnauthorized), Priority.Lowest);
-		addListener(Type.BLOCK_SPREAD, new FirestopperListener(
-				burnIfUnauthorized), Priority.Lowest);
 	}
 
 	@Override
