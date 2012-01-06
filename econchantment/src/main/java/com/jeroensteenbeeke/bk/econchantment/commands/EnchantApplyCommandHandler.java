@@ -62,7 +62,7 @@ public class EnchantApplyCommandHandler extends PlayerAwareCommandHandler {
 						BigDecimal balance = jayconomy.getBalance(player
 								.getName());
 
-						if (balance.compareTo(price) > 0) {
+						if (balance.compareTo(price) >= 0) {
 							jayconomy.decreaseBalance(player.getName(), price);
 							itemInHand.addEnchantment(enchantment, level);
 							Messages.send(player, String.format(
@@ -74,8 +74,9 @@ public class EnchantApplyCommandHandler extends PlayerAwareCommandHandler {
 									player,
 									String.format(
 											"&cEnchantment &e%s&c costs &e%d&c, you only have &e%d",
-											enchantment.getName(), price,
-											balance));
+											enchantment.getName(),
+											price.intValue(),
+											balance.intValue()));
 						}
 					} else {
 						Messages.send(
