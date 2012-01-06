@@ -36,8 +36,8 @@ public class EnchantApplyCommandHandler extends PlayerAwareCommandHandler {
 	@Override
 	public ParameterIntegrityChecker getParameterChecker() {
 		return ifArgCountAtLeast(2).andArgCountAtMost(3)
-				.andArgumentLike(1, DECIMAL).andArgumentLike(2, DECIMAL)
-				.itIsProper();
+				.andArgumentLike(1, DECIMAL)
+				.andArgumentLikeIfExists(2, DECIMAL).itIsProper();
 	}
 
 	@Override
