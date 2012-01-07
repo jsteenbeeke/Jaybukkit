@@ -1,5 +1,6 @@
 package com.jeroensteenbeeke.bk.econchantment;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -14,7 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasePricesTest {
+public class BaseDataTest {
 	private List<Enchantment> declaredEnchantments;
 
 	private Map<Enchantment, String> names = new HashMap<Enchantment, String>();
@@ -47,6 +48,13 @@ public class BasePricesTest {
 
 			assertTrue(String.format("Enchantment %s has a base price", name),
 					BaseData.base.containsKey(e));
+
+			assertTrue(
+					String.format("Enchantment %s has a friendly name", name),
+					BaseData.friendlyNames.containsKey(e));
+			assertFalse(String.format(
+					"Enchantment %s has a friendly name that is non-empty",
+					name), "".equals(BaseData.friendlyNames.get(e)));
 
 			// Forum formatting
 			// System.out.printf("[b]%s[/b]", name);

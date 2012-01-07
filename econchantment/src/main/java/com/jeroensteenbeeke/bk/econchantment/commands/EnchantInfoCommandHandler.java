@@ -10,6 +10,7 @@ import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
 import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
+import com.jeroensteenbeeke.bk.econchantment.BaseData;
 import com.jeroensteenbeeke.bk.econchantment.Econchantment;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
 
@@ -48,18 +49,31 @@ public class EnchantInfoCommandHandler extends PlayerAwareCommandHandler {
 					enchantment, 1);
 
 			if (basePrice != null) {
+				String name = BaseData.friendlyNames.get(enchantment);
+
+				int maxLevel = enchantment.getMaxLevel();
+
 				Messages.send(
 						player,
-						String.format("Enchantment %s (%d)",
-								enchantment.getName(), enchantment.getId()));
+						String.format("Enchantment %s (%d)", name,
+								enchantment.getId()));
 
-				for (int i = 1; i <= enchantment.getMaxLevel(); i++) {
-					Messages.send(player, String
-							.format("  - Level %d, %s", i, jayconomy
+				if (maxLevel == 1) {
+					Messages.send(player,
+							String.format("  - &e%s&f @ &e%s", name, jayconomy
 									.formatCurrency(econchantment
 											.determineEnchantmentPrice(
-													enchantment, i))));
+													enchantment, 1))));
+				} else {
 
+					for (int i = 1; i <= maxLevel; i++) {
+						Messages.send(player, String.format(
+								"  - &e%s %s&f @ &e%s", name, latinize(i),
+								jayconomy.formatCurrency(econchantment
+										.determineEnchantmentPrice(enchantment,
+												i))));
+
+					}
 				}
 			} else {
 				Messages.send(
@@ -72,6 +86,27 @@ public class EnchantInfoCommandHandler extends PlayerAwareCommandHandler {
 			Messages.send(player,
 					String.format("&cUnknown enchantment id: &e%d", id));
 		}
+	}
+
+	private static final String[] RCODE = { "M", "CM", "D", "CD", "C", "XC",
+			"L", "XL", "X", "IX", "V", "IV", "I" };
+	private static final int[] BVAL = { 1000, 900, 500, 400, 100, 90, 50, 40,
+			10, 9, 5, 4, 1 };
+
+	public static String latinize(int decimal) {
+		if (decimal <= 0 || decimal >= 4000) {
+			throw new NumberFormatException(
+					"Value outside roman numeral range.");
+		}
+		StringBuilder roman = new StringBuilder();
+
+		for (int i = 0; i < RCODE.length; i++) {
+			while (decimal >= BVAL[i]) {
+				decimal -= BVAL[i];
+				roman.append(RCODE[i]);
+			}
+		}
+		return roman.toString();
 	}
 
 }
