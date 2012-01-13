@@ -85,5 +85,22 @@ public final class BaseData {
 		base.put(Enchantment.WATER_WORKER, 20); // Aqua affinity
 		maxLevel.put(Enchantment.WATER_WORKER, 1); // Aqua affinity
 		friendlyNames.put(Enchantment.WATER_WORKER, "Aqua Affinitiy");
+
+		base.put(Enchantment.ARROW_DAMAGE, 11);
+		maxLevel.put(Enchantment.ARROW_DAMAGE, 5);
+		friendlyNames.put(Enchantment.ARROW_DAMAGE, "Power");
+
+		base.put(Enchantment.ARROW_KNOCKBACK, 13);
+		maxLevel.put(Enchantment.ARROW_KNOCKBACK, 3);
+		friendlyNames.put(Enchantment.ARROW_KNOCKBACK, "Punch");
+
+		base.put(Enchantment.ARROW_FIRE, 41);
+		maxLevel.put(Enchantment.ARROW_FIRE, 1);
+		friendlyNames.put(Enchantment.ARROW_FIRE, "Flame");
+
+		base.put(Enchantment.ARROW_INFINITE, 50);
+		maxLevel.put(Enchantment.ARROW_INFINITE, 1);
+		friendlyNames.put(Enchantment.ARROW_INFINITE, "Infinity");
+
 	}
 }
