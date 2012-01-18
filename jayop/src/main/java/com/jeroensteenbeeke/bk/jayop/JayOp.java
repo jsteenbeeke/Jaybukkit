@@ -49,6 +49,7 @@ import com.jeroensteenbeeke.bk.jayop.commands.UnsuspendCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.WeatherCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.ZapCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.entities.Suspension;
+import com.jeroensteenbeeke.bk.jayop.listeners.FrozenPlayerListener;
 import com.jeroensteenbeeke.bk.jayop.listeners.SuspendedPlayerListener;
 
 public class JayOp extends JSPlugin {
@@ -82,6 +83,9 @@ public class JayOp extends JSPlugin {
 
 		addListener(Type.PLAYER_LOGIN, new SuspendedPlayerListener(this),
 				Priority.Highest);
+		FrozenPlayerListener freezeListener = new FrozenPlayerListener(this);
+
+		addListener(Type.PLAYER_MOVE, freezeListener, Priority.Highest);
 
 		addCommandHandler(new WeatherCommandHandler(this));
 		addCommandHandler(new TeleportCommandHandler(this));
@@ -102,8 +106,6 @@ public class JayOp extends JSPlugin {
 		addCommandHandler(new UnfreezeCommandHandler(this));
 		addCommandHandler(new ListFrozenCommandHandler(this));
 
-		getServer().getScheduler().scheduleSyncRepeatingTask(this,
-				new FreezeTask(this), 100L, 5L);
 	}
 
 	public void freeze(Player player) {
