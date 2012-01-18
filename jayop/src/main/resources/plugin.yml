@@ -69,6 +69,30 @@ commands:
         description: Clears the target player's inventory of all items 
         permission: jayop.inventory
         usage: /clearinventory <player>
+    zap:
+        description: Unleashes a series of lightning strikes on the target player
+        permission: jayop.enforcement
+        usage: /zap <player>
+    combust:
+        description: Sets the target player on fire for 5 seconds
+        permission: jayop.enforcement
+        usage: /combust <player>
+    tphome:
+        description: Teleports the indicated player to his spawn location
+        permission: jayop.location
+        usage: /tphome <player>
+    freeze:
+        description: Restricts player movement
+        permission: jayop.enforcement
+        usage: /freeze <player>
+    unfreeze:
+        description: Unrestricts player movement
+        permission: jayop.enforcement
+        usage: /unfreeze <player>
+    listfrozen:
+        description: Lists all players currently restricted in their movement
+        permission: jayop.enforcement
+        usage: /listfrozen
 permissions:
     jayop.*:
         description: Gives access to all jayop commands

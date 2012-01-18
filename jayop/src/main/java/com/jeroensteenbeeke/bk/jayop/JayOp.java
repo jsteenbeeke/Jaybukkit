@@ -16,27 +16,38 @@
  */
 package com.jeroensteenbeeke.bk.jayop;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.persistence.PersistenceException;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jayop.commands.BanCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.ClearInventoryCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.CombustCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.FreezeCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.GiveItemCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.KickCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.ListFrozenCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.SuspendCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.TeleportCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.TeleportHomeCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.TeleportOthersCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.TeleportToMeCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.TimeCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.UnbanCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.UnfreezeCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.UnsuspendCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.WeatherCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.ZapCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.entities.Suspension;
 import com.jeroensteenbeeke.bk.jayop.listeners.SuspendedPlayerListener;
 
@@ -51,11 +62,23 @@ public class JayOp extends JSPlugin {
 
 	public static final String PERMISSION_INVENTORY = "jayop.inventory";
 
+	private Set<String> frozen = new HashSet<String>();
+
+	@Override
+	public void onLoad() {
+		getConfig().addDefault("frozen", new LinkedList<String>());
+		getConfig().options().copyDefaults(true);
+
+		saveConfig();
+	}
+
 	@Override
 	public void onEnable() {
 		logger.info("Enabled JayOp plugin");
 
 		setupDatabase();
+
+		this.frozen = new HashSet<String>(getConfig().getStringList("frozen"));
 
 		addListener(Type.PLAYER_LOGIN, new SuspendedPlayerListener(this),
 				Priority.Highest);
@@ -72,6 +95,27 @@ public class JayOp extends JSPlugin {
 		addCommandHandler(new UnsuspendCommandHandler(this));
 		addCommandHandler(new GiveItemCommandHandler());
 		addCommandHandler(new ClearInventoryCommandHandler());
+		addCommandHandler(new TeleportHomeCommandHandler(this));
+		addCommandHandler(new CombustCommandHandler(this));
+		addCommandHandler(new ZapCommandHandler(this));
+		addCommandHandler(new FreezeCommandHandler(this));
+		addCommandHandler(new UnfreezeCommandHandler(this));
+		addCommandHandler(new ListFrozenCommandHandler(this));
+
+		getServer().getScheduler().scheduleSyncRepeatingTask(this,
+				new FreezeTask(this), 100L, 5L);
+	}
+
+	public void freeze(Player player) {
+		frozen.add(player.getName());
+	}
+
+	public void unfreeze(Player player) {
+		frozen.remove(player.getName());
+	}
+
+	public Set<String> getFrozen() {
+		return frozen;
 	}
 
 	private void setupDatabase() {
@@ -94,6 +138,7 @@ public class JayOp extends JSPlugin {
 
 	@Override
 	public void onDisable() {
-
+		getConfig().set("frozen", new ArrayList<String>(frozen));
+		saveConfig();
 	}
 }
