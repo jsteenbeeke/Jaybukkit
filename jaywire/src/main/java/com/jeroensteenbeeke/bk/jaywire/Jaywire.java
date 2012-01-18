@@ -43,7 +43,7 @@ public class Jaywire extends JSPlugin {
 	public void powerBlockBelow(Block block) {
 		Block below = block.getRelative(BlockFace.DOWN);
 		if (below.getType() == Material.REDSTONE_WIRE) {
-			below.setData((byte) 1, true);
+			below.setData((byte) 0xF, true);
 		}
 
 	}
