@@ -228,8 +228,9 @@ public class HelpHandler extends PermissibleCommandHandler {
 	}
 
 	private String assign(String key, Map<String, Object> data) {
-		if (data.containsKey(key))
-			return (String) data.get(key);
+		if (data.containsKey(key)) {
+			return data.get(key).toString();
+		}
 		return "";
 	}
 
