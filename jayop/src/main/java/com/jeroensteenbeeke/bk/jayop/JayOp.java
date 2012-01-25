@@ -89,7 +89,7 @@ public class JayOp extends JSPlugin {
 
 		addCommandHandler(new WeatherCommandHandler(this));
 		addCommandHandler(new TeleportCommandHandler(this));
-		addCommandHandler(new TeleportToMeCommandHandler());
+		addCommandHandler(new TeleportToMeCommandHandler(this));
 		addCommandHandler(new TeleportOthersCommandHandler(this));
 		addCommandHandler(new TimeCommandHandler(this));
 		addCommandHandler(new KickCommandHandler());
