@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.SignChangeEvent;
 
+import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jaywire.Jaywire;
 
 public class JaywireBlockListener extends BlockListener {
@@ -24,7 +25,10 @@ public class JaywireBlockListener extends BlockListener {
 			if (!event.getPlayer()
 					.hasPermission(Jaywire.PERMISSION_PLACE_CLICK)) {
 				event.setCancelled(true);
+				Messages.send(event.getPlayer(),
+						"&cYou are not allowed to place Jaywire signs");
 			} else {
+				event.setLine(0, Jaywire.HEADER_CLICK_FANCY);
 				event.setLine(1, event.getPlayer().getName());
 				event.setLine(2, "");
 				event.setLine(3, "");
@@ -32,7 +36,10 @@ public class JaywireBlockListener extends BlockListener {
 		} else if (Jaywire.HEADER_TRIP.equals(firstLine)) {
 			if (!event.getPlayer().hasPermission(Jaywire.PERMISSION_PLACE_TRIP)) {
 				event.setCancelled(true);
+				Messages.send(event.getPlayer(),
+						"&cYou are not allowed to place Jaywire signs");
 			} else {
+				event.setLine(0, Jaywire.HEADER_TRIP_FANCY);
 				event.setLine(1, event.getPlayer().getName());
 				event.setLine(2, "");
 				event.setLine(3, "");

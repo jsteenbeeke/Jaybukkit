@@ -28,7 +28,7 @@ public class JaywirePlayerListener extends PlayerListener {
 		Block target = event.getTo().getBlock();
 		Block standingOn = target.getRelative(BlockFace.DOWN);
 
-		checkBlock(standingOn, Jaywire.HEADER_TRIP);
+		checkBlock(standingOn, Jaywire.HEADER_TRIP_FANCY);
 
 	}
 
@@ -40,7 +40,7 @@ public class JaywirePlayerListener extends PlayerListener {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block clicked = event.getClickedBlock();
 
-			checkBlock(clicked, Jaywire.HEADER_CLICK);
+			checkBlock(clicked, Jaywire.HEADER_CLICK_FANCY);
 		}
 	}
 

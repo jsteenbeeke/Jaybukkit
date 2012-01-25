@@ -231,5 +231,6 @@
     <module>carrier</module>
     <module>jaywire</module>
     <module>econchantment</module>
+    <module>labgen</module>
   </modules>
 </project>

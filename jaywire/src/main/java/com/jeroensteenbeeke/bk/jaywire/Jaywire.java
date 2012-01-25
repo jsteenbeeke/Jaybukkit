@@ -9,6 +9,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
+import com.jeroensteenbeeke.bk.jaywire.listeners.JaywireBlockListener;
 import com.jeroensteenbeeke.bk.jaywire.listeners.JaywirePlayerListener;
 
 public class Jaywire extends JSPlugin {
@@ -23,7 +24,11 @@ public class Jaywire extends JSPlugin {
 
 	public static final String HEADER_CLICK = "[RSOnClick]";
 
+	public static final String HEADER_CLICK_FANCY = "[\u00A7eRSOnClick\u00A70]";
+
 	public static final String HEADER_TRIP = "[RSOnWalk]";
+
+	public static final String HEADER_TRIP_FANCY = "[\u00A7eRSOnWalk\u00A70]";
 
 	@Override
 	public void onEnable() {
@@ -33,6 +38,10 @@ public class Jaywire extends JSPlugin {
 
 		addListener(Type.PLAYER_MOVE, pListener, Priority.Monitor);
 		addListener(Type.PLAYER_INTERACT, pListener, Priority.Monitor);
+
+		JaywireBlockListener eListener = new JaywireBlockListener();
+
+		addListener(Type.SIGN_CHANGE, eListener, Priority.Highest);
 	}
 
 	@Override
@@ -43,7 +52,12 @@ public class Jaywire extends JSPlugin {
 	public void powerBlockBelow(Block block) {
 		Block below = block.getRelative(BlockFace.DOWN);
 		if (below.getType() == Material.REDSTONE_WIRE) {
-			below.setData((byte) 0xF, true);
+			below.setData((byte) 0xE);
+			logger.info("TEH POWRE!1");
+		} else {
+			logger.info(String.format(
+					"No powerable block underneath (%d, %d, %d)", block.getX(),
+					block.getY(), block.getZ()));
 		}
 
 	}
