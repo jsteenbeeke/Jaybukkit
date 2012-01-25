@@ -49,9 +49,16 @@ public class TeleportCommandHandler extends PlayerAwareCommandHandler {
 		String target = args[0].toLowerCase();
 		Player targetPlayer = plugin.getServer().getPlayerExact(target);
 
-		Messages.broadcast(plugin.getServer(), String.format(
-				"Teleporting &e%s&f to &e%s", player.getName(), target));
+		if (targetPlayer != null) {
+			Messages.broadcast(
+					plugin.getServer(),
+					String.format("Teleporting &e%s&f to &e%s",
+							player.getName(), target));
 
-		player.teleport(targetPlayer);
+			player.teleport(targetPlayer);
+		} else {
+			Messages.send(player, String.format(
+					"&cTarget player &e%s&c not known or not online", args[0]));
+		}
 	}
 }

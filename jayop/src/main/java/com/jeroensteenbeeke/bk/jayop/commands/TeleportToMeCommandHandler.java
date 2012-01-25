@@ -17,19 +17,18 @@
 package com.jeroensteenbeeke.bk.jayop.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
-import com.jeroensteenbeeke.bk.basics.commands.PermissibleCommandHandler;
+import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jayop.JayOp;
 
-public class TeleportToMeCommandHandler extends PermissibleCommandHandler {
+public class TeleportToMeCommandHandler extends PlayerAwareCommandHandler {
 
-	public TeleportToMeCommandHandler() {
-		super(JayOp.PERMISSION_LOCATIONAL);
+	public TeleportToMeCommandHandler(JayOp jayop) {
+		super(jayop.getServer(), JayOp.PERMISSION_LOCATIONAL);
 	}
 
 	@Override
@@ -43,19 +42,23 @@ public class TeleportToMeCommandHandler extends PermissibleCommandHandler {
 	}
 
 	@Override
-	public void onAuthorized(CommandSender sender, Command command,
-			String label, String[] args) {
+	public void onAuthorizedAndPlayerFound(Player targetPlayer,
+			Command command, String label, String[] args) {
+
 		String subject = args[0].toLowerCase();
-		Player subjectPlayer = sender.getServer().getPlayerExact(subject);
-		Player targetPlayer = sender.getServer().getPlayerExact(
-				sender.getName());
+		Player subjectPlayer = targetPlayer.getServer().getPlayerExact(subject);
 
-		Messages.broadcast(
-				sender.getServer(),
-				String.format("Teleporting &e%s&f to &e%s",
-						subjectPlayer.getName(), targetPlayer.getName()));
+		if (subjectPlayer != null) {
+			Messages.broadcast(
+					targetPlayer.getServer(),
+					String.format("Teleporting &e%s&f to &e%s",
+							subjectPlayer.getName(), targetPlayer.getName()));
 
-		subjectPlayer.teleport(targetPlayer);
+			subjectPlayer.teleport(targetPlayer);
+		} else {
+			Messages.send(targetPlayer, String.format(
+					"&cPlayer &e%s&c not known or not online", args[0]));
+		}
 	}
 
 }
