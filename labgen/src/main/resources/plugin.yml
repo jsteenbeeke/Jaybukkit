@@ -1,0 +1,6 @@
+name: labgen
+main: com.jeroensteenbeeke.bk.labgen.LabGen
+version: 1.0-SNAPSHOT
+load: STARTUP
+
+commands:
