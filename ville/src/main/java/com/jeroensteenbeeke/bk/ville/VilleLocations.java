@@ -3,9 +3,11 @@ package com.jeroensteenbeeke.bk.ville;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.jeroensteenbeeke.bk.ville.entities.ApprovedPlayer;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
 
@@ -21,14 +24,30 @@ public class VilleLocations {
 
 	private final Multimap<VillageLocation, String> builders;
 
+	private final Set<String> approvedPlayers = new HashSet<String>();
+
 	private final Ville ville;
 
 	public VilleLocations(Ville ville) {
 		this.ville = ville;
 		this.jurisdictions = Maps.newTreeMap();
 		builders = LinkedListMultimap.create();
+
+		for (ApprovedPlayer p : ville.getDatabase().find(ApprovedPlayer.class)
+				.findList()) {
+			approvedPlayers.add(p.getPlayer());
+		}
+
 		initLocations(ville.getDatabase().find(VillageLocation.class)
 				.findList());
+	}
+
+	Set<String> getApprovedPlayers() {
+		return approvedPlayers;
+	}
+
+	public boolean isApprovedBuilder(Player player) {
+		return approvedPlayers.contains(player);
 	}
 
 	private void initLocations(List<VillageLocation> foundLocations) {
@@ -67,10 +86,12 @@ public class VilleLocations {
 
 				return loc.getOwner().equals(player.getName())
 						|| builders.containsEntry(loc, player.getName());
+			} else if (loc.isEntryLevel()) {
+				return true;
 			}
 		}
 
-		return true;
+		return isApprovedBuilder(player);
 	}
 
 	public boolean isBuilderAt(Player player, Location location) {
@@ -179,5 +200,4 @@ public class VilleLocations {
 	public void addBuilder(VillageLocation location, String targetPlayer) {
 		builders.put(location, targetPlayer);
 	}
-
 }

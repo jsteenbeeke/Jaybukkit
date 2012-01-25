@@ -52,6 +52,9 @@ public class VillageLocation extends BaseEntity<String> {
 	@Column(nullable = false)
 	private boolean restricted;
 
+	@Column(nullable = false)
+	private boolean entryLevel;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location")
 	private List<VilleBuilder> builders;
 
@@ -114,6 +117,14 @@ public class VillageLocation extends BaseEntity<String> {
 
 	public void setRestricted(boolean restricted) {
 		this.restricted = restricted;
+	}
+
+	public boolean isEntryLevel() {
+		return entryLevel;
+	}
+
+	public void setEntryLevel(boolean entryLevel) {
+		this.entryLevel = entryLevel;
 	}
 
 	public List<VilleBuilder> getBuilders() {

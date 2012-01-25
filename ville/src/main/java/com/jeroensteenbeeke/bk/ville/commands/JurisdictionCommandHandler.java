@@ -49,18 +49,24 @@ public class JurisdictionCommandHandler extends AbstractVilleCommandHandler {
 		if (jurisdiction == null) {
 			Messages.send(player, "This area is not within any jurisdiction");
 		} else {
-
-			Messages.send(
-					player,
-					String.format(
-							"You are in the jurisdiction of &e%s&f, contact &e%s&f for more information",
-							jurisdiction.getName(), jurisdiction.getOwner()));
-			if (getLocationsHandle().getDistance(jurisdiction,
-					player.getLocation()) >= (getVille().getMinimumDistance() / 2)) {
+			if (jurisdiction.isEntryLevel()) {
+				Messages.send(player, String.format(
+						"You are in the free build zone &e%s",
+						jurisdiction.getName()));
+			} else {
 				Messages.send(
 						player,
+						String.format(
+								"You are in the jurisdiction of &e%s&f, contact &e%s&f for more information",
+								jurisdiction.getName(), jurisdiction.getOwner()));
+				if (getLocationsHandle().getDistance(jurisdiction,
+						player.getLocation()) >= (getVille()
+						.getMinimumDistance() / 2)) {
+					Messages.send(
+							player,
 
-						"Also, it is possible that this area may become part of another jurisdiction in the future");
+							"Also, it is possible that this area may become part of another jurisdiction in the future");
+				}
 			}
 		}
 	}

@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import javax.persistence.PersistenceException;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.event.block.BlockListener;
@@ -32,15 +33,20 @@ import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
 import com.jeroensteenbeeke.bk.ville.commands.JurisdictionCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAddBuilderCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleAdminMakeFreeBuildCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminSetCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleAdminUnmakeFreeBuildCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminUnsetCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleApproveMeCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleCedeCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleCheckCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleClaimCommandHandler;
+import com.jeroensteenbeeke.bk.ville.commands.VilleFreeBuildCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleRemoveBuilderCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleRestrictCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleUnclaimCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleUnrestrictCommandHandler;
+import com.jeroensteenbeeke.bk.ville.entities.ApprovedPlayer;
 import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
 import com.jeroensteenbeeke.bk.ville.listeners.BuildPermissionListener;
@@ -59,6 +65,8 @@ public class Ville extends JSPlugin {
 
 	private int restrictPrice;
 
+	private int approvePrice;
+
 	private VilleLocations locations;
 
 	@Override
@@ -66,6 +74,7 @@ public class Ville extends JSPlugin {
 		getConfig().addDefault("minimumDistance", 1000);
 		getConfig().addDefault("price", 5000);
 		getConfig().addDefault("restrictPrice", 12000);
+		getConfig().addDefault("approvePrice", 9000);
 		getConfig().options().copyDefaults(true);
 
 		saveConfig();
@@ -79,6 +88,7 @@ public class Ville extends JSPlugin {
 		minimumDistance = getConfig().getInt("minimumDistance", 1000);
 		claimPrice = getConfig().getInt("price", 5000);
 		restrictPrice = getConfig().getInt("restrictPrice", 12000);
+		approvePrice = getConfig().getInt("approvePrice", 9000);
 
 		setupDatabase();
 
@@ -125,6 +135,10 @@ public class Ville extends JSPlugin {
 		return restrictPrice;
 	}
 
+	public int getApprovePrice() {
+		return approvePrice;
+	}
+
 	private void setupDatabase() {
 		try {
 			getDatabase().find(VillageLocation.class).findRowCount();
@@ -140,6 +154,12 @@ public class Ville extends JSPlugin {
 			logger.info("Adding VilleBuilder table");
 			installDDL();
 		}
+		try {
+			getDatabase().find(ApprovedPlayer.class).findRowCount();
+		} catch (PersistenceException ex) {
+			logger.info("Adding VilleBuilder table");
+			installDDL();
+		}
 	}
 
 	@Override
@@ -149,6 +169,7 @@ public class Ville extends JSPlugin {
 
 		classes.add(VillageLocation.class);
 		classes.add(VilleBuilder.class);
+		classes.add(ApprovedPlayer.class);
 
 		return classes;
 	}
@@ -169,20 +190,25 @@ public class Ville extends JSPlugin {
 		addCommandHandler(new VilleAddBuilderCommandHandler(this));
 		addCommandHandler(new VilleRemoveBuilderCommandHandler(this));
 		addCommandHandler(new VilleCedeCommandHandler(this));
+		addCommandHandler(new VilleAdminMakeFreeBuildCommandHandler(this));
+		addCommandHandler(new VilleAdminUnmakeFreeBuildCommandHandler(this));
+		addCommandHandler(new VilleApproveMeCommandHandler(this, jayconomy));
+		addCommandHandler(new VilleFreeBuildCommandHandler(this));
 
 		BlockListener listener = new BuildPermissionListener(this);
 
-		addListener(Type.BLOCK_PLACE, listener, Priority.Lowest);
 		addListener(Type.BLOCK_PLACE, listener, Priority.Highest);
 
-		addListener(Type.BLOCK_BREAK, listener, Priority.Lowest);
 		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
 
-		addListener(Type.BLOCK_DAMAGE, listener, Priority.Lowest);
 		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
 
 		addListener(Type.PLAYER_BUCKET_EMPTY, new FluidListener(this),
 				Priority.Highest);
+	}
+
+	public void approvePlayer(Player player) {
+		locations.getApprovedPlayers().add(player.getName());
 	}
 
 	@Override

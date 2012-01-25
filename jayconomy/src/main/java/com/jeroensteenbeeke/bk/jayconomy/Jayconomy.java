@@ -25,6 +25,7 @@ import javax.persistence.PersistenceException;
 
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.ItemStack;
@@ -551,5 +552,22 @@ public class Jayconomy extends JSPlugin {
 					(short) 0, deal.getSubType() != null ? deal.getSubType()
 							.byteValue() : null);
 		}
+	}
+
+	public boolean hasBalance(Player player, int amount) {
+
+		return hasBalance(player, new BigDecimal(amount));
+	}
+
+	private boolean hasBalance(Player player, BigDecimal amount) {
+		return getBalance(player.getName()).compareTo(amount) >= 0;
+	}
+
+	public String formatCurrency(int amount) {
+		return formatCurrency(new BigDecimal(amount));
+	}
+
+	public void decreaseBalance(String name, int price) {
+		decreaseBalance(name, new BigDecimal(price));
 	}
 }
