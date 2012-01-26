@@ -37,11 +37,11 @@ public class VilleUnrestrictCommandHandler extends AbstractVilleCommandHandler {
 
 		if (location != null) {
 			if (location.isRestricted()) {
-				location.setRestricted(true);
+				location.setRestricted(false);
 				getVille().getDatabase().update(location);
 
 				Messages.broadcast(getVille().getServer(), String.format(
-						"&cLocation &e%s&c is now restricted", locName));
+						"&cLocation &e%s&c is no longer restricted", locName));
 
 			} else {
 				Messages.send(player, String

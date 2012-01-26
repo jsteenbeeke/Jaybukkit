@@ -83,12 +83,13 @@ public class VilleLocations {
 	public boolean hasBuilderPermission(Player player, Location location) {
 		VillageLocation loc = getJurisdiction(location);
 		if (loc != null) {
+			if (loc.isEntryLevel()) {
+				return true;
+			}
 			if (loc.isRestricted()) {
 
 				return loc.getOwner().equals(player.getName())
 						|| builders.containsEntry(loc, player.getName());
-			} else if (loc.isEntryLevel()) {
-				return true;
 			}
 		}
 
