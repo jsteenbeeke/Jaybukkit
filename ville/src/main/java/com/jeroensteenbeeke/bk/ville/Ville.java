@@ -58,6 +58,8 @@ public class Ville extends JSPlugin {
 
 	public static final String PERMISSION_ADMIN = "ville.admin";
 
+	public static final String PERMISSION_PREMIUM = "premiummembers.premium";
+
 	private Logger logger = Logger.getLogger("Minecraft");
 
 	private int minimumDistance;

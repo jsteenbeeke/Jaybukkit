@@ -36,7 +36,7 @@ public class VilleApproveMeCommandHandler extends AbstractVilleCommandHandler {
 		int approved = getVille().getDatabase().find(ApprovedPlayer.class)
 				.where().eq("player", player.getName()).findRowCount();
 
-		if (approved == 0) {
+		if (approved == 0 && !player.hasPermission(Ville.PERMISSION_PREMIUM)) {
 			if (jayconomy.hasBalance(player, getVille().getApprovePrice())) {
 				jayconomy.decreaseBalance(player.getName(), getVille()
 						.getApprovePrice());
