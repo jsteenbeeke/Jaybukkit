@@ -14,7 +14,7 @@ public class VilleApproveMeCommandHandler extends AbstractVilleCommandHandler {
 	private final Jayconomy jayconomy;
 
 	public VilleApproveMeCommandHandler(Ville ville, Jayconomy jayconomy) {
-		super(ville);
+		super(ville, Ville.PERMISSION_USE);
 		this.jayconomy = jayconomy;
 	}
 

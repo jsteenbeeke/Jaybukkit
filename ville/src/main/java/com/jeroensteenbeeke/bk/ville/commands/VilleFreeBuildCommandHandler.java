@@ -19,7 +19,7 @@ import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 
 public class VilleFreeBuildCommandHandler extends AbstractVilleCommandHandler {
 	public VilleFreeBuildCommandHandler(Ville ville) {
-		super(ville);
+		super(ville, Ville.PERMISSION_USE);
 	}
 
 	@Override
