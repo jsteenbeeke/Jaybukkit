@@ -54,7 +54,7 @@ public class VilleApproveMeCommandHandler extends AbstractVilleCommandHandler {
 						jayconomy.formatCurrency(getVille().getApprovePrice())));
 				Messages.send(
 						player,
-						String.format("&cUse the command &f/ville free build &cto locate places where you can earn this"));
+						String.format("&cUse the command &e/ville free build &cto locate places where you can earn this"));
 			}
 		} else {
 			Messages.send(player, "&cYou are already an approved builder");

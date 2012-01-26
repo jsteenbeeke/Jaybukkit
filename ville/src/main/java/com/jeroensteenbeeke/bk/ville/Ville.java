@@ -51,6 +51,7 @@ import com.jeroensteenbeeke.bk.ville.entities.VillageLocation;
 import com.jeroensteenbeeke.bk.ville.entities.VilleBuilder;
 import com.jeroensteenbeeke.bk.ville.listeners.BuildPermissionListener;
 import com.jeroensteenbeeke.bk.ville.listeners.FluidListener;
+import com.jeroensteenbeeke.bk.ville.listeners.LoginListener;
 
 public class Ville extends JSPlugin {
 	public static final String PERMISSION_USE = "ville.use";
@@ -205,6 +206,7 @@ public class Ville extends JSPlugin {
 
 		addListener(Type.PLAYER_BUCKET_EMPTY, new FluidListener(this),
 				Priority.Highest);
+		addListener(Type.PLAYER_JOIN, new LoginListener(this), Priority.Monitor);
 	}
 
 	public void approvePlayer(Player player) {

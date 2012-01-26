@@ -52,51 +52,61 @@ public class VilleClaimCommandHandler extends AbstractVilleCommandHandler {
 	@Override
 	public void onAuthorizedAndPlayerFound(Player player, Command command,
 			String label, String[] args) {
-		Location loc = player.getLocation();
-		String name = args[1];
+		if (getLocationsHandle().isApprovedBuilder(player)) {
 
-		List<VillageLocation> closestLocations = getLocationsHandle()
-				.getNearbyVillages(loc);
-		if (closestLocations.size() == 0) {
-			BigDecimal price = new BigDecimal(getVille().getClaimPrice());
+			Location loc = player.getLocation();
+			String name = args[1];
 
-			boolean nameTaken = getVille().getDatabase()
-					.find(VillageLocation.class).where().eq("name", name)
-					.findRowCount() > 0;
+			List<VillageLocation> closestLocations = getLocationsHandle()
+					.getNearbyVillages(loc);
+			if (closestLocations.size() == 0) {
+				BigDecimal price = new BigDecimal(getVille().getClaimPrice());
 
-			if (!nameTaken) {
-				if (jayconomy.getBalance(player.getName()).compareTo(price) >= 0) {
-					VillageLocation vl = new VillageLocation();
-					vl.setName(args[1]);
-					vl.setOwner(player.getName());
-					vl.setWorld(loc.getWorld().getName());
-					vl.setX(loc.getBlockX());
-					vl.setY(loc.getBlockY());
-					vl.setZ(loc.getBlockZ());
+				boolean nameTaken = getVille().getDatabase()
+						.find(VillageLocation.class).where().eq("name", name)
+						.findRowCount() > 0;
 
-					getVille().getDatabase().save(vl);
+				if (!nameTaken) {
+					if (jayconomy.getBalance(player.getName()).compareTo(price) >= 0) {
+						VillageLocation vl = new VillageLocation();
+						vl.setName(args[1]);
+						vl.setOwner(player.getName());
+						vl.setWorld(loc.getWorld().getName());
+						vl.setX(loc.getBlockX());
+						vl.setY(loc.getBlockY());
+						vl.setZ(loc.getBlockZ());
 
-					jayconomy.decreaseBalance(player.getName(), price);
+						getVille().getDatabase().save(vl);
 
-					getLocationsHandle().remapJurisdictions();
+						jayconomy.decreaseBalance(player.getName(), price);
 
-					Messages.send(player, String.format(
-							"Village location &e%s &fclaimed", name));
+						getLocationsHandle().remapJurisdictions();
+
+						Messages.send(player, String.format(
+								"Village location &e%s &fclaimed", name));
+					} else {
+						Messages.send(player, String.format(
+								"&cYou require &e%s&c to claim this location",
+								jayconomy.formatCurrency(price)));
+					}
 				} else {
 					Messages.send(player, String.format(
-							"&cYou require &e%s&c to claim this location",
-							jayconomy.formatCurrency(price)));
+							"&cThe name &e%s&c is already taken", name));
 				}
 			} else {
-				Messages.send(player, String.format(
-						"&cThe name &e%s&c is already taken", name));
+				Messages.send(player, "&cThis location is unsuitable");
+				for (VillageLocation vl : closestLocations) {
+					Messages.send(
+							player,
+							String.format("&e- &cToo close to &e%s",
+									vl.getName()));
+				}
 			}
 		} else {
-			Messages.send(player, "&cThis location is unsuitable");
-			for (VillageLocation vl : closestLocations) {
-				Messages.send(player,
-						String.format("&e- &cToo close to &e%s", vl.getName()));
-			}
+			Messages.send(player,
+					"&cYou require universal build permissions before you can claim territories");
+			Messages.send(player,
+					"&cType &e/ville approve me&c to do obtain these permissions");
 		}
 
 	}
