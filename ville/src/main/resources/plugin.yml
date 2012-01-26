@@ -39,6 +39,10 @@ commands:
         - /ville builder remove <name> <player>
         - /ville admin set <name> <owner>
         - /ville admin unset <name>
+        - /ville admin freebuild <name>
+        - /ville admin unfreebuild <name>
+        - /ville accept me
+        - /ville free build
 permissions:
   ville.use:
     description: Allows people to use the ville basic commands

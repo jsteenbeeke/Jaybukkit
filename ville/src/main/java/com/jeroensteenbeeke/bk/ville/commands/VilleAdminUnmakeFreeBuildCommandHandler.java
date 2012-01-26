@@ -16,14 +16,14 @@ public class VilleAdminUnmakeFreeBuildCommandHandler extends
 
 	@Override
 	public CommandMatcher getMatcher() {
-		return ifNameIs("ville").andArgIs(0, "admin").andArgIs(1, "freebuild")
-				.itMatches();
+		return ifNameIs("ville").andArgIs(0, "admin")
+				.andArgIs(1, "nonfreebuild").itMatches();
 	}
 
 	@Override
 	public ParameterIntegrityChecker getParameterChecker() {
 		return ifArgCountIs(3).andArgumentEquals(0, "admin")
-				.andArgumentEquals(1, "freebuild").itIsProper();
+				.andArgumentEquals(1, "nonfreebuild").itIsProper();
 	}
 
 	@Override
