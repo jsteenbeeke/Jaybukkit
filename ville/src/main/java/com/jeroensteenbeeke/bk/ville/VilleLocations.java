@@ -47,7 +47,7 @@ public class VilleLocations {
 	}
 
 	public boolean isApprovedBuilder(Player player) {
-		return approvedPlayers.contains(player)
+		return approvedPlayers.contains(player.getName())
 				|| player.hasPermission(Ville.PERMISSION_PREMIUM);
 	}
 
