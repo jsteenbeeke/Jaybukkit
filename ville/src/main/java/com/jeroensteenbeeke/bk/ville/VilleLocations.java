@@ -46,8 +46,12 @@ public class VilleLocations {
 		return approvedPlayers;
 	}
 
+	Multimap<VillageLocation, String> getBuilders() {
+		return builders;
+	}
+
 	public boolean isApprovedBuilder(Player player) {
-		return approvedPlayers.contains(player.getName())
+		return getApprovedPlayers().contains(player.getName())
 				|| player.hasPermission(Ville.PERMISSION_PREMIUM);
 	}
 
@@ -88,8 +92,9 @@ public class VilleLocations {
 			}
 			if (loc.isRestricted()) {
 
-				return loc.getOwner().equals(player.getName())
-						|| builders.containsEntry(loc, player.getName());
+				return isApprovedBuilder(player)
+						&& (loc.getOwner().equals(player.getName()) || getBuilders()
+								.containsEntry(loc, player.getName()));
 			}
 		}
 
