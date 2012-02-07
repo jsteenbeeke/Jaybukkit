@@ -1,0 +1,5 @@
+name: jayclaim
+main: com.jeroensteenbeeke.bk.jayclaim.JayClaim
+version: 1.0-SNAPSHOT
+
+commands:
