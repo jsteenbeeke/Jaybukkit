@@ -18,21 +18,22 @@ package com.jeroensteenbeeke.bk.jayconomy.listeners;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
 import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomySign;
 
-public class SignExplodeListener extends EntityListener implements Listener {
+public class SignExplodeListener implements Listener {
 	private final Jayconomy plugin;
 
 	public SignExplodeListener(Jayconomy plugin) {
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		if (event.isCancelled())
 			return;

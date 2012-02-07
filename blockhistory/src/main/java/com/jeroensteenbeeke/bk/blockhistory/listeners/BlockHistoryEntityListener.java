@@ -17,22 +17,24 @@
 package com.jeroensteenbeeke.bk.blockhistory.listeners;
 
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EndermanPickupEvent;
 import org.bukkit.event.entity.EndermanPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
 import com.jeroensteenbeeke.bk.blockhistory.entities.BlockChange.BlockChangeType;
 
-public class BlockHistoryEntityListener extends EntityListener {
+public class BlockHistoryEntityListener implements Listener {
 	private final BlockHistory history;
 
 	public BlockHistoryEntityListener(BlockHistory history) {
 		this.history = history;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEndermanPickup(EndermanPickupEvent event) {
 		if (event.isCancelled())
 			return;
@@ -42,7 +44,7 @@ public class BlockHistoryEntityListener extends EntityListener {
 		history.removeBlock(block, null, BlockChangeType.ENDERMAN_REMOVE);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEndermanPlace(EndermanPlaceEvent event) {
 		if (event.isCancelled())
 			return;
@@ -52,7 +54,7 @@ public class BlockHistoryEntityListener extends EntityListener {
 		history.addBlock(replaced, null, BlockChangeType.ENDERMAN_PLACE);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		if (event.isCancelled())
 			return;

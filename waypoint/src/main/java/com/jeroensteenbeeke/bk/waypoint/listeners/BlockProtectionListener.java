@@ -16,22 +16,23 @@
  */
 package com.jeroensteenbeeke.bk.waypoint.listeners;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.jeroensteenbeeke.bk.waypoint.Waypoints;
 
-public class BlockProtectionListener extends BlockListener {
+public class BlockProtectionListener implements Listener {
 	private final Waypoints waypoints;
 
 	public BlockProtectionListener(Waypoints waypoints) {
-		super();
 		this.waypoints = waypoints;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
@@ -47,7 +48,7 @@ public class BlockProtectionListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockDamage(BlockDamageEvent event) {
 		if (event.isCancelled())
 			return;
@@ -63,7 +64,7 @@ public class BlockProtectionListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled())
 			return;

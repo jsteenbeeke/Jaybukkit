@@ -4,14 +4,16 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.jeroensteenbeeke.bk.jaywire.Jaywire;
 
-public class JaywirePlayerListener extends PlayerListener {
+public class JaywirePlayerListener implements Listener {
 
 	private final Jaywire plugin;
 
@@ -20,7 +22,7 @@ public class JaywirePlayerListener extends PlayerListener {
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if (event.isCancelled())
 			return;
@@ -32,7 +34,7 @@ public class JaywirePlayerListener extends PlayerListener {
 
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.isCancelled())
 			return;

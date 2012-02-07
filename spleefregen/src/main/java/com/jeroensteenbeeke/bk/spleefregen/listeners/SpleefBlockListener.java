@@ -19,8 +19,10 @@ package com.jeroensteenbeeke.bk.spleefregen.listeners;
 import java.util.List;
 
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.jeroensteenbeeke.bk.basics.util.Messages;
@@ -28,14 +30,14 @@ import com.jeroensteenbeeke.bk.spleefregen.SpleefRegen;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefLocation;
 import com.jeroensteenbeeke.bk.spleefregen.entities.SpleefPoint;
 
-public class SpleefBlockListener extends BlockListener {
+public class SpleefBlockListener implements Listener {
 	private final SpleefRegen plugin;
 
 	public SpleefBlockListener(SpleefRegen plugin) {
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
@@ -60,7 +62,7 @@ public class SpleefBlockListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled())
 			return;

@@ -18,9 +18,6 @@ package com.jeroensteenbeeke.bk.permfetch;
 
 import java.util.logging.Logger;
 
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.platymuus.bukkit.permissions.PermissionsPlugin;
 
@@ -46,8 +43,7 @@ public class PermissionsFetcher extends JSPlugin {
 		this.url = getConfig().getString("url", DEFAULT_URL);
 
 		if (!DEFAULT_URL.equals(url)) {
-			addListener(Type.PLUGIN_ENABLE, new FetchActivator(this),
-					Priority.Highest);
+			addListener(new FetchActivator(this));
 
 		} else {
 			logger.severe("Invalid URL for permissions fetching, will ignore!");

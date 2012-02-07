@@ -5,8 +5,6 @@ import java.util.logging.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jaywire.listeners.JaywireBlockListener;
@@ -34,14 +32,9 @@ public class Jaywire extends JSPlugin {
 	public void onEnable() {
 		logger.info("Enabled jaywire plugin");
 
-		JaywirePlayerListener pListener = new JaywirePlayerListener(this);
+		addListener(new JaywirePlayerListener(this));
 
-		addListener(Type.PLAYER_MOVE, pListener, Priority.Monitor);
-		addListener(Type.PLAYER_INTERACT, pListener, Priority.Monitor);
-
-		JaywireBlockListener eListener = new JaywireBlockListener();
-
-		addListener(Type.SIGN_CHANGE, eListener, Priority.Highest);
+		addListener(new JaywireBlockListener());
 	}
 
 	@Override

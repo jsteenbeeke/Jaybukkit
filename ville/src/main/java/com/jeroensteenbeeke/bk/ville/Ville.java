@@ -22,15 +22,9 @@ import java.util.logging.Logger;
 import javax.persistence.PersistenceException;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.event.server.ServerListener;
-import org.bukkit.plugin.Plugin;
 
-import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jayconomy.Jayconomy;
+import com.jeroensteenbeeke.bk.jayconomy.JayconomyAwarePlugin;
 import com.jeroensteenbeeke.bk.ville.commands.JurisdictionCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAddBuilderCommandHandler;
 import com.jeroensteenbeeke.bk.ville.commands.VilleAdminMakeFreeBuildCommandHandler;
@@ -53,7 +47,7 @@ import com.jeroensteenbeeke.bk.ville.listeners.BuildPermissionListener;
 import com.jeroensteenbeeke.bk.ville.listeners.FluidListener;
 import com.jeroensteenbeeke.bk.ville.listeners.LoginListener;
 
-public class Ville extends JSPlugin {
+public class Ville extends JayconomyAwarePlugin {
 	public static final String PERMISSION_USE = "ville.use";
 
 	public static final String PERMISSION_ADMIN = "ville.admin";
@@ -81,44 +75,6 @@ public class Ville extends JSPlugin {
 		getConfig().options().copyDefaults(true);
 
 		saveConfig();
-
-	}
-
-	@Override
-	public void onEnable() {
-		logger.info("Enabled ville plugin");
-
-		minimumDistance = getConfig().getInt("minimumDistance", 1000);
-		claimPrice = getConfig().getInt("price", 5000);
-		restrictPrice = getConfig().getInt("restrictPrice", 12000);
-		approvePrice = getConfig().getInt("approvePrice", 9000);
-
-		setupDatabase();
-
-		Plugin jc = getServer().getPluginManager().getPlugin("jayconomy");
-
-		if (jc != null) {
-			if (jc.isEnabled()) {
-				logger.info("Jayconomy already enabled");
-
-				initJayconomy((Jayconomy) jc);
-			} else {
-				logger.info("Jayconomy not yet enabled");
-
-				addListener(Type.PLUGIN_ENABLE, new ServerListener() {
-					@Override
-					public void onPluginEnable(PluginEnableEvent event) {
-						super.onPluginEnable(event);
-
-						if (event.getPlugin() instanceof Jayconomy) {
-							initJayconomy((Jayconomy) event.getPlugin());
-						}
-					}
-				}, Priority.Normal);
-			}
-		} else {
-			logger.severe("Could not find Jayconomy!");
-		}
 
 	}
 
@@ -177,8 +133,16 @@ public class Ville extends JSPlugin {
 		return classes;
 	}
 
-	void initJayconomy(Jayconomy jayconomy) {
-		logger.info("Linking ville to jayconomy");
+	@Override
+	public void onJayconomyInitialized(Jayconomy jayconomy) {
+		logger.info("Initializing Ville");
+
+		minimumDistance = getConfig().getInt("minimumDistance", 1000);
+		claimPrice = getConfig().getInt("price", 5000);
+		restrictPrice = getConfig().getInt("restrictPrice", 12000);
+		approvePrice = getConfig().getInt("approvePrice", 9000);
+
+		setupDatabase();
 
 		locations = new VilleLocations(this);
 
@@ -198,17 +162,9 @@ public class Ville extends JSPlugin {
 		addCommandHandler(new VilleApproveMeCommandHandler(this, jayconomy));
 		addCommandHandler(new VilleFreeBuildCommandHandler(this));
 
-		BlockListener listener = new BuildPermissionListener(this);
-
-		addListener(Type.BLOCK_PLACE, listener, Priority.Highest);
-
-		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
-
-		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
-
-		addListener(Type.PLAYER_BUCKET_EMPTY, new FluidListener(this),
-				Priority.Highest);
-		addListener(Type.PLAYER_JOIN, new LoginListener(this), Priority.Monitor);
+		addListener(new BuildPermissionListener(this));
+		addListener(new FluidListener(this));
+		addListener(new LoginListener(this));
 	}
 
 	public void approvePlayer(Player player) {

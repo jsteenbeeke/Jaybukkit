@@ -232,5 +232,6 @@
     <module>jaywire</module>
     <module>econchantment</module>
     <module>labgen</module>
+    <module>jayclaim</module>
   </modules>
 </project>

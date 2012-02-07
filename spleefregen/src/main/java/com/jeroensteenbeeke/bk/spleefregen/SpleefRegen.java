@@ -26,8 +26,6 @@ import javax.persistence.PersistenceException;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.spleefregen.commands.DespleefHandler;
@@ -69,10 +67,7 @@ public class SpleefRegen extends JSPlugin {
 		addCommandHandler(new SpleefListHandler(this));
 		addCommandHandler(new SpleefFloodHandler(this));
 		addCommandHandler(new DespleefHandler(this));
-		addListener(Type.BLOCK_PLACE, new SpleefBlockListener(this),
-				Priority.Low);
-		addListener(Type.BLOCK_BREAK, new SpleefBlockListener(this),
-				Priority.Low);
+		addListener(new SpleefBlockListener(this));
 
 	}
 

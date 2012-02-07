@@ -17,14 +17,16 @@
 package com.jeroensteenbeeke.bk.playerbasics.listeners;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.playerbasics.PlayerBasics;
 import com.jeroensteenbeeke.bk.playerbasics.util.PlayerUtil;
 
-public class LoginListener extends PlayerListener {
+public class LoginListener implements Listener {
 	private final String motd;
 
 	private final String servername;
@@ -35,7 +37,7 @@ public class LoginListener extends PlayerListener {
 		this.servername = plugin.getConfiguration().getString("servername", "");
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 

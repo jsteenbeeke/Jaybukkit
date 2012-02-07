@@ -21,9 +21,6 @@ import java.util.logging.Logger;
 
 import javax.persistence.PersistenceException;
 
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.waypoint.commands.WaypointCreateHandler;
 import com.jeroensteenbeeke.bk.waypoint.commands.WaypointDestroyHandler;
@@ -51,16 +48,9 @@ public class WaypointPlugin extends JSPlugin {
 
 		waypoints = new Waypoints(this);
 
-		addListener(Type.PLAYER_MOVE, new MovementListener(waypoints),
-				Priority.Low);
-		addListener(Type.BLOCK_BREAK, new BlockProtectionListener(waypoints),
-				Priority.High);
-		addListener(Type.BLOCK_DAMAGE, new BlockProtectionListener(waypoints),
-				Priority.High);
-		addListener(Type.BLOCK_PLACE, new BlockProtectionListener(waypoints),
-				Priority.High);
-		addListener(Type.ENTITY_EXPLODE, new ProtectionEntityListener(this,
-				waypoints), Priority.High);
+		addListener(new MovementListener(waypoints));
+		addListener(new BlockProtectionListener(waypoints));
+		addListener(new ProtectionEntityListener(this, waypoints));
 
 		addCommandHandler(new WaypointCreateHandler(this));
 		addCommandHandler(new WaypointListHandler(this));

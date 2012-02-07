@@ -24,8 +24,6 @@ import javax.persistence.PersistenceException;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 
 import com.avaje.ebean.Query;
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
@@ -52,21 +50,8 @@ public class BlockHistory extends JSPlugin {
 		addCommandHandler(new GetHistoryCommand(this));
 		addCommandHandler(new RevertCommand(this));
 
-		BlockHistoryListener listener = new BlockHistoryListener(this);
-
-		addListener(Type.BLOCK_BREAK, listener, Priority.Monitor);
-		addListener(Type.BLOCK_FADE, listener, Priority.Monitor);
-		addListener(Type.BLOCK_FORM, listener, Priority.Monitor);
-		addListener(Type.BLOCK_SPREAD, listener, Priority.Monitor);
-		addListener(Type.BLOCK_PLACE, listener, Priority.Monitor);
-		addListener(Type.LEAVES_DECAY, listener, Priority.Monitor);
-		addListener(Type.BLOCK_PISTON_EXTEND, listener, Priority.Monitor);
-
-		BlockHistoryEntityListener eListener = new BlockHistoryEntityListener(
-				this);
-		addListener(Type.ENDERMAN_PICKUP, eListener, Priority.Monitor);
-		addListener(Type.ENDERMAN_PLACE, eListener, Priority.Monitor);
-		addListener(Type.ENTITY_EXPLODE, eListener, Priority.Monitor);
+		addListener(new BlockHistoryListener(this));
+		addListener(new BlockHistoryEntityListener(this));
 	}
 
 	@Override

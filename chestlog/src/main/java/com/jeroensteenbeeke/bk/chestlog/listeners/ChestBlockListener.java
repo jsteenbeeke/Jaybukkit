@@ -24,9 +24,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.avaje.ebean.EbeanServer;
@@ -37,14 +39,14 @@ import com.jeroensteenbeeke.bk.chestlog.entities.ChestData;
 import com.jeroensteenbeeke.bk.chestlog.entities.ChestLocation;
 import com.jeroensteenbeeke.bk.chestlog.entities.ChestLog;
 
-public class ChestBlockListener extends BlockListener {
+public class ChestBlockListener implements Listener {
 	private final EbeanServer database;
 
 	public ChestBlockListener(EbeanServer database) {
 		this.database = database;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled())
 			return;
@@ -109,7 +111,7 @@ public class ChestBlockListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
@@ -162,7 +164,7 @@ public class ChestBlockListener extends BlockListener {
 		return true;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent event) {
 		if (event.isCancelled())
 			return;

@@ -16,19 +16,21 @@
  */
 package com.jeroensteenbeeke.bk.permfetch;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.event.server.ServerListener;
 
 import com.platymuus.bukkit.permissions.PermissionsPlugin;
 
-public class FetchActivator extends ServerListener {
+public class FetchActivator implements Listener {
 	private final PermissionsFetcher fetcher;
 
 	public FetchActivator(PermissionsFetcher fetcher) {
 		this.fetcher = fetcher;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPluginEnable(PluginEnableEvent event) {
 		if (event.getPlugin().getClass() == PermissionsPlugin.class) {
 			fetcher.permissionsEnabled((PermissionsPlugin) event.getPlugin());

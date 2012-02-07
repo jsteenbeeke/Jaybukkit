@@ -17,19 +17,21 @@
 package com.jeroensteenbeeke.bk.jaymail.listeners;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 
 import com.jeroensteenbeeke.bk.jaymail.JaymailPlugin;
 
-public class MailLoginListener extends PlayerListener {
+public class MailLoginListener implements Listener {
 	private JaymailPlugin plugin;
 
 	public MailLoginListener(JaymailPlugin plugin) {
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 

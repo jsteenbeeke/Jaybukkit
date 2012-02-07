@@ -28,7 +28,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +46,7 @@ public class PluginTest {
 
 	private VilleLocations locs;
 
-	private BlockListener listener;
+	private BuildPermissionListener listener;
 
 	@Before
 	public void createMocks() {

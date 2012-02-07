@@ -23,7 +23,7 @@ import com.jeroensteenbeeke.bk.basics.Configurable;
 import com.jeroensteenbeeke.bk.basics.IConfigurable;
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 
-public class ConfigurableBlockListener extends BlockListener implements IConfigurable
+public class ConfigurableBlockListener implements Listener implements IConfigurable
 {
 	private Configurable delegate;
 

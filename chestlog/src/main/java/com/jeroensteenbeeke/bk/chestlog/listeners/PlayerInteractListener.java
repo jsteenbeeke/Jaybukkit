@@ -20,23 +20,25 @@ import java.util.Date;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
 
 import com.avaje.ebean.EbeanServer;
 import com.jeroensteenbeeke.bk.chestlog.entities.ChestData;
 import com.jeroensteenbeeke.bk.chestlog.entities.ChestLocation;
 import com.jeroensteenbeeke.bk.chestlog.entities.ChestLog;
 
-public class PlayerInteractListener extends PlayerListener {
+public class PlayerInteractListener implements Listener {
 	private final EbeanServer database;
 
 	public PlayerInteractListener(EbeanServer database) {
 		this.database = database;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.isCancelled())
 			return;

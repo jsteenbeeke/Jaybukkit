@@ -1,24 +1,24 @@
 package com.jeroensteenbeeke.bk.ville.listeners;
 
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerListener;
 
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.ville.Ville;
 import com.jeroensteenbeeke.bk.ville.VilleLocations;
 
-public class FluidListener extends PlayerListener {
+public class FluidListener implements Listener {
 	private final VilleLocations locations;
 
 	public FluidListener(Ville ville) {
 		locations = ville.getLocations();
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		super.onPlayerBucketEmpty(event);
-
 		if (event.isCancelled())
 			return;
 

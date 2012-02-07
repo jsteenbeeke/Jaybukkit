@@ -17,10 +17,12 @@
 package com.jeroensteenbeeke.bk.blockhistory.listeners;
 
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -29,14 +31,14 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
 import com.jeroensteenbeeke.bk.blockhistory.entities.BlockChange.BlockChangeType;
 
-public class BlockHistoryListener extends BlockListener {
+public class BlockHistoryListener implements Listener {
 	private final BlockHistory history;
 
 	public BlockHistoryListener(BlockHistory history) {
 		this.history = history;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
@@ -47,7 +49,7 @@ public class BlockHistoryListener extends BlockListener {
 				BlockChangeType.DESTROYED);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockFade(BlockFadeEvent event) {
 		if (event.isCancelled())
 			return;
@@ -55,7 +57,7 @@ public class BlockHistoryListener extends BlockListener {
 		history.removeBlock(event.getBlock(), null, BlockChangeType.FADED);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockForm(BlockFormEvent event) {
 		if (event.isCancelled())
 			return;
@@ -63,7 +65,7 @@ public class BlockHistoryListener extends BlockListener {
 		history.addBlock(event.getBlock(), null, BlockChangeType.FORMED);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		if (event.isCancelled())
 			return;
@@ -71,7 +73,7 @@ public class BlockHistoryListener extends BlockListener {
 		history.addBlock(event.getBlock(), null, BlockChangeType.SPREAD);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled())
 			return;
@@ -80,7 +82,7 @@ public class BlockHistoryListener extends BlockListener {
 				BlockChangeType.PLACED);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onLeavesDecay(LeavesDecayEvent event) {
 		if (event.isCancelled())
 			return;
@@ -88,7 +90,7 @@ public class BlockHistoryListener extends BlockListener {
 		history.removeBlock(event.getBlock(), null, BlockChangeType.DECAYED);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
 		if (event.isCancelled())
 			return;

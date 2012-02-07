@@ -18,21 +18,23 @@ package com.jeroensteenbeeke.bk.jayop.listeners;
 
 import java.util.List;
 
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import com.jeroensteenbeeke.bk.jayop.JayOp;
 import com.jeroensteenbeeke.bk.jayop.entities.Suspension;
 
-public class SuspendedPlayerListener extends PlayerListener {
+public class SuspendedPlayerListener implements Listener {
 	private final JayOp plugin;
 
 	public SuspendedPlayerListener(JayOp plugin) {
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		List<Suspension> suspensions = plugin.getDatabase()
 				.createQuery(Suspension.class).where()

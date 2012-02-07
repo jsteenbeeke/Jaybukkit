@@ -20,25 +20,26 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 
 import com.jeroensteenbeeke.bk.waypoint.WaypointPlugin;
 import com.jeroensteenbeeke.bk.waypoint.Waypoints;
 import com.jeroensteenbeeke.bk.waypoint.entities.Waypoint;
 
-public class ProtectionEntityListener extends EntityListener {
+public class ProtectionEntityListener implements Listener {
 	private final Waypoints waypoints;
 
 	private WaypointPlugin plugin;
 
 	public ProtectionEntityListener(WaypointPlugin plugin, Waypoints waypoints) {
-		super();
 		this.waypoints = waypoints;
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		if (event.isCancelled())
 			return;

@@ -22,13 +22,15 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 
 import com.jeroensteenbeeke.bk.premium.PlayerType;
 import com.jeroensteenbeeke.bk.premium.PremiumMembers;
 
-public class PremiumPlayerListener extends PlayerListener {
+public class PremiumPlayerListener implements Listener {
 	private static final Logger log = Logger.getLogger("Minecraft");
 
 	private final PremiumMembers plugin;
@@ -54,7 +56,7 @@ public class PremiumPlayerListener extends PlayerListener {
 		this.slots = Collections.unmodifiableMap(base);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if (event.getPlayer() != null) {
 			PlayerType orig = getPlayerType(event.getPlayer());

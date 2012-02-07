@@ -18,9 +18,6 @@ package com.jeroensteenbeeke.bk.premium;
 
 import java.util.logging.Logger;
 
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.premium.listeners.PremiumPlayerListener;
 
@@ -48,8 +45,7 @@ public class PremiumMembers extends JSPlugin {
 
 		saveConfig();
 
-		addListener(Type.PLAYER_JOIN, new PremiumPlayerListener(this, premium,
-				guest), Priority.Lowest);
+		addListener(new PremiumPlayerListener(this, premium, guest));
 	}
 
 	@Override

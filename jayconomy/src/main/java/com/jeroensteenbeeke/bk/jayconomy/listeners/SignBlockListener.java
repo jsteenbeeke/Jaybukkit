@@ -26,8 +26,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.jeroensteenbeeke.bk.basics.util.Messages;
@@ -36,7 +38,7 @@ import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomyMaterial;
 import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomySign;
 import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomySign.SignMode;
 
-public class SignBlockListener extends BlockListener {
+public class SignBlockListener implements Listener {
 	static final Pattern PATTERN_EMPTY = Pattern.compile("^$");
 
 	static final Pattern PATTERN_DOLLAR = Pattern
@@ -83,7 +85,7 @@ public class SignBlockListener extends BlockListener {
 		adjacents.add(BlockFace.WEST);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent event) {
 
 		if (event.isCancelled())
@@ -340,7 +342,7 @@ public class SignBlockListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;

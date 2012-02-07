@@ -26,8 +26,6 @@ import java.util.logging.Logger;
 import javax.persistence.PersistenceException;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.jayop.commands.BanCommandHandler;
@@ -81,11 +79,8 @@ public class JayOp extends JSPlugin {
 
 		this.frozen = new HashSet<String>(getConfig().getStringList("frozen"));
 
-		addListener(Type.PLAYER_LOGIN, new SuspendedPlayerListener(this),
-				Priority.Highest);
-		FrozenPlayerListener freezeListener = new FrozenPlayerListener(this);
-
-		addListener(Type.PLAYER_MOVE, freezeListener, Priority.Highest);
+		addListener(new SuspendedPlayerListener(this));
+		addListener(new FrozenPlayerListener(this));
 
 		addCommandHandler(new WeatherCommandHandler(this));
 		addCommandHandler(new TeleportCommandHandler(this));

@@ -18,9 +18,6 @@ package com.jeroensteenbeeke.bk.playerbasics;
 
 import java.util.logging.Logger;
 
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.playerbasics.commands.HelpHandler;
 import com.jeroensteenbeeke.bk.playerbasics.commands.KillMeCommandHandler;
@@ -45,7 +42,7 @@ public class PlayerBasics extends JSPlugin {
 		addCommandHandler(new PlayerListHandler());
 		addCommandHandler(new RulesHandler(this));
 		addCommandHandler(new KillMeCommandHandler(this));
-		addListener(Type.PLAYER_JOIN, new LoginListener(this), Priority.Low);
+		addListener(new LoginListener(this));
 	}
 
 	@Override

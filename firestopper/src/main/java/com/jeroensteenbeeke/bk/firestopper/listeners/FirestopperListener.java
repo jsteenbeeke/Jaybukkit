@@ -22,14 +22,16 @@ import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockListener;
 
 import com.google.common.collect.Sets;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.firestopper.Firestopper;
 
-public class FirestopperListener extends BlockListener {
+public class FirestopperListener implements Listener {
 	private final int burnIfUnauthorized;
 
 	private static final BlockFace[] FACES = { BlockFace.EAST, BlockFace.SOUTH,
@@ -42,7 +44,7 @@ public class FirestopperListener extends BlockListener {
 		this.burnIfUnauthorized = burnIfUnauthorized;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		if (event.isCancelled())
 			return;

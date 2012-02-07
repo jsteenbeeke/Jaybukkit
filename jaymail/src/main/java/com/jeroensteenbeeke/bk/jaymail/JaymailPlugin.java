@@ -22,8 +22,6 @@ import java.util.logging.Logger;
 import javax.persistence.PersistenceException;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
@@ -50,8 +48,7 @@ public class JaymailPlugin extends JSPlugin {
 		addCommandHandler(new MailSendCommandHandler(this));
 		addCommandHandler(new MailDeleteCommandHandler(this));
 
-		addListener(Type.PLAYER_JOIN, new MailLoginListener(this),
-				Priority.Lowest);
+		addListener(new MailLoginListener(this));
 
 	}
 

@@ -25,10 +25,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -42,7 +44,7 @@ import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomySign;
 import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomySign.SignMode;
 import com.jeroensteenbeeke.bk.jayconomy.entities.JayconomyStash;
 
-public class SignPlayerListener extends PlayerListener {
+public class SignPlayerListener implements Listener {
 	private final Jayconomy plugin;
 
 	private static final Logger log = Logger.getLogger("Minecraft");
@@ -51,7 +53,7 @@ public class SignPlayerListener extends PlayerListener {
 		this.plugin = plugin;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		List<JayconomyDeal> deals = plugin.getDatabase()
 				.createQuery(JayconomyDeal.class).where()
@@ -67,7 +69,7 @@ public class SignPlayerListener extends PlayerListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.isCancelled())
 			return;

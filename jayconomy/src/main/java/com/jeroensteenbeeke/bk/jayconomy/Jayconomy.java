@@ -26,8 +26,6 @@ import javax.persistence.PersistenceException;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.ItemStack;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
@@ -94,16 +92,9 @@ public class Jayconomy extends JSPlugin {
 		addCommandHandler(new SetPriceHandler(this));
 		addCommandHandler(new SetMaxHandler(this));
 
-		addListener(Type.ENTITY_EXPLODE, new SignExplodeListener(this),
-				Priority.Normal);
-
-		SignPlayerListener signPlayerListener = new SignPlayerListener(this);
-		addListener(Type.PLAYER_INTERACT, signPlayerListener, Priority.Normal);
-		addListener(Type.PLAYER_JOIN, signPlayerListener, Priority.Normal);
-
-		SignBlockListener blockListener = new SignBlockListener(this);
-		addListener(Type.BLOCK_BREAK, blockListener, Priority.Normal);
-		addListener(Type.SIGN_CHANGE, blockListener, Priority.Normal);
+		addListener(new SignExplodeListener(this));
+		addListener(new SignPlayerListener(this));
+		addListener(new SignBlockListener(this));
 	}
 
 	private void setupConfiguration() {

@@ -5,16 +5,18 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 import com.jeroensteenbeeke.bk.jaywire.Jaywire;
 
-public class JaywireBlockListener extends BlockListener {
-	@Override
+public class JaywireBlockListener implements Listener {
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSignChange(SignChangeEvent event) {
 		if (event.isCancelled())
 			return;
@@ -47,7 +49,7 @@ public class JaywireBlockListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled())
 			return;
@@ -58,9 +60,8 @@ public class JaywireBlockListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockDamage(BlockDamageEvent event) {
-		super.onBlockDamage(event);
 
 		if (event.isCancelled())
 			return;

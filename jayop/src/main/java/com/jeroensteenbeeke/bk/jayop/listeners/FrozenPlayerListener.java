@@ -1,19 +1,21 @@
 package com.jeroensteenbeeke.bk.jayop.listeners;
 
 import org.bukkit.block.Block;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.jeroensteenbeeke.bk.jayop.JayOp;
 
-public class FrozenPlayerListener extends PlayerListener {
+public class FrozenPlayerListener implements Listener {
 	private final JayOp jayop;
 
 	public FrozenPlayerListener(JayOp jayop) {
 		this.jayop = jayop;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if (event.isCancelled())
 			return;

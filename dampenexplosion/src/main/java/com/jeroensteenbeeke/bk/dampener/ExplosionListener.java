@@ -16,13 +16,15 @@
  */
 package com.jeroensteenbeeke.bk.dampener;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EndermanPickupEvent;
 import org.bukkit.event.entity.EndermanPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 
-public class ExplosionListener extends EntityListener {
-	@Override
+public class ExplosionListener implements Listener {
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		if (event.isCancelled())
 			return;
@@ -30,7 +32,7 @@ public class ExplosionListener extends EntityListener {
 		event.setCancelled(true);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEndermanPickup(EndermanPickupEvent event) {
 		if (event.isCancelled())
 			return;
@@ -38,7 +40,7 @@ public class ExplosionListener extends EntityListener {
 		event.setCancelled(true);
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEndermanPlace(EndermanPlaceEvent event) {
 		if (event.isCancelled())
 			return;

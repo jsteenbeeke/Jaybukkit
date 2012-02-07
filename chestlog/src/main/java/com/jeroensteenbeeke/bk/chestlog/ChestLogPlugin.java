@@ -21,9 +21,6 @@ import java.util.logging.Logger;
 
 import javax.persistence.PersistenceException;
 
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
 import com.jeroensteenbeeke.bk.chestlog.commands.GetChestLogHandler;
 import com.jeroensteenbeeke.bk.chestlog.entities.ChestData;
@@ -44,13 +41,9 @@ public class ChestLogPlugin extends JSPlugin {
 		setupDatabase();
 
 		addCommandHandler(new GetChestLogHandler(this));
-		ChestBlockListener listener = new ChestBlockListener(getDatabase());
+		addListener(new ChestBlockListener(getDatabase()));
 
-		addListener(Type.BLOCK_PLACE, listener, Priority.Normal);
-		addListener(Type.BLOCK_DAMAGE, listener, Priority.Highest);
-		addListener(Type.BLOCK_BREAK, listener, Priority.Highest);
-		addListener(Type.PLAYER_INTERACT, new PlayerInteractListener(
-				getDatabase()), Priority.Normal);
+		addListener(new PlayerInteractListener(getDatabase()));
 	}
 
 	private void setupDatabase() {
