@@ -17,11 +17,11 @@
 package com.jeroensteenbeeke.bk.blockhistory.listeners;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EndermanPickupEvent;
-import org.bukkit.event.entity.EndermanPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import com.jeroensteenbeeke.bk.blockhistory.BlockHistory;
@@ -35,23 +35,15 @@ public class BlockHistoryEntityListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEndermanPickup(EndermanPickupEvent event) {
+	public void onEndermanPickupOrDrop(EntityChangeBlockEvent event) {
 		if (event.isCancelled())
 			return;
 
 		Block block = event.getBlock();
 
-		history.removeBlock(block, null, BlockChangeType.ENDERMAN_REMOVE);
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEndermanPlace(EndermanPlaceEvent event) {
-		if (event.isCancelled())
-			return;
-
-		Block replaced = event.getLocation().getBlock();
-
-		history.addBlock(replaced, null, BlockChangeType.ENDERMAN_PLACE);
+		if (event.getEntityType() == EntityType.ENDERMAN
+				|| event.getEntityType() == EntityType.ENDER_DRAGON)
+			history.removeBlock(block, null, BlockChangeType.ENDERMAN_REMOVE);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
