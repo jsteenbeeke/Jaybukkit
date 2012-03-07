@@ -3,3 +3,24 @@ main: com.jeroensteenbeeke.bk.jayclaim.JayClaim
 version: 1.0-SNAPSHOT
 
 commands:
+    jc:
+        description:
+        usage:
+            - /jc claim
+            - /jc unclaim
+            - /jc info
+            - /jc admin block
+            - /jc admin unblock
+permissions:
+    jayclaim.*:
+        description: Grants all Jayclaim permissions
+        default: false
+        children:
+            jayclaim.admin: true
+            jayclaim.use: true
+    jayclaim.admin:
+        description: Grants access to administrative Jayclaim commands
+        default: false
+    jayclaim.use:
+        description: Grants access to basic Jayclaim commands
+        default: true

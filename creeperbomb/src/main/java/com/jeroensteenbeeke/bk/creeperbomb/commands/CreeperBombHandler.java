@@ -22,7 +22,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import com.jeroensteenbeeke.bk.basics.JSPlugin;
@@ -69,7 +69,7 @@ public class CreeperBombHandler extends PermissibleCommandHandler {
 
 				for (Location next : locs) {
 					if (player.getWorld().spawnCreature(next,
-							CreatureType.CREEPER) != null)
+							EntityType.CREEPER) != null)
 						success++;
 				}
 
