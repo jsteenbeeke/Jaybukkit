@@ -26,12 +26,10 @@ public class Firestopper extends JSPlugin {
 	private Logger logger = Logger.getLogger("Minecraft");
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public void onEnable() {
 		logger.info("Enabled Firestopper plugin");
 
-		int burnIfUnauthorized = getConfiguration().getInt(
-				"burnIfUnauthorized", 0);
+		int burnIfUnauthorized = getConfig().getInt("burnIfUnauthorized", 0);
 
 		addListener(new FirestopperListener(burnIfUnauthorized));
 	}

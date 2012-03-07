@@ -31,10 +31,9 @@ public class LoginListener implements Listener {
 
 	private final String servername;
 
-	@SuppressWarnings("deprecation")
 	public LoginListener(PlayerBasics plugin) {
-		this.motd = plugin.getConfiguration().getString("motd", "");
-		this.servername = plugin.getConfiguration().getString("servername", "");
+		this.motd = plugin.getConfig().getString("motd", "");
+		this.servername = plugin.getConfig().getString("servername", "");
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
