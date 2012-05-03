@@ -1,0 +1,5 @@
+name: timefreeze
+main: com.jeroensteenbeeke.bk.timefreeze.Plugin
+version: 1.0-SNAPSHOT
+
+commands:

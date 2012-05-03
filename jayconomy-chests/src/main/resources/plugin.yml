@@ -1,0 +1,5 @@
+name: jayconomy-chests
+main: com.jeroensteenbeeke.bk.jayconomychests.JayconomyChests
+version: 1.0-SNAPSHOT
+
+commands:

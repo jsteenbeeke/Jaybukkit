@@ -9,9 +9,9 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<groupId>com.jeroensteenbeeke.bukkit</groupId>
-	<artifactId>jayclaim</artifactId>
+	<artifactId>jayconomy-chests</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>jayclaim</name>
+	<name>jayconomy-chests</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
