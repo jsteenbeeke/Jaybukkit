@@ -240,5 +240,6 @@
     <module>jayclaim</module>
     <module>jayconomy-chests</module>
     <module>timefreeze</module>
+    <module>cityofthegods</module>
   </modules>
 </project>

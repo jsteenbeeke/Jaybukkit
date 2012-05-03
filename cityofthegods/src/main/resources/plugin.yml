@@ -1,0 +1,6 @@
+name: cityofthegods
+main: com.jeroensteenbeeke.bk.cityofthegods.CityOfTheGods
+version: 1.0-SNAPSHOT
+load: STARTUP
+
+commands:
