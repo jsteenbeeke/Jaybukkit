@@ -52,35 +52,6 @@ public class FourHouse extends Building {
 
 	}
 
-	// 123456789
-	// 7 B B
-	// 6
-	// 5A A
-	// 4
-	// 3 B B
-	// 2
-	// 1A A
-	// 0,0 -> 5,5
-	// 10,0 -> 15,5
-	// 0,10 -> 5,15
-	// 10,10 -> 15,15
-
-	private void renderBottom(byte[][] result, int bottomY, long seed,
-			int chunkX, int chunkZ) {
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				drawIfFill(result, bottomY, x, z, 14, 16, 1, 14);
-				drawIfFill(result, bottomY, x, z, 12, 14, 2, 13);
-				drawIfFill(result, bottomY, x, z, 10, 12, 3, 12);
-				drawIfFill(result, bottomY, x, z, 8, 10, 4, 11);
-				drawIfFill(result, bottomY, x, z, 6, 8, 5, 10);
-				drawIfFill(result, bottomY, x, z, 4, 6, 6, 9);
-				drawIfFill(result, bottomY, x, z, 2, 4, 7, 8);
-			}
-		}
-
-	}
-
 	// WEST
 	// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 	// |SS|SS|SS|SS|SS|SS|--|--|--|--|SS|SS|SS|SS|SS|SS| 15

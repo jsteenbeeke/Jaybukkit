@@ -72,14 +72,19 @@ public abstract class Building {
 
 	protected void horizontalRect(byte[][] result, int y, int minX, int minZ,
 			int maxX, int maxZ) {
+		horizontalRect(result, y, minX, minZ, maxX, maxZ, Material.SANDSTONE);
+	}
+
+	protected void horizontalRect(byte[][] result, int y, int minX, int minZ,
+			int maxX, int maxZ, Material mat) {
 		for (int i = minX; i <= maxX; i++) {
-			LayoutUtil.setBlock(result, i, y, minZ, Material.SANDSTONE);
-			LayoutUtil.setBlock(result, i, y, maxZ, Material.SANDSTONE);
+			LayoutUtil.setBlock(result, i, y, minZ, mat);
+			LayoutUtil.setBlock(result, i, y, maxZ, mat);
 		}
 
 		for (int i = minZ; i <= maxZ; i++) {
-			LayoutUtil.setBlock(result, minX, y, i, Material.SANDSTONE);
-			LayoutUtil.setBlock(result, maxX, y, i, Material.SANDSTONE);
+			LayoutUtil.setBlock(result, minX, y, i, mat);
+			LayoutUtil.setBlock(result, maxX, y, i, mat);
 		}
 	}
 
@@ -154,6 +159,22 @@ public abstract class Building {
 
 		upper.setType(ud.getItemType());
 		upper.setData(ud.getData());
+
+	}
+
+	protected void renderBottom(byte[][] result, int bottomY, long seed,
+			int chunkX, int chunkZ) {
+		for (int x = 0; x < 16; x++) {
+			for (int z = 0; z < 16; z++) {
+				drawIfFill(result, bottomY, x, z, 14, 16, 1, 14);
+				drawIfFill(result, bottomY, x, z, 12, 14, 2, 13);
+				drawIfFill(result, bottomY, x, z, 10, 12, 3, 12);
+				drawIfFill(result, bottomY, x, z, 8, 10, 4, 11);
+				drawIfFill(result, bottomY, x, z, 6, 8, 5, 10);
+				drawIfFill(result, bottomY, x, z, 4, 6, 6, 9);
+				drawIfFill(result, bottomY, x, z, 2, 4, 7, 8);
+			}
+		}
 
 	}
 

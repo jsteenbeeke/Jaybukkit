@@ -2,107 +2,149 @@ package com.jeroensteenbeeke.bk.cityofthegods.buildings;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 
 import com.jeroensteenbeeke.bk.cityofthegods.Building;
 import com.jeroensteenbeeke.bk.cityofthegods.LayoutUtil;
+import com.jeroensteenbeeke.bk.cityofthegods.LayoutUtil.ShapeMode;
 
+//WEST
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 15
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 14
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 13
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 12
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|SS|SS|SS|SS|SS|SS|--|--|--|--|--| 11
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|SS|SS|SS|SS|SS|SS|SS|SS|--|--|--|--| 10
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|SS|SS|FF|FF|FF|FF|SS|SS|--|--|--|--| 9
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|SS|SS|FF|--|--|FF|SS|SS|--|--|--|--| 8
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+ SOUTH
+//|--|--|--|--|SS|SS|FF|--|--|FF|SS|SS|--|--|--|--| 7
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|SS|SS|FF|FF|FF|FF|SS|SS|--|--|--|--| 6
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|SS|SS|SS|GG|GG|SS|SS|SS|--|--|--|--| 5
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|SS|SS|GG|GG|SS|SS|--|--|--|--|--| 4
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 3
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 2
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 1
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--|--| 0
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//|00|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15| ^--- Z
+//+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//-----X--->
 public class Spire extends Building {
 	@Override
 	public void generateLevel(byte[][] result, int bottomY, long seed,
 			int chunkX, int chunkZ) {
-		if (bottomY == 48)
-			renderBottom(result, bottomY, seed, chunkX, chunkZ);
+		if (bottomY >= 48 && bottomY <= 128) {
+			final int base = (bottomY == 48) ? 51 : bottomY;
 
-		if (bottomY == 64)
-			renderEntrance(result, bottomY, seed, chunkX, chunkZ);
-
-		if (bottomY == 80)
-			renderRoof(result, bottomY, seed, chunkX, chunkZ);
-
-	}
-
-	private void renderRoof(byte[][] result, int bottomY, long seed,
-			int chunkX, int chunkZ) {
-		for (int x = 7; x <= 8; x++) {
-			for (int z = 7; z <= 8; z++) {
-				for (int y = 0; y < 2; y++) {
-					LayoutUtil.setBlock(result, x, bottomY + y, z,
-							Material.SANDSTONE);
+			for (int y = bottomY; y < bottomY + 16; y++) {
+				if (y >= base) {
+					horizontalRect(result, y, 4, 5, 11, 10);
+					horizontalRect(result, y, 5, 4, 10, 11);
 				}
-			}
-		}
+				int mod = y % 4;
 
-	}
+				int stairsX = 7;
+				int stairsZ = 8;
 
-	private void renderBottom(byte[][] result, int bottomY, long seed,
-			int chunkX, int chunkZ) {
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				drawIfFill(result, bottomY, x, z, 14, 16, 1, 14);
-				drawIfFill(result, bottomY, x, z, 12, 14, 2, 13);
-				drawIfFill(result, bottomY, x, z, 10, 12, 3, 12);
-				drawIfFill(result, bottomY, x, z, 8, 10, 4, 11);
-				drawIfFill(result, bottomY, x, z, 6, 8, 5, 10);
-				drawIfFill(result, bottomY, x, z, 4, 6, 6, 9);
-				drawIfFill(result, bottomY, x, z, 2, 4, 7, 8);
-			}
-		}
-
-	}
-
-	private void renderEntrance(byte[][] result, int bottomY, long seed,
-			int chunkX, int chunkZ) {
-		for (int x = 0; x < 16; x++) {
-			for (int z = 0; z < 16; z++) {
-				LayoutUtil.setBlock(result, x, bottomY, z, Material.SANDSTONE);
-
-				for (int y = 1; y < 4; y++) {
-					if (x == 0 || x == 15) {
-						LayoutUtil.setBlock(result, x, bottomY + y, z,
-								Material.SANDSTONE);
-
+				switch (mod) {
+				case 0:
+					horizontalRect(result, y, 6, 6, 9, 9);
+					break;
+				case 1:
+					stairsX = 8;
+					break;
+				case 2:
+					stairsX = 8;
+					stairsZ = 7;
+					if (y >= base) {
+						horizontalRect(result, y, 7, 4, 8, 5, Material.GLASS);
+						horizontalRect(result, y, 4, 7, 5, 8, Material.GLASS);
+						horizontalRect(result, y, 10, 7, 11, 8, Material.GLASS);
+						horizontalRect(result, y, 7, 10, 8, 11, Material.GLASS);
 					}
-					if (z == 0 || z == 15) {
-						LayoutUtil.setBlock(result, x, bottomY + y, z,
-								Material.SANDSTONE);
-					}
+					break;
+				case 3:
+					stairsZ = 7;
+					break;
 				}
 
-				drawIfContainingRect(result, bottomY, x, z, 4, 6, 1, 14);
-				drawIfContainingRect(result, bottomY, x, z, 6, 8, 2, 13);
-				drawIfContainingRect(result, bottomY, x, z, 8, 10, 3, 12);
-				drawIfContainingRect(result, bottomY, x, z, 10, 12, 4, 11);
-				drawIfContainingRect(result, bottomY, x, z, 12, 14, 5, 10);
-				drawIfContainingRect(result, bottomY, x, z, 14, 16, 6, 9);
-
+				LayoutUtil.setBlock(result, stairsX, y, stairsZ,
+						Material.SANDSTONE);
 			}
 		}
 
-		applyTunnelEntrances(result, bottomY, chunkX, chunkZ);
+		if (bottomY == 48) {
+			horizontalRect(result, 48, 7, 7, 8, 8);
+			horizontalRect(result, 48, 6, 6, 9, 9);
+			horizontalRect(result, 48, 5, 5, 10, 10);
+			horizontalRect(result, 48, 4, 4, 11, 11, Material.GLOWSTONE);
+		}
+
+		if (bottomY == 128) {
+			horizontalRect(result, 143, 6, 6, 9, 9);
+			horizontalRect(result, 143, 5, 5, 10, 10);
+			horizontalRect(result, 143, 4, 4, 11, 11);
+			horizontalRect(result, 143, 3, 3, 12, 12, Material.GLOWSTONE);
+		}
+
+		if (bottomY == 64) {
+			if (LayoutUtil.isTunnel(chunkX - 1, chunkZ)) {
+				for (int i = 0; i < 4; i++)
+					LayoutUtil.applyTunnel(result, bottomY, i, ShapeMode.X);
+				LayoutUtil.applyGate(result, bottomY, 4, ShapeMode.X);
+				LayoutUtil.applyGate(result, bottomY, 5, ShapeMode.X);
+			}
+			if (LayoutUtil.isTunnel(chunkX + 1, chunkZ)) {
+				for (int i = 0; i < 4; i++)
+					LayoutUtil
+							.applyTunnel(result, bottomY, 15 - i, ShapeMode.X);
+				LayoutUtil.applyGate(result, bottomY, 11, ShapeMode.X);
+				LayoutUtil.applyGate(result, bottomY, 10, ShapeMode.X);
+			}
+			if (LayoutUtil.isTunnel(chunkX, chunkZ - 1)) {
+				for (int i = 0; i < 4; i++)
+					LayoutUtil.applyTunnel(result, bottomY, i, ShapeMode.Z);
+				LayoutUtil.applyGate(result, bottomY, 4, ShapeMode.Z);
+				LayoutUtil.applyGate(result, bottomY, 5, ShapeMode.Z);
+			}
+			if (LayoutUtil.isTunnel(chunkX, chunkZ + 1)) {
+				for (int i = 0; i < 4; i++)
+					LayoutUtil
+							.applyTunnel(result, bottomY, 15 - i, ShapeMode.Z);
+				LayoutUtil.applyGate(result, bottomY, 11, ShapeMode.Z);
+				LayoutUtil.applyGate(result, bottomY, 10, ShapeMode.Z);
+			}
+		}
 
 	}
 
 	@Override
 	public void onPopulate(Chunk chunk) {
-		placeTorch(chunk, 1, 1, 66, 2, 13, 5, 10);
-		placeTorch(chunk, 14, 14, 66, 2, 13, 5, 10);
+		for (int y = 51; y < 144; y++) {
+			if (y % 4 == 2) {
+				torchAt(chunk, 6, y, 6, BlockFace.WEST);
+				torchAt(chunk, 9, y, 6, BlockFace.WEST);
 
-		placeTorch(chunk, 2, 2, 68, 3, 12, 6, 9);
-		placeTorch(chunk, 13, 13, 68, 3, 12, 6, 9);
-
-		placeTorch(chunk, 3, 3, 70, 4, 11, 6, 9);
-		placeTorch(chunk, 12, 12, 70, 4, 11, 6, 9);
-
-		placeTorch(chunk, 4, 4, 72, 6, 9);
-		placeTorch(chunk, 11, 11, 72, 6, 9);
-
-		placeTorch(chunk, 5, 5, 74, 6, 9);
-		placeTorch(chunk, 10, 10, 74, 6, 9);
-
-		for (int x = 7; x <= 8; x++)
-			for (int z = 7; z <= 8; z++) {
-				chunk.getBlock(x, 65, z).setType(Material.SANDSTONE);
-				chunk.getBlock(x, 66, z).setType(Material.TORCH);
+				torchAt(chunk, 6, y, 9, BlockFace.EAST);
+				torchAt(chunk, 9, y, 9, BlockFace.EAST);
 			}
+		}
 	}
+
 }
