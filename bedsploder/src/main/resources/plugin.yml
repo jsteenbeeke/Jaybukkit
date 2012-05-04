@@ -1,5 +1,5 @@
 name: bedsploder
-main: com.jeroensteenbeeke.bk.bedsploder.Plugin
+main: com.jeroensteenbeeke.bk.bedsploder.BedSploder
 version: 1.0-SNAPSHOT
 
 commands:
