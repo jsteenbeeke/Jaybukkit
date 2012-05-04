@@ -1,6 +1,9 @@
 package com.jeroensteenbeeke.bk.cityofthegods;
 
+import org.bukkit.Chunk;
 import org.bukkit.Material;
+
+import com.jeroensteenbeeke.bk.cityofthegods.LayoutUtil.ShapeMode;
 
 public enum CityNode {
 	START {
@@ -10,35 +13,67 @@ public enum CityNode {
 			if (bottomY == 64) {
 				for (int x = 0; x < 16; x++) {
 					for (int z = 0; z < 16; z++) {
-						CityOfTheGodsGenerator.setBlock(result, x, bottomY, z,
-								Material.IRON_BLOCK);
+						LayoutUtil.setBlock(result, x, bottomY, z,
+								Material.SANDSTONE);
 						if (x == 0 || x == 15) {
-							CityOfTheGodsGenerator.setBlock(result, x,
-									bottomY + 1, z, Material.IRON_BLOCK);
+							LayoutUtil.setBlock(result, x, bottomY + 1, z,
+									Material.SANDSTONE);
 
 						}
 						if (z == 0 || z == 15) {
-							CityOfTheGodsGenerator.setBlock(result, x,
-									bottomY + 1, z, Material.IRON_BLOCK);
+							LayoutUtil.setBlock(result, x, bottomY + 1, z,
+									Material.SANDSTONE);
 						}
 
 					}
 				}
 
-				applyGate(result, bottomY, 0, ShapeMode.X);
-				applyGate(result, bottomY, 15, ShapeMode.X);
-				applyGate(result, bottomY, 0, ShapeMode.Z);
-				applyGate(result, bottomY, 15, ShapeMode.Z);
+				if (LayoutUtil.isTunnel(chunkX - 1, chunkZ))
+					LayoutUtil.applyGate(result, bottomY, 0, ShapeMode.X);
+				if (LayoutUtil.isTunnel(chunkX + 1, chunkZ))
+					LayoutUtil.applyGate(result, bottomY, 15, ShapeMode.X);
+				if (LayoutUtil.isTunnel(chunkX, chunkZ - 1))
+					LayoutUtil.applyGate(result, bottomY, 0, ShapeMode.Z);
+				if (LayoutUtil.isTunnel(chunkX, chunkZ + 1))
+					LayoutUtil.applyGate(result, bottomY, 15, ShapeMode.Z);
 			}
+		}
+
+		@Override
+		public void onPopulate(Chunk chunk) {
+			for (int x = 0; x < 16; x++) {
+				for (int z = 0; z < 16; z++) {
+					if (z == 0 || z == 15) {
+						if (x == 2 || x == 5 || x == 13 || x == 10)
+							chunk.getBlock(x, 66, z).setType(Material.TORCH);
+					}
+
+					if (x == 0 || x == 15) {
+						if (z == 2 || z == 5 || z == 13 || z == 10)
+							chunk.getBlock(x, 66, z).setType(Material.TORCH);
+					}
+				}
+			}
+
 		}
 	},
 	RANDOM_BUILDING {
 		@Override
 		public void generateLevel(byte[][] result, int bottomY, long seed,
 				int chunkX, int chunkZ) {
-			START.generateLevel(result, bottomY, seed, chunkX, chunkZ);
+			Building building = Buildings.getRandom(seed, chunkX, chunkZ);
 
+			building.generateLevel(result, bottomY, seed, chunkX, chunkZ);
 		}
+
+		@Override
+		public void onPopulate(Chunk chunk) {
+			Building building = Buildings.getRandom(chunk.getWorld().getSeed(),
+					chunk.getX(), chunk.getZ());
+
+			building.onPopulate(chunk);
+		}
+
 	},
 	NORTH_SOUTH {
 		@Override
@@ -46,11 +81,17 @@ public enum CityNode {
 				int chunkX, int chunkZ) {
 			if (bottomY == 64) {
 				for (int i = 0; i < 16; i++) {
-					applyTunnel(result, bottomY, i, ShapeMode.Z);
+					LayoutUtil.applyTunnel(result, bottomY, i, ShapeMode.Z);
 				}
 			}
 
 		}
+
+		@Override
+		public void onPopulate(Chunk chunk) {
+
+		}
+
 	},
 	EAST_WEST {
 		@Override
@@ -58,43 +99,17 @@ public enum CityNode {
 				int chunkX, int chunkZ) {
 			if (bottomY == 64) {
 				for (int i = 0; i < 16; i++) {
-					applyTunnel(result, bottomY, i, ShapeMode.X);
+					LayoutUtil.applyTunnel(result, bottomY, i, ShapeMode.X);
 				}
 			}
 
 		}
+
+		@Override
+		public void onPopulate(Chunk chunk) {
+
+		}
 	};
-
-	private static final int MAX_BOUND = 8;
-
-	public static enum ShapeMode {
-		X {
-			@Override
-			public int determineX(int fixed, int i) {
-				return fixed;
-			}
-
-			@Override
-			public int determineZ(int fixed, int i) {
-				return i;
-			}
-		},
-		Z {
-			@Override
-			public int determineX(int fixed, int i) {
-				return i;
-			}
-
-			@Override
-			public int determineZ(int fixed, int i) {
-				return fixed;
-			}
-		};
-
-		public abstract int determineX(int fixed, int i);
-
-		public abstract int determineZ(int fixed, int i);
-	}
 
 	public static CityNode get(int x, int z) {
 		final int ax = Math.abs(x);
@@ -102,7 +117,7 @@ public enum CityNode {
 		final boolean xOdd = ax % 2 == 1;
 		final boolean zOdd = az % 2 == 1;
 
-		final int lower_max = (3 * MAX_BOUND) / 4;
+		final int lower_max = (3 * LayoutUtil.MAX_BOUND) / 4;
 
 		if (ax > lower_max) {
 			if (az > lower_max)
@@ -112,7 +127,7 @@ public enum CityNode {
 				return null;
 		}
 
-		if (ax > MAX_BOUND || az > MAX_BOUND)
+		if (ax > LayoutUtil.MAX_BOUND || az > LayoutUtil.MAX_BOUND)
 			return null;
 
 		if (ax == 0 && az == 0)
@@ -136,45 +151,9 @@ public enum CityNode {
 	// XXXX0
 	// 6789
 
-	public void applyGate(byte[][] result, int bottomY, int fixed,
-			ShapeMode mode) {
-		for (int y = 0; y < 4; y++) {
-			for (int i = 6; i <= 9; i++) {
-				int x = mode.determineX(fixed, i);
-				int z = mode.determineZ(fixed, i);
-
-				Material mat = Material.IRON_BLOCK;
-
-				if (y == 1 || y == 2) {
-					if (i == 7 || i == 8)
-						mat = Material.AIR;
-				}
-
-				CityOfTheGodsGenerator.setBlock(result, x, bottomY + y, z, mat);
-			}
-		}
-	}
-
-	public void applyTunnel(byte[][] result, int bottomY, int fixed,
-			ShapeMode mode) {
-		for (int y = 0; y < 4; y++) {
-			for (int i = 6; i <= 9; i++) {
-				int x = mode.determineX(fixed, i);
-				int z = mode.determineZ(fixed, i);
-
-				Material mat = Material.GLASS;
-
-				if (y == 1 || y == 2) {
-					if (i == 7 || i == 8)
-						mat = Material.AIR;
-				}
-
-				CityOfTheGodsGenerator.setBlock(result, x, bottomY + y, z, mat);
-			}
-		}
-	}
-
 	public abstract void generateLevel(byte[][] result, int bottomY, long seed,
 			int chunkX, int chunkZ);
+
+	public abstract void onPopulate(Chunk chunk);
 
 }

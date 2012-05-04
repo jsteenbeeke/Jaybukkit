@@ -1,11 +1,16 @@
 package com.jeroensteenbeeke.bk.cityofthegods;
 
+import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
+
+import com.google.common.collect.Lists;
 
 //
 //   -3 -2 -1 00 01 02 03 04
@@ -19,15 +24,6 @@ import org.bukkit.generator.ChunkGenerator;
 
 public class CityOfTheGodsGenerator extends ChunkGenerator {
 
-	static void setBlock(byte[][] result, int x, int y, int z, Material block) {
-		byte mat = (byte) block.getId();
-
-		if (result[y >> 4] == null) {
-			result[y >> 4] = new byte[4096];
-		}
-		result[y >> 4][((y & 0xF) << 8) | (z << 4) | x] = mat;
-	}
-
 	@Override
 	public byte[][] generateBlockSections(World world, Random random, int x,
 			int z, BiomeGrid biomes) {
@@ -39,9 +35,9 @@ public class CityOfTheGodsGenerator extends ChunkGenerator {
 			// Generate empty plain of bedrock
 			for (int xx = 0; x < 16; x++) {
 				for (int zz = 0; z < 16; z++) {
-					setBlock(result, xx, 61, zz, Material.BEDROCK);
-					setBlock(result, xx, 62, zz, Material.DIRT);
-					setBlock(result, xx, 63, zz, Material.GRASS);
+					LayoutUtil.setBlock(result, xx, 61, zz, Material.BEDROCK);
+					LayoutUtil.setBlock(result, xx, 62, zz, Material.DIRT);
+					LayoutUtil.setBlock(result, xx, 63, zz, Material.GRASS);
 				}
 			}
 		}
@@ -56,6 +52,21 @@ public class CityOfTheGodsGenerator extends ChunkGenerator {
 		}
 
 		return result;
+	}
+
+	@Override
+	public List<BlockPopulator> getDefaultPopulators(World world) {
+		return Lists.<BlockPopulator> newArrayList(new BlockPopulator() {
+			@Override
+			public void populate(World world, Random random, Chunk source) {
+				CityNode node = CityNode.get(source.getX(), source.getZ());
+
+				if (node != null) {
+					node.onPopulate(source);
+				}
+
+			}
+		});
 	}
 
 	@Override
