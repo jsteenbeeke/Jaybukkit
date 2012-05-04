@@ -1,0 +1,5 @@
+name: dropteleport
+main: com.jeroensteenbeeke.bk.dropteleport.Plugin
+version: 1.0-SNAPSHOT
+
+commands:

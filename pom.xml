@@ -241,5 +241,7 @@
     <module>jayconomy-chests</module>
     <module>timefreeze</module>
     <module>cityofthegods</module>
+    <module>dropteleport</module>
+    <module>bedsploder</module>
   </modules>
 </project>
