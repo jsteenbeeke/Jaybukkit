@@ -14,6 +14,10 @@ public final class LayoutUtil {
 
 	public static final byte TORCH_POINTING_NORTH = (byte) 0x2;
 
+	public static final Material BASE_MATERIAL = Material.DIAMOND_BLOCK;
+
+	public static final Material STARTING_LOCATION_MATERIAL = Material.DIAMOND_BLOCK;
+
 	public static enum ShapeMode {
 		X {
 			@Override
@@ -56,7 +60,7 @@ public final class LayoutUtil {
 				int x = mode.determineX(fixed, i);
 				int z = mode.determineZ(fixed, i);
 
-				Material mat = Material.SANDSTONE;
+				Material mat = BASE_MATERIAL;
 
 				if (y > MIN_Y) {
 					if (i > MIN_I && i < MAX_I) {
@@ -149,7 +153,7 @@ public final class LayoutUtil {
 				int x = mode.determineX(fixed, i);
 				int z = mode.determineZ(fixed, i);
 
-				Material mat = Material.SANDSTONE;
+				Material mat = BASE_MATERIAL;
 
 				if (y == 1 || y == 2) {
 					if (i == 7 || i == 8)
@@ -172,4 +176,5 @@ public final class LayoutUtil {
 	}
 
 	public static final int MAX_BOUND = 8;
+
 }

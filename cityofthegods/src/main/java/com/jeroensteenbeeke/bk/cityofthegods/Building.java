@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.material.Door;
+import org.bukkit.material.Ladder;
 import org.bukkit.material.Torch;
 
 import com.jeroensteenbeeke.bk.cityofthegods.LayoutUtil.ShapeMode;
@@ -59,20 +60,21 @@ public abstract class Building {
 			if (x == rangeMin || x == rangeMax) {
 				if (z >= rangeMin && z <= rangeMax)
 					LayoutUtil.setBlock(result, x, bottomY + y, z,
-							Material.SANDSTONE);
+							LayoutUtil.BASE_MATERIAL);
 
 			}
 			if (z == rangeMin || z == rangeMax) {
 				if (x >= rangeMin && x <= rangeMax)
 					LayoutUtil.setBlock(result, x, bottomY + y, z,
-							Material.SANDSTONE);
+							LayoutUtil.BASE_MATERIAL);
 			}
 		}
 	}
 
 	protected void horizontalRect(byte[][] result, int y, int minX, int minZ,
 			int maxX, int maxZ) {
-		horizontalRect(result, y, minX, minZ, maxX, maxZ, Material.SANDSTONE);
+		horizontalRect(result, y, minX, minZ, maxX, maxZ,
+				LayoutUtil.BASE_MATERIAL);
 	}
 
 	protected void horizontalRect(byte[][] result, int y, int minX, int minZ,
@@ -94,7 +96,7 @@ public abstract class Building {
 			if (x >= rangeMin && x <= rangeMax) {
 				if (z >= rangeMin && z <= rangeMax)
 					LayoutUtil.setBlock(result, x, bottomY + y, z,
-							Material.SANDSTONE);
+							LayoutUtil.BASE_MATERIAL);
 
 			}
 		}
@@ -187,6 +189,18 @@ public abstract class Building {
 
 		block.setType(Material.TORCH);
 		block.setData(torch.getData());
+
+	}
+
+	protected void ladderAt(Chunk chunk, int x, int y, int z,
+			BlockFace facingDirection) {
+		Block block = chunk.getBlock(x, y, z);
+
+		Ladder ladder = new Ladder();
+		ladder.setFacingDirection(facingDirection);
+
+		block.setType(Material.LADDER);
+		block.setData(ladder.getData());
 
 	}
 }

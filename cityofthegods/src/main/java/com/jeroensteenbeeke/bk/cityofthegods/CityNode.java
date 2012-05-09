@@ -14,15 +14,15 @@ public enum CityNode {
 				for (int x = 0; x < 16; x++) {
 					for (int z = 0; z < 16; z++) {
 						LayoutUtil.setBlock(result, x, bottomY, z,
-								Material.SANDSTONE);
+								LayoutUtil.STARTING_LOCATION_MATERIAL);
 						if (x == 0 || x == 15) {
 							LayoutUtil.setBlock(result, x, bottomY + 1, z,
-									Material.SANDSTONE);
+									LayoutUtil.STARTING_LOCATION_MATERIAL);
 
 						}
 						if (z == 0 || z == 15) {
 							LayoutUtil.setBlock(result, x, bottomY + 1, z,
-									Material.SANDSTONE);
+									LayoutUtil.STARTING_LOCATION_MATERIAL);
 						}
 
 					}

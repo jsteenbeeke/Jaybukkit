@@ -2,6 +2,7 @@ package com.jeroensteenbeeke.bk.cityofthegods;
 
 import java.util.Random;
 
+import com.jeroensteenbeeke.bk.cityofthegods.buildings.FlowerPatch;
 import com.jeroensteenbeeke.bk.cityofthegods.buildings.Forum;
 import com.jeroensteenbeeke.bk.cityofthegods.buildings.Fountain;
 import com.jeroensteenbeeke.bk.cityofthegods.buildings.FourHouse;
@@ -12,7 +13,7 @@ import com.jeroensteenbeeke.bk.cityofthegods.buildings.Spire;
 final class Buildings {
 	private static final Building[] buildings = new Building[] {
 			new Fountain(), new Pyramid(), new FourHouse(), new Mansion(),
-			new Forum(), new Spire() };
+			new Forum(), new Spire(), new FlowerPatch() };
 
 	static Building getRandom(long seed, int chunkX, int chunkZ) {
 

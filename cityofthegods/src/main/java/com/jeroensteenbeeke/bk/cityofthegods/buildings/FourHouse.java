@@ -23,7 +23,8 @@ public class FourHouse extends Building {
 			int chunkX, int chunkZ) {
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
-				LayoutUtil.setBlock(result, x, bottomY, z, Material.SANDSTONE);
+				LayoutUtil.setBlock(result, x, bottomY, z,
+						LayoutUtil.BASE_MATERIAL);
 			}
 		}
 

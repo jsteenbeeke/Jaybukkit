@@ -35,7 +35,19 @@ public class Forum extends Building {
 
 	@Override
 	public void onPopulate(Chunk chunk) {
+		for (int x = 0; x < 16; x++) {
+			for (int z = 0; z < 16; z++) {
+				if (z == 0 || z == 15) {
+					if (x == 2 || x == 5 || x == 13 || x == 10)
+						chunk.getBlock(x, 66, z).setType(Material.TORCH);
+				}
 
+				if (x == 0 || x == 15) {
+					if (z == 2 || z == 5 || z == 13 || z == 10)
+						chunk.getBlock(x, 66, z).setType(Material.TORCH);
+				}
+			}
+		}
 	}
 
 }

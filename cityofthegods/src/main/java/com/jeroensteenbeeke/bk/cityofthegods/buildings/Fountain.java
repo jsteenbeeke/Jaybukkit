@@ -14,15 +14,15 @@ public class Fountain extends Building {
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
 					LayoutUtil.setBlock(result, x, bottomY, z,
-							Material.SANDSTONE);
+							LayoutUtil.BASE_MATERIAL);
 					if (x == 0 || x == 15) {
 						LayoutUtil.setBlock(result, x, bottomY + 1, z,
-								Material.SANDSTONE);
+								LayoutUtil.BASE_MATERIAL);
 
 					}
 					if (z == 0 || z == 15) {
 						LayoutUtil.setBlock(result, x, bottomY + 1, z,
-								Material.SANDSTONE);
+								LayoutUtil.BASE_MATERIAL);
 					}
 
 				}
@@ -31,7 +31,7 @@ public class Fountain extends Building {
 			for (int x = 7; x <= 8; x++) {
 				for (int z = 7; z <= 8; z++) {
 					LayoutUtil.setBlock(result, x, bottomY + 2, z,
-							Material.SANDSTONE);
+							LayoutUtil.BASE_MATERIAL);
 				}
 			}
 
@@ -45,7 +45,7 @@ public class Fountain extends Building {
 			for (int x = 6; x <= 9; x++) {
 				for (int z = 6; z <= 9; z++) {
 					LayoutUtil.setBlock(result, x, bottomY + 1, z,
-							Material.SANDSTONE);
+							LayoutUtil.BASE_MATERIAL);
 				}
 			}
 
@@ -68,7 +68,7 @@ public class Fountain extends Building {
 				for (int z = 4; z <= 11; z++) {
 					if (x == 4 || x == 11 || z == 4 || z == 11)
 						LayoutUtil.setBlock(result, x, bottomY + 1, z,
-								Material.SANDSTONE);
+								LayoutUtil.BASE_MATERIAL);
 
 				}
 			}

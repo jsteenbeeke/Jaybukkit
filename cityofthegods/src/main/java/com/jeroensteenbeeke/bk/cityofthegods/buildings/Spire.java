@@ -66,12 +66,7 @@ public class Spire extends Building {
 				case 0:
 					horizontalRect(result, y, 6, 6, 9, 9);
 					break;
-				case 1:
-					stairsX = 8;
-					break;
 				case 2:
-					stairsX = 8;
-					stairsZ = 7;
 					if (y >= base) {
 						horizontalRect(result, y, 7, 4, 8, 5, Material.GLASS);
 						horizontalRect(result, y, 4, 7, 5, 8, Material.GLASS);
@@ -79,13 +74,10 @@ public class Spire extends Building {
 						horizontalRect(result, y, 7, 10, 8, 11, Material.GLASS);
 					}
 					break;
-				case 3:
-					stairsZ = 7;
-					break;
 				}
 
 				LayoutUtil.setBlock(result, stairsX, y, stairsZ,
-						Material.SANDSTONE);
+						LayoutUtil.BASE_MATERIAL);
 			}
 		}
 
@@ -144,6 +136,10 @@ public class Spire extends Building {
 				torchAt(chunk, 6, y, 9, BlockFace.EAST);
 				torchAt(chunk, 9, y, 9, BlockFace.EAST);
 			}
+		}
+
+		for (int y = 49; y < 144; y++) {
+			ladderAt(chunk, 8, y, 8, BlockFace.NORTH);
 		}
 	}
 
