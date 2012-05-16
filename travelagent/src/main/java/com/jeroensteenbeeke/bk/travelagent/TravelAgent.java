@@ -17,6 +17,19 @@ public class TravelAgent extends JSPlugin {
 
 		Map<String, World> netherMappings = Maps.newHashMap();
 
+		for (World world : getServer().getWorlds()) {
+			final String worldname = world.getName();
+
+			if (getConfig().contains(worldname)) {
+				final String targetWorldName = getConfig().getString(worldname);
+
+				World target = getServer().getWorld(targetWorldName);
+				netherMappings.put(worldname, target);
+			}
+		}
+
+		addListener(new PortalEventListener(netherMappings));
+
 	}
 
 	@Override
