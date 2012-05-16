@@ -1,0 +1,5 @@
+name: travelagent
+main: com.jeroensteenbeeke.bk.travelagent.TravelAgent
+version: 1.0-SNAPSHOT
+
+commands:

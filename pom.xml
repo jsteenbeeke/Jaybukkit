@@ -243,5 +243,6 @@
     <module>cityofthegods</module>
     <module>dropteleport</module>
     <module>bedsploder</module>
+    <module>travelagent</module>
   </modules>
 </project>
