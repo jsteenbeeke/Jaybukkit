@@ -244,5 +244,6 @@
     <module>dropteleport</module>
     <module>bedsploder</module>
     <module>travelagent</module>
+    <module>extraworlds</module>
   </modules>
 </project>

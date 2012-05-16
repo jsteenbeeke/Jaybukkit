@@ -12,6 +12,7 @@ public class CityOfTheGods extends JSPlugin {
 	@Override
 	public void onEnable() {
 		logger.info("Enabled cityofthegods plugin");
+
 	}
 
 	@Override
