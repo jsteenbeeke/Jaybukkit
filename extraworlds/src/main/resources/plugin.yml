@@ -1,6 +1,6 @@
 name: extraworlds
 main: com.jeroensteenbeeke.bk.extraworlds.ExtraWorlds
 version: 1.0-SNAPSHOT
-loadbefore: [travelagent, dropteleport]
+loadbefore: [travelagent, dropteleport,timefreeze]
 
 commands:

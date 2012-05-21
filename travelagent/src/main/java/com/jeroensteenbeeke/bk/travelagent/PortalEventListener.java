@@ -28,7 +28,11 @@ public class PortalEventListener implements Listener {
 			final World fromWorld = from.getWorld();
 			final String fromWorldName = fromWorld.getName();
 
-			final Location to = portalEvent.getTo();
+			Location to = portalEvent.getTo();
+
+			if (to == null)
+				to = from;
+
 			final World toWorld = to.getWorld();
 
 			if (netherMappings.containsKey(fromWorldName)) {

@@ -1,6 +1,7 @@
 package com.jeroensteenbeeke.bk.dropteleport;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,6 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class DropListener implements Listener {
+	private Logger logger = Logger.getLogger("Minecraft");
+
 	private final Map<String, DropRoute> worlds;
 
 	public DropListener(Map<String, DropRoute> worlds) {
@@ -49,20 +52,35 @@ public class DropListener implements Listener {
 	}
 
 	private int getTargetWorldLocation(World target, int x, int z) {
-		int y = target.getMaxHeight();
+		int y = target.getMaxHeight() - 1;
+
+		logger.info(String.format("Max height is %d", y));
+
+		if (y == 0)
+			y = 255;
 
 		Block b = target.getBlockAt(x, y, z);
 
 		if (target.getEnvironment() == Environment.NETHER) {
-
+			int i = 0;
 			while (!b.isEmpty() && y > 0) {
 				b = target.getBlockAt(x, --y, z);
+				i++;
 			}
+			logger.info(String.format("Nether algorithm lowered %d times", i));
 		}
+
+		int i = 0;
+
+		logger.info(String.format("Block is %s", b.getType()));
 
 		while (b.isEmpty() && y > 0) {
 			b = target.getBlockAt(x, --y, z);
+			i++;
+			logger.info(String.format("Block is %s", b.getType()));
 		}
+
+		logger.info(String.format("Regular algorithm lowered %d times", i));
 
 		return y;
 	}
