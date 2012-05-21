@@ -1,0 +1,5 @@
+name: jaycore
+main: com.jeroensteenbeeke.bk.jaycore.JayCore
+version: 1.0-SNAPSHOT
+
+commands:

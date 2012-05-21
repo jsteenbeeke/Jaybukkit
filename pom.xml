@@ -245,5 +245,6 @@
     <module>bedsploder</module>
     <module>travelagent</module>
     <module>extraworlds</module>
+    <module>jaycore</module>
   </modules>
 </project>
