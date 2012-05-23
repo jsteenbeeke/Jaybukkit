@@ -14,9 +14,9 @@ public final class LayoutUtil {
 
 	public static final byte TORCH_POINTING_NORTH = (byte) 0x2;
 
-	public static final Material BASE_MATERIAL = Material.DIAMOND_BLOCK;
+	public static final Material BASE_MATERIAL = Material.SANDSTONE;
 
-	public static final Material STARTING_LOCATION_MATERIAL = Material.DIAMOND_BLOCK;
+	public static final Material STARTING_LOCATION_MATERIAL = Material.SANDSTONE;
 
 	public static enum ShapeMode {
 		X {

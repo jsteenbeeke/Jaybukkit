@@ -2,15 +2,18 @@ package com.jeroensteenbeeke.bk.jaycore.listeners;
 
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.avaje.ebean.EbeanServer;
 import com.jeroensteenbeeke.bk.jaycore.entities.DeathBan;
+import com.jeroensteenbeeke.bk.jaycore.entities.TorchGiven;
 
 public class PlayerListener implements Listener {
 	private final EbeanServer database;
@@ -29,8 +32,8 @@ public class PlayerListener implements Listener {
 		final long start = now - banDuration;
 
 		List<DeathBan> bans = database.find(DeathBan.class).where()
-				.eq("player", event.getPlayer().getName()).gt("banTime", start)
-				.findList();
+				.eq("playerName", event.getPlayer().getName())
+				.gt("banTime", start).findList();
 
 		if (!bans.isEmpty()) {
 			DeathBan ban = bans.get(0);
@@ -45,6 +48,21 @@ public class PlayerListener implements Listener {
 			time.append(" left until you can play again");
 
 			event.getPlayer().kickPlayer(time.toString());
+
+			return;
+		}
+
+		List<TorchGiven> givens = database.find(TorchGiven.class).where()
+				.eq("playerName", event.getPlayer().getName()).findList();
+
+		if (givens.isEmpty()) {
+			event.getPlayer().getInventory()
+					.addItem(new ItemStack(Material.TORCH));
+
+			TorchGiven given = new TorchGiven();
+			given.setPlayername(event.getPlayer().getName());
+
+			database.save(given);
 		}
 	}
 
@@ -61,24 +79,26 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerDeath(PlayerDeathEvent event) {
-		StringBuilder time = new StringBuilder();
-		time.append("You died, therefore you have been banned for ");
+	public void onPlayerDeath(PlayerRespawnEvent event) {
+		if (banDuration > 0) {
+			StringBuilder time = new StringBuilder();
+			time.append("You died, therefore you have been banned for ");
 
-		formatTime(banDuration, time);
+			formatTime(banDuration, time);
 
-		event.getEntity().kickPlayer(time.toString());
+			event.getPlayer().kickPlayer(time.toString());
 
-		List<DeathBan> bans = database.find(DeathBan.class).where()
-				.eq("player", event.getEntity().getName()).findList();
+			List<DeathBan> bans = database.find(DeathBan.class).where()
+					.eq("playerName", event.getPlayer().getName()).findList();
 
-		database.delete(bans);
+			database.delete(bans);
 
-		DeathBan db = new DeathBan();
-		db.setBanTime(System.currentTimeMillis());
-		db.setPlayerName(event.getEntity().getName());
+			DeathBan db = new DeathBan();
+			db.setBanTime(System.currentTimeMillis());
+			db.setPlayerName(event.getPlayer().getName());
 
-		database.save(db);
+			database.save(db);
+		}
 	}
 
 	private void formatTime(final long timeRemaining, StringBuilder time) {
@@ -89,16 +109,30 @@ public class PlayerListener implements Listener {
 
 		if (daysLeft > 0) {
 			time.append(daysLeft);
-			time.append(" days ");
+			time.append(" days");
+			long ehours = hoursLeft - (24 * daysLeft);
+			if (ehours > 0) {
+				time.append(" and ");
+				time.append(ehours);
+				time.append(" hours");
+			}
+
 		} else if (hoursLeft > 0) {
 			time.append(hoursLeft);
-			time.append(" hours ");
+			time.append(" hours");
+			long emins = minutesLeft - (60 * hoursLeft);
+			if (emins > 0) {
+				time.append(" and ");
+				time.append(emins);
+				time.append(" minutes");
+			}
+
 		} else if (minutesLeft > 0) {
 			time.append(minutesLeft);
-			time.append(" minutes ");
+			time.append(" minutes");
 		} else {
 			time.append(secondsLeft);
-			time.append(" seconds ");
+			time.append(" seconds");
 		}
 	}
 }

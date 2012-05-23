@@ -3,6 +3,7 @@ package com.jeroensteenbeeke.bk.cityofthegods.buildings;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EntityType;
 
 import com.jeroensteenbeeke.bk.cityofthegods.Building;
 import com.jeroensteenbeeke.bk.cityofthegods.LayoutUtil;
@@ -98,24 +99,28 @@ public class FourHouse extends Building {
 		torchAt(chunk, 9, 66, 14, BlockFace.NORTH);
 		torchAt(chunk, 11, 66, 12, BlockFace.SOUTH);
 		torchAt(chunk, 11, 66, 14, BlockFace.SOUTH);
+		creatureAt(chunk, 9, 66, 13, EntityType.VILLAGER);
 
 		doorAt(chunk, 2, 65, 10, Material.WOODEN_DOOR, BlockFace.EAST);
 		torchAt(chunk, 1, 66, 9, BlockFace.EAST);
 		torchAt(chunk, 3, 66, 9, BlockFace.EAST);
 		torchAt(chunk, 1, 66, 11, BlockFace.WEST);
 		torchAt(chunk, 3, 66, 11, BlockFace.WEST);
+		creatureAt(chunk, 2, 66, 9, EntityType.VILLAGER);
 
 		doorAt(chunk, 5, 65, 2, Material.WOODEN_DOOR, BlockFace.SOUTH);
 		torchAt(chunk, 6, 66, 1, BlockFace.SOUTH);
 		torchAt(chunk, 6, 66, 3, BlockFace.SOUTH);
 		torchAt(chunk, 4, 66, 1, BlockFace.NORTH);
 		torchAt(chunk, 4, 66, 3, BlockFace.NORTH);
+		creatureAt(chunk, 6, 66, 2, EntityType.VILLAGER);
 
 		doorAt(chunk, 13, 65, 5, Material.WOODEN_DOOR, BlockFace.WEST);
 		torchAt(chunk, 12, 66, 6, BlockFace.WEST);
 		torchAt(chunk, 14, 66, 6, BlockFace.WEST);
 		torchAt(chunk, 12, 66, 4, BlockFace.EAST);
 		torchAt(chunk, 14, 66, 4, BlockFace.EAST);
+		creatureAt(chunk, 13, 66, 6, EntityType.VILLAGER);
 
 	}
 

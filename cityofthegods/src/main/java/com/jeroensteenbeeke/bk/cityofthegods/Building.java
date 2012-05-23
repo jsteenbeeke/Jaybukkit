@@ -2,8 +2,10 @@ package com.jeroensteenbeeke.bk.cityofthegods;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EntityType;
 import org.bukkit.material.Door;
 import org.bukkit.material.Ladder;
 import org.bukkit.material.Torch;
@@ -203,4 +205,13 @@ public abstract class Building {
 		block.setData(ladder.getData());
 
 	}
+
+	protected void creatureAt(Chunk chunk, int x, int y, int z, EntityType type) {
+		World world = chunk.getWorld();
+		Block block = chunk.getBlock(x, y, z);
+
+		world.spawnCreature(block.getLocation(), type);
+
+	}
+
 }

@@ -13,6 +13,7 @@ public class CityOfTheGods extends JSPlugin {
 	public void onEnable() {
 		logger.info("Enabled cityofthegods plugin");
 
+		addListener(new NoBreakListener());
 	}
 
 	@Override
