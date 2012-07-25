@@ -47,7 +47,7 @@ public class JayCore extends JSPlugin {
 		// getServer().addRecipe(
 		// new ShapelessRecipe(new ItemStack(Material.SPECKLED_MELON, 1))
 		// .addIngredient(Material.MELON).addIngredient(
-		// Material.GOLD_BLOCK));
+		// Material.GOLD_BLOCK));Is
 
 		addListener(new PlayerListener(getDatabase(), getConfig().getLong(
 				"banDuration", 1000L * 60L * 60L * 24L)));
