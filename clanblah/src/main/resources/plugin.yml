@@ -1,0 +1,5 @@
+name: clanblah
+main: com.jeroensteenbeeke.bk.clanblah.ClanBlah
+version: 1.0-SNAPSHOT
+
+commands:
