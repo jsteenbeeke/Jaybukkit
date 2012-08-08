@@ -247,5 +247,6 @@
     <module>extraworlds</module>
     <module>jaycore</module>
     <module>clanblah</module>
+    <module>jaylock</module>
   </modules>
 </project>

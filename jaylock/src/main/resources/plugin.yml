@@ -1,0 +1,13 @@
+name: jaylock
+main: com.jeroensteenbeeke.bk.jaylock.Jaylock
+version: 1.0-SNAPSHOT
+database: true
+
+commands:
+  jaylock:
+    description: Access to various jaylock commands
+    permission: jaylock.admin
+permissions:
+  jaylock.admin:
+    description: Allows people to lock small areas of the server
+    default: op
