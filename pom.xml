@@ -248,5 +248,6 @@
     <module>jaycore</module>
     <module>clanblah</module>
     <module>jaylock</module>
+    <module>endblockade</module>
   </modules>
 </project>

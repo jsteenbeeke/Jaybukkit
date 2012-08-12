@@ -1,0 +1,5 @@
+name: endblockade
+main: com.jeroensteenbeeke.bk.endblockade.EndBlockade
+version: 1.0-SNAPSHOT
+
+commands:
