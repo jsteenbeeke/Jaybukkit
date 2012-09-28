@@ -35,6 +35,7 @@ import com.jeroensteenbeeke.bk.jayop.commands.FreezeCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.GiveItemCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.KickCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.ListFrozenCommandHandler;
+import com.jeroensteenbeeke.bk.jayop.commands.SetSpawnLocationCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.SuspendCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.TeleportCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.TeleportHomeCommandHandler;
@@ -48,6 +49,7 @@ import com.jeroensteenbeeke.bk.jayop.commands.WeatherCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.commands.ZapCommandHandler;
 import com.jeroensteenbeeke.bk.jayop.entities.Suspension;
 import com.jeroensteenbeeke.bk.jayop.listeners.FrozenPlayerListener;
+import com.jeroensteenbeeke.bk.jayop.listeners.ProtectionListener;
 import com.jeroensteenbeeke.bk.jayop.listeners.SuspendedPlayerListener;
 
 public class JayOp extends JSPlugin {
@@ -60,6 +62,8 @@ public class JayOp extends JSPlugin {
 	public static final String PERMISSION_ENFORCEMENT = "jayop.enforcement";
 
 	public static final String PERMISSION_INVENTORY = "jayop.inventory";
+
+	public static final String PERMISSION_MODIFY_WORLD = "jayop.world.modify";
 
 	private Set<String> frozen = new HashSet<String>();
 
@@ -81,6 +85,7 @@ public class JayOp extends JSPlugin {
 
 		addListener(new SuspendedPlayerListener(this));
 		addListener(new FrozenPlayerListener(this));
+		addListener(new ProtectionListener(this));
 
 		addCommandHandler(new WeatherCommandHandler(this));
 		addCommandHandler(new TeleportCommandHandler(this));
@@ -100,6 +105,7 @@ public class JayOp extends JSPlugin {
 		addCommandHandler(new FreezeCommandHandler(this));
 		addCommandHandler(new UnfreezeCommandHandler(this));
 		addCommandHandler(new ListFrozenCommandHandler(this));
+		addCommandHandler(new SetSpawnLocationCommandHandler(this));
 
 	}
 
