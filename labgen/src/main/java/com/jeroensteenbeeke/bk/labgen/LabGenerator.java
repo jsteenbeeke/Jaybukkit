@@ -38,10 +38,10 @@ public class LabGenerator extends ChunkGenerator {
 						return id(Material.AIR);
 
 					if (in(yy, 51, 54) && in(xx, 6, 7, 8, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					if (in(yy, 52, 53) && in(xx, 6, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					return id(Material.BEDROCK);
 				} else if (zz == MAX - 1) {
@@ -82,10 +82,10 @@ public class LabGenerator extends ChunkGenerator {
 						return id(Material.AIR);
 
 					if (in(yy, 51, 54) && in(zz, 6, 7, 8, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					if (in(yy, 52, 53) && in(zz, 6, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					return id(Material.BEDROCK);
 				} else if (xx == 1) {
@@ -123,10 +123,10 @@ public class LabGenerator extends ChunkGenerator {
 						return id(Material.AIR);
 
 					if (in(yy, 51, 54) && in(zz, 6, 7, 8, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					if (in(yy, 52, 53) && in(zz, 6, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					return id(Material.BEDROCK);
 				} else if (xx == MAX - 1) {
@@ -167,10 +167,10 @@ public class LabGenerator extends ChunkGenerator {
 						return id(Material.AIR);
 
 					if (in(yy, 51, 54) && in(xx, 6, 7, 8, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					if (in(yy, 52, 53) && in(xx, 6, 9))
-						return id(Material.IRON_BLOCK);
+						return id(Material.GLOWSTONE);
 
 					return id(Material.BEDROCK);
 				} else if (zz == 1) {
