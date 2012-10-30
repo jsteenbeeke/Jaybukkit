@@ -146,6 +146,7 @@ public class DatabaseDumper {
 				database.save(o);
 				i++;
 			}
+			br.close();
 
 			logger.info(String.format("Imported %d objects", i));
 		} catch (IOException e) {

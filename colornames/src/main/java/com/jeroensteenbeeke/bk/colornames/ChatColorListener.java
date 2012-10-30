@@ -21,11 +21,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatColorListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerChat(PlayerChatEvent event) {
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		if (event.isCancelled())
 			return;
 
@@ -40,7 +40,7 @@ public class ChatColorListener implements Listener {
 		}
 	}
 
-	private void format(PlayerChatEvent event, ChatColor color) {
+	private void format(AsyncPlayerChatEvent event, ChatColor color) {
 		event.setFormat("<" + color.toString() + "%1$s\u00A7f> %2$s");
 
 	}
