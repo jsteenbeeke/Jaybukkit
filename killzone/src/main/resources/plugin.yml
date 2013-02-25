@@ -1,0 +1,5 @@
+name: killzone
+main: com.jeroensteenbeeke.bukkit.killzone.KillZone
+version: 1.0-SNAPSHOT
+
+commands:

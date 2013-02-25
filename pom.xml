@@ -249,5 +249,6 @@
     <module>clanblah</module>
     <module>jaylock</module>
     <module>endblockade</module>
+    <module>killzone</module>
   </modules>
 </project>
