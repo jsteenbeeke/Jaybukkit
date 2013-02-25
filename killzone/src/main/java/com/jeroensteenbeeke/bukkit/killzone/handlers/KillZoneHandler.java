@@ -27,7 +27,7 @@ public class KillZoneHandler implements Listener {
 			return;
 
 		if (tracker.isKillZone(event.getLocation())) {
-			event.getEntity().damage(100000);
+			event.setCancelled(true);
 		}
 	}
 
