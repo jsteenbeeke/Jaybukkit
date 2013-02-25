@@ -1,7 +1,5 @@
 package com.jeroensteenbeeke.bukkit.killzone.handlers;
 
-import java.util.logging.Logger;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,8 +10,6 @@ import com.jeroensteenbeeke.bukkit.killzone.ZoneTracker;
 
 public class KillZoneHandler implements Listener {
 	private final ZoneTracker tracker;
-
-	private Logger logger = Logger.getLogger("Minecraft");
 
 	public KillZoneHandler(ZoneTracker tracker) {
 		super();
