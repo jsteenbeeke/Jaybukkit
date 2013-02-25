@@ -102,5 +102,9 @@ public final class BaseData {
 		maxLevel.put(Enchantment.ARROW_INFINITE, 1);
 		friendlyNames.put(Enchantment.ARROW_INFINITE, "Infinity");
 
+		base.put(Enchantment.THORNS, 30);
+		maxLevel.put(Enchantment.THORNS, 3);
+		friendlyNames.put(Enchantment.THORNS, "Thorns");
+
 	}
 }
