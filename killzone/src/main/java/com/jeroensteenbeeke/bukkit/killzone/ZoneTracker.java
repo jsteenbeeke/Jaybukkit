@@ -18,6 +18,11 @@ public class ZoneTracker {
 	}
 
 	public boolean isKillZone(Location location) {
+		if (location.getBlock().getType().isSolid()) {
+			// Optimalization
+			return false;
+		}
+
 		final String worldname = location.getWorld().getName();
 		final int x = location.getBlockX();
 		final int y = location.getBlockY();
