@@ -1,26 +1,21 @@
 package com.jeroensteenbeeke.bukkit;
 
+import java.util.List;
+
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
+import com.jeroensteenbeeke.bukkit.EnderQuestCommand.Notification;
+
 public class PluginTest {
-	@Before
-	public void createMocks() {
-	}
-
-	@After
-	public void cleanupMocks() {
-	}
-
-        @Test
-        public void testEnable() {
-	}
-
 	@Test
-	public void testDisable() {
+	public void testNotificationMoments() {
+		List<Notification> notificationTimes = EnderQuestCommand
+				.getNotificationTimes(120);
+
+		for (Notification notif : notificationTimes) {
+			System.out.printf("At %d say %d remaining", notif.getMoment(),
+					notif.getMinutes());
+			System.out.println();
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package com.jeroensteenbeeke.bukkit;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -7,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jeroensteenbeeke.bk.basics.commands.CommandMatcher;
 import com.jeroensteenbeeke.bk.basics.commands.ParameterIntegrityChecker;
@@ -14,6 +17,45 @@ import com.jeroensteenbeeke.bk.basics.commands.PlayerAwareCommandHandler;
 import com.jeroensteenbeeke.bk.basics.util.Messages;
 
 public class EnderQuestCommand extends PlayerAwareCommandHandler {
+	public static class KillEveryoneTimer implements Runnable {
+
+		private final Server server;
+
+		public KillEveryoneTimer(Server server) {
+			this.server = server;
+		}
+
+		@Override
+		public void run() {
+			Player[] players = server.getOnlinePlayers();
+
+			for (Player player : players) {
+				player.damage(10000);
+			}
+		}
+
+	}
+
+	public static class Notification {
+		private final long moment;
+
+		private final int minutes;
+
+		public Notification(long moment, int minutes) {
+			super();
+			this.moment = moment;
+			this.minutes = minutes;
+		}
+
+		public long getMoment() {
+			return moment;
+		}
+
+		public int getMinutes() {
+			return minutes;
+		}
+	}
+
 	public class BroadCastTimer implements Runnable {
 		private final Server server;
 
@@ -57,42 +99,26 @@ public class EnderQuestCommand extends PlayerAwareCommandHandler {
 	}
 
 	private void startCountdown(Server server, int minutes) {
-		int remaining = minutes;
+		List<Notification> notificationMoments = getNotificationTimes(minutes);
 
-		while (remaining > 30) {
-			remaining = remaining - 30;
-
-			long time = (minutes - remaining) * 60 * 20;
-
+		for (Notification notification : notificationMoments) {
 			server.getScheduler()
 					.runTaskLater(
 							quest,
 							new BroadCastTimer(
-									server,
+									quest.getServer(),
 									String.format(
 											"&cYou have &e%d minutes&c left to complete your quest",
-											remaining)), time);
-
-		}
-
-		while (remaining > 1) {
-			long time = (minutes - remaining) * 60 * 20;
-
-			server.getScheduler()
-					.runTaskLater(
-							quest,
-							new BroadCastTimer(
-									server,
-									String.format(
-											"&cYou only have &e%d minutes&c left to complete your quest",
-											remaining)), time);
-
-			remaining = remaining - 1;
+											notification.minutes)),
+							notification.moment);
 		}
 
 		server.getScheduler().runTaskLater(quest,
-				new BroadCastTimer(server, "&cTIME IS UP!!!"),
-				minutes * 60 * 20);
+				new BroadCastTimer(server, "&cONLY ONE MINUTE REMAINS"),
+				20 * 60 * (minutes - 1));
+
+		server.getScheduler().runTaskLater(quest,
+				new KillEveryoneTimer(server), minutes * 60 * 20);
 	}
 
 	private void spawnPortal(Player player) {
@@ -141,4 +167,32 @@ public class EnderQuestCommand extends PlayerAwareCommandHandler {
 		return ifArgCountIs(1).andArgumentLike(0, DECIMAL).itIsProper();
 	}
 
+	public static List<Notification> getNotificationTimes(final int minutes) {
+		List<Notification> notifications = Lists.newLinkedList();
+
+		if (minutes > 5) {
+			for (int i = 2; i <= 5; i++) {
+				notifications.add(minutes(minutes - i, i));
+			}
+		}
+
+		if (minutes > 15) {
+			notifications.add(minutes(minutes - 15, 15));
+		}
+
+		if (minutes > 30) {
+			for (int i = 30; i < minutes; i = i + 30) {
+				notifications.add(minutes(minutes - i, i));
+			}
+		}
+
+		return notifications;
+	}
+
+	/**
+	 * Convert minutes to server ticks
+	 */
+	private static Notification minutes(int minutes, int remaining) {
+		return new Notification(20 * 60 * minutes, remaining);
+	}
 }
