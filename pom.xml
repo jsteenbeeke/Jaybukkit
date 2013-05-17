@@ -250,5 +250,6 @@
     <module>jaylock</module>
     <module>endblockade</module>
     <module>killzone</module>
+    <module>enderquest</module>
   </modules>
 </project>

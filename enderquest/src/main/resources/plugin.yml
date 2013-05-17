@@ -1,0 +1,11 @@
+name: enderquest
+main: com.jeroensteenbeeke.bukkit.EnderQuest
+version: 1.1-SNAPSHOT
+
+commands:
+    enderquest:
+        permission: enderquest.embark    
+permissions:
+    enderquest.embark:
+        default: op
+        description: Grants permission to embark on an Ender dragon quest
