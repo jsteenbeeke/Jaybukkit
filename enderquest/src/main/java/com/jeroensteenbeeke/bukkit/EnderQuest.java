@@ -13,6 +13,7 @@ public class EnderQuest extends JSPlugin {
 		logger.info("Enabled enderquest plugin");
 
 		addCommandHandler(new EnderQuestCommand(this));
+		addListener(new PlayerDeathListener(this));
 	}
 
 	@Override
