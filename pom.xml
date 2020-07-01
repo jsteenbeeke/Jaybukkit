@@ -15,7 +15,7 @@
 		<powermock.version>1.4.10</powermock.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.9</junit.version>
-		<mysql.version>5.1.17</mysql.version>
+		<mysql.version>8.0.16</mysql.version>
 	</properties>
 
 	<licenses>
